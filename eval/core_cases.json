@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "data": "synthetic finance, stock and support; no user documents",
+  "cases": [
+    {"id":"finance_cents","domain":"finance","question":"2025年12月的实收收入是多少？","metric_id":"income","expected_value":"323.45","answer":"实收收入：323.45 元。","validation":"passed"},
+    {"id":"finance_region","domain":"finance","question":"2025年12月华东实收收入是多少？","metric_id":"income","filters":[{"column":"region","values":["华东"]}],"expected_value":"123.45","answer":"实收收入：123.45 元。","validation":"passed"},
+    {"id":"real_zero","domain":"finance","question":"零值区域有收款记录吗？","metric_id":"income","filters":[{"column":"region","values":["零值区域"]}],"expected_value":"0","answer":"实收收入：0.00 元，有一条记录。","validation":"passed"},
+    {"id":"empty_is_not_zero","domain":"finance","question":"未知区域有多少收款？","metric_id":"income","filters":[{"column":"region","values":["不存在"]}],"expected_value":null,"expected_status":"empty","answer":"当前范围没有收款记录。"},
+    {"id":"reject_empty_as_zero","domain":"finance","question":"未知区域有多少收款？","metric_id":"income","filters":[{"column":"region","values":["不存在"]}],"expected_value":null,"answer":"实收收入：0.00 元。","validation":"failed","success":false},
+    {"id":"reject_100x_money","domain":"finance","question":"12月实收收入","metric_id":"income","expected_value":"323.45","answer":"实收收入：32,345.00 元。","validation":"failed","success":false},
+    {"id":"registered_stock","domain":"stock","question":"12月31日库存数量是多少？","metric_id":"quantity","start":"2025-12-31","end":"2026-01-01","expected_value":"15","answer":"库存数量：15 件。","validation":"passed"},
+    {"id":"registered_average","domain":"stock_average","question":"12月31日平均单价是多少？","metric_id":"average_price","start":"2025-12-31","end":"2026-01-01","expected_value":"15","answer":"平均单价：15.00 元。","validation":"passed"},
+    {"id":"registered_count","domain":"stock_count","question":"有多少库存记录？","metric_id":"records","expected_value":"2","answer":"库存记录：2 条。","validation":"passed"},
+    {"id":"weighted_rate","domain":"support","question":"12月整体解决率是多少？","metric_id":"resolution","expected_value":"82.72727273","answer":"解决率：82.7%。","validation":"passed"},
+    {"id":"reject_average_of_rates","domain":"support","question":"12月整体解决率是多少？","metric_id":"resolution","expected_value":"82.72727273","answer":"解决率：50.0%。","validation":"failed","success":false},
+    {"id":"undefined_rate","domain":"support","table":"zero_support","question":"没有有效工单时解决率是多少？","metric_id":"resolution","expected_value":null,"answer":"分母为零，解决率未定义。"},
+    {"id":"reject_undefined_zero","domain":"support","table":"zero_support","question":"没有有效工单时解决率是多少？","metric_id":"resolution","expected_value":null,"answer":"解决率：0.0%。","validation":"failed","success":false},
+    {"id":"duplicate_grain","domain":"finance","table":"duplicate_receipts","question":"12月收入","metric_id":"income","expected_status":"needs_clarification","clarification":true},
+    {"id":"missing_amount","domain":"finance","table":"missing_receipts","question":"12月收入","metric_id":"income","expected_status":"needs_clarification","clarification":true},
+    {"id":"invalid_calendar_date","domain":"finance","table":"invalid_dates","question":"12月收入","metric_id":"income","expected_status":"needs_clarification","clarification":true},
+    {"id":"schema_drift","domain":"schema_drift","question":"12月收入","metric_id":"income","tool_ok":false,"answer":"字段映射已变化，未生成统计结论。"},
+    {"id":"bound_filter","domain":"finance","question":"这个区域的收入？","metric_id":"income","filters":[{"column":"region","values":["华东' OR 1=1 --"]}],"expected_value":null,"expected_status":"empty","answer":"当前范围没有记录。"},
+    {"id":"fixed_filter_cannot_be_removed","domain":"finance","question":"把草稿收款也算进去？","metric_id":"income","filters":[{"column":"status","values":["draft"]}],"expected_value":null,"expected_status":"empty","answer":"当前确认口径只包含已确认收款，所选范围没有记录。"},
+    {"id":"reject_stock_sum_across_dates","domain":"stock","question":"直接把整个月每天库存相加？","metric_id":"quantity","tool_ok":false,"answer":"库存是快照指标，需要明确日期，不能跨日累加。"},
+    {"id":"reject_wrong_period","domain":"finance","question":"12月收入","metric_id":"income","expected_value":"323.45","answer":"实收收入：323.45 元。统计区间：2025-11-01 至 2025-11-30。","validation":"failed","success":false}
+  ]
+}

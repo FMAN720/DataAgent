@@ -1,0 +1,17 @@
+[
+  {"id":"double11","file":"2025-11-双十一复盘.md","date":"2025-11-30","type":"review"},
+  {"id":"appliances","file":"2025-12-家电运营周报.md","date":"2025-12-31","type":"weekly_report"},
+  {"id":"food","file":"2025-12-年货节方案.md","date":"2025-12-01","type":"campaign"},
+  {"id":"phones","file":"2025-09-新机发布复盘.md","date":"2025-09-30","type":"review"},
+  {"id":"fashion","file":"2025-11-秋冬服饰计划.md","date":"2025-11-01","type":"campaign"},
+  {"id":"refunds","file":"2025-12-客服工单汇总.md","date":"2025-12-31","type":"support"},
+  {"id":"spring","file":"2025-02-春节运营安排.md","date":"2025-02-01","type":"weekly_report"},
+  {"id":"metrics","file":"2025-01-销售口径说明.md","date":"2025-01-01","type":"reference"},
+  {"id":"regions","file":"2025-01-区域与渠道字典.md","date":"2025-01-01","type":"reference"},
+  {"id":"delivery","file":"2025-06-配送服务约定.md","date":"2025-06-01","type":"reference"},
+  {"id":"old_appliances","file":"2024-12-家电旧周报.md","date":"2024-12-31","type":"weekly_report"},
+  {"id":"contradiction","file":"2025-12-待核实市场简报.md","date":"2025-12-25","type":"reference"},
+  {"id":"unrelated","file":"2025-10-办公会议安排.md","date":"2025-10-08","type":"reference"},
+  {"id":"undated","file":"日期未知-促销笔记.md","date":null,"type":"reference"},
+  {"id":"injection","file":"2025-12-安全演练附件.md","date":"2025-12-20","type":"reference"}
+]

@@ -1,0 +1,29 @@
+{
+  "/api/v1/health": {
+    "http_status": 200,
+    "body": {
+      "status": "ok"
+    }
+  },
+  "/api/v1/health/ready": {
+    "http_status": 200,
+    "body": {
+      "status": "ready",
+      "agent": "up",
+      "analysis_database": "up",
+      "session_store": "up",
+      "session_backend": "redis",
+      "document_database": "up",
+      "database": "up",
+      "app_env": "development",
+      "document_retrieval": "up",
+      "dataset_imports": "up",
+      "embedding": "configured"
+    }
+  },
+  "/": {
+    "http_status": 200,
+    "workspace_loaded": true
+  },
+  "model_api_calls_during_smoke": 0
+}

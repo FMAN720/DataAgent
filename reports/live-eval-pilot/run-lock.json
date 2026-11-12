@@ -1,0 +1,15 @@
+{
+  "fixture_fingerprint": "9d3f91549f049c8f52f5e40d35f601e74ff28537566544660367000b99c6233a",
+  "source_fingerprint": "2218348887609b76e13e75afcd4c86679aa4b132e9f7fbff1b8e9c5201cf43a1",
+  "chat_model": "deepseek-chat",
+  "embedding_model": "BAAI/bge-m3",
+  "retrieval_settings": {
+    "embedding_dimensions": 1024,
+    "embedding_revision": "phase7-9d3f91549f049c8f52f5e40d35f601e74ff28537566544660367000b99c6233a",
+    "rag_min_similarity": 0.35,
+    "rag_bge_m3_min_similarity": 0.6,
+    "rag_top_k": 5,
+    "rag_context_max_bytes": 4000,
+    "rag_hybrid_require_vector_match": true
+  }
+}

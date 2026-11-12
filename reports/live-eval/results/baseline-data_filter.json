@@ -1,0 +1,223 @@
+{
+  "id": "data_filter",
+  "category": "datasets",
+  "split": "holdout",
+  "variant": "baseline",
+  "question": "合成预算补充表external_id为003的amount是多少元？",
+  "response": {
+    "answer": "**external_id = 003 的 amount 为 2.50 元**（对应区域 SOUTH）。\n\n口径：来自上传表 `uploaded_budget`（源文件「合成预算补充表.csv」），amount 字段单位为元，按原始值直接读取，未做单位换算。",
+    "success": true,
+    "trace_id": "4993c7ca-2db3-4bda-82da-ebb4bc0ffd72",
+    "session_id": "50879909-7853-4c68-8abd-b1d8c9096d06",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_datasets",
+        "arguments": {
+          "query": "合成预算补充表"
+        },
+        "ok": true,
+        "output": "{\"datasets\": [{\"id\": \"phase7-synthetic-budget\", \"filename\": \"合成预算补充表.csv\", \"display_name\": \"合成预算补充表\", \"table\": \"uploaded_budget\", \"row_count\": 4, \"columns\": [{\"name\": \"region_code\", \"label\": \"region_code\", \"type\": \"text\", \"nullable\": false}, {\"name\": \"amount\", \"label\": \"amount\", \"type\": \"decimal\", \"nullable\": true}, {\"name\": \"external_id\", \"label\": \"external_id\", \"type\": \"text\", \"nullable\": false}], \"column_count\": 3, \"columns_truncated\": false}], \"truncated\": false}",
+        "duration_ms": 0,
+        "thought": "我先查看已导入的数据集，找到这张表。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "uploaded_budget"
+          ]
+        },
+        "ok": true,
+        "output": "表 uploaded_budget\n  _row_number INTEGER NOT NULL\n  region_code TEXT  -- 区域编码，可关联 regions\n  amount NUMERIC  -- 单位：元；空值不代表零\n  external_id TEXT  -- 原始标识符，保留前导零\n  样例 (_row_number | region_code | amount | external_id):\n  2 | EAST | 12.3 | 001\n  3 | NORTH | 0.1 | 002\n  4 | SOUTH | 2.5 | 003",
+        "duration_ms": 9,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT external_id, region_code, amount FROM uploaded_budget WHERE external_id = '003'",
+          "purpose": "查询 external_id 为 003 的预算金额"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"external_id\", \"region_code\", \"amount\"], \"rows\": [[\"003\", \"SOUTH\", 2.5]], \"row_count\": 1}",
+        "duration_ms": 1,
+        "thought": ""
+      }
+    ],
+    "plan": [],
+    "reflection": {
+      "passed": true,
+      "quality_score": 95,
+      "issues": [],
+      "summary": "回答正确：external_id=003 的 amount 为 2.50 元，区域 SOUTH，与查询结果一致。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "external_id = 003 的 amount 为 2.50 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E3"
+          ],
+          "reason": "run_sql 查询返回 external_id='003'、region_code='SOUTH'、amount=2.5，直接支持该数值。"
+        },
+        {
+          "claim": "对应区域为 SOUTH",
+          "status": "supported",
+          "evidence_ids": [
+            "E3"
+          ],
+          "reason": "查询结果中 region_code 为 SOUTH。"
+        },
+        {
+          "claim": "amount 字段单位为元，按原始值直接读取，未做单位换算",
+          "status": "supported",
+          "evidence_ids": [
+            "E2"
+          ],
+          "reason": "describe_tables 明确标注 amount 单位为元，且查询结果原值为 2.5，回答未做换算。"
+        },
+        {
+          "claim": "数据来自上传表 uploaded_budget（源文件「合成预算补充表.csv」）",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E2"
+          ],
+          "reason": "list_datasets 显示该文件对应表 uploaded_budget，describe_tables 也确认表结构。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 6,
+    "usage": {
+      "prompt_tokens": 19779,
+      "completion_tokens": 539,
+      "total_tokens": 20318,
+      "prompt_cache_hit_tokens": 17920,
+      "prompt_cache_miss_tokens": 1859
+    },
+    "duration_ms": 7681,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1156,
+          "usage": {
+            "prompt_tokens": 196,
+            "completion_tokens": 5,
+            "total_tokens": 201,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 196
+          }
+        },
+        "analysis": {
+          "logical_calls": 4,
+          "http_requests": 4,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 4593,
+          "usage": {
+            "prompt_tokens": 18438,
+            "completion_tokens": 240,
+            "total_tokens": 18678,
+            "prompt_cache_hit_tokens": 17536,
+            "prompt_cache_miss_tokens": 902
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1911,
+          "usage": {
+            "prompt_tokens": 1145,
+            "completion_tokens": 294,
+            "total_tokens": 1439,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 761
+          }
+        }
+      },
+      "llm_calls": 6,
+      "chat_usage": {
+        "prompt_tokens": 19779,
+        "completion_tokens": 539,
+        "total_tokens": 20318,
+        "prompt_cache_hit_tokens": 17920,
+        "prompt_cache_miss_tokens": 1859
+      },
+      "http_requests": 6,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 4,
+    "question": "合成预算补充表external_id为003的amount是多少元？",
+    "tables": [
+      {
+        "id": "result-3",
+        "title": "查询结果 · E3",
+        "columns": [
+          "external_id",
+          "region_code",
+          "amount"
+        ],
+        "rows": [
+          [
+            "003",
+            "SOUTH",
+            2.5
+          ]
+        ],
+        "evidence_ids": [
+          "E3"
+        ],
+        "scope": {},
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

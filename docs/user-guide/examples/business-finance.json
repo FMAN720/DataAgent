@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "finance",
+  "name": "收款分析",
+  "description": "模板：替换为实际表和内部字段名，确认币种、单位及一行一笔收款的唯一键。",
+  "reference_date": "today",
+  "metrics": [{
+    "id": "income",
+    "name": "实收收入",
+    "table": "uploads.your_receipts",
+    "primary_key": ["receipt_id"],
+    "date_column": "business_date",
+    "aggregation": "sum",
+    "time_behavior": "flow",
+    "storage_unit": "分",
+    "value_column": "amount_cents",
+    "dimensions": ["region"],
+    "filter_columns": ["status"],
+    "filters": [{"column":"status","operator":"eq","values":["confirmed"]}]
+  }],
+  "document_ids": []
+}

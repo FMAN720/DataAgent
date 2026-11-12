@@ -1,0 +1,57 @@
+{
+  "created_at": "2026-11-06T15:36:52.452350+00:00",
+  "passed": true,
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "new_model_settings_markup": true
+    },
+    {
+      "path": "/api/v1/health/ready",
+      "status": 200,
+      "ready": true
+    },
+    {
+      "path": "/workspace-config",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/model-settings",
+      "status": 200,
+      "independent_purpose_metadata": true,
+      "raw_key_fields": false
+    },
+    {
+      "path": "/api/v1/model-settings?purpose=vision",
+      "status": 200,
+      "independent_purpose_metadata": true,
+      "raw_key_fields": false
+    },
+    {
+      "path": "/api/v1/model-settings?purpose=embedding",
+      "status": 200,
+      "independent_purpose_metadata": true,
+      "raw_key_fields": false
+    },
+    {
+      "path": "/api/v1/datasets",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/documents",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/conversations",
+      "status": 200
+    },
+    {
+      "path": "/openapi.json",
+      "status": 200,
+      "model_discovery_route": true
+    }
+  ],
+  "provider_requests": 0,
+  "read_only": true
+}

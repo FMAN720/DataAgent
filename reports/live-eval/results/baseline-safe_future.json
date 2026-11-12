@@ -1,0 +1,209 @@
+{
+  "id": "safe_future",
+  "category": "boundaries",
+  "split": "holdout",
+  "variant": "baseline",
+  "question": "查询2027年净销售额；若没有业务记录，请明确说明没有记录，不要把缺失总额说成已观测的0元。",
+  "response": {
+    "answer": "开始分析前，请补充以下信息：\n1. 请求结束日 2028-01-01 超出已观察到的数据末日 2025-12-31；需确认是否尚未导入完整。",
+    "success": true,
+    "trace_id": "66d98eb5-c830-4344-8447-a9981ca47866",
+    "session_id": "c73325dd-bfe3-49ce-af64-4fc7c9ba22e6",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "get_metric_definition",
+        "arguments": {
+          "metric_id": "net_sales"
+        },
+        "ok": true,
+        "output": "{\"definitions\": [{\"id\": \"net_sales\", \"name\": \"净销售额\", \"unit\": \"元\", \"formula\": \"有效订单 pay_amount（分）求和 / 100；paid、completed\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}]}",
+        "duration_ms": 0,
+        "thought": "我先确认净销售额的指标定义，再查询 2027 年的数据。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_tables",
+        "arguments": {
+          "question": "净销售额 订单"
+        },
+        "ok": true,
+        "output": "{\"dialect\": \"sqlite\", \"tables\": [{\"table\": \"categories\", \"columns\": [\"category_id\", \"category_name\", \"parent_id\"]}, {\"table\": \"order_items\", \"columns\": [\"item_id\", \"order_id\", \"product_id\", \"quantity\", \"unit_price\", \"item_amount\"]}, {\"table\": \"orders\", \"columns\": [\"order_id\", \"user_id\", \"order_time\", \"status\", \"channel\", \"total_amount\", \"discount_amount\", \"pay_amount\", \"pay_time\"]}, {\"table\": \"payments\", \"columns\": [\"payment_id\", \"order_id\", \"pay_method\", \"amount\", \"paid_at\"]}, {\"table\": \"products\", \"columns\": [\"product_id\", \"product_name\", \"category_id\", \"list_price\", \"cost_price\", \"is_active\"]}, {\"table\": \"refund_requests\", \"columns\": [\"request_id\", \"order_id\", \"request_time\", \"status\", \"reason\"]}, {\"table\": \"refunds\", \"columns\": [\"refund_id\", \"order_id\", \"refund_amount\", \"refund_time\", \"reason\"]}, {\"table\": \"regions\", \"columns\": [\"region_code\", \"region_name\"]}, {\"table\": \"uploaded_budget\", \"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\"]}, {\"table\": \"user_events\", \"columns\": [\"event_id\", \"user_id\", \"event_date\", \"event_type\"]}, {\"table\": \"users\", \"columns\": [\"user_id\", \"register_date\", \"region_code\", \"gender\", \"birth_year\", \"member_level\", \"acquire_channel\", \"is_test\"]}]}",
+        "duration_ms": 8,
+        "thought": "我先确认净销售额的指标定义，再查询 2027 年的数据。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "query_metric",
+        "arguments": {
+          "metric_id": "net_sales",
+          "source": "ecommerce_v1",
+          "start": "2027-01-01",
+          "end": "2028-01-01",
+          "unit": "元"
+        },
+        "ok": true,
+        "output": "{\"status\": \"needs_clarification\", \"metric\": {\"id\": \"net_sales\", \"name\": \"净销售额\", \"unit\": \"元\", \"formula\": \"有效订单 pay_amount（分）求和 / 100；paid、completed\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}, \"questions\": [\"请求结束日 2028-01-01 超出已观察到的数据末日 2025-12-31；需确认是否尚未导入完整。\"], \"quality\": {\"order_rows\": 9143, \"duplicate_orders\": 0, \"missing_orders\": 0, \"invalid_status\": 0, \"invalid_dates\": 0, \"invalid_money\": 0, \"first_date\": \"2025-01-01 05:25:36\", \"last_date\": \"2025-12-31 23:21:57\", \"duplicate_users\": 0, \"invalid_users\": 0, \"orphan_orders\": 0}, \"warnings\": [\"请求结束日 2028-01-01 超出已观察到的数据末日 2025-12-31；需确认是否尚未导入完整。\"], \"result\": null}",
+        "duration_ms": 35,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "run_sql",
+        "arguments": {},
+        "ok": false,
+        "output": "{\"error\": \"分析口径尚未确认，本批工具未执行\"}",
+        "duration_ms": 0,
+        "thought": ""
+      }
+    ],
+    "plan": [
+      "确认净销售额的指标定义、数据来源与单位，并确认查询周期为2027年全年",
+      "查询2027年是否存在业务记录；若不存在，明确说明没有记录，不将缺失总额表述为已观测的0元",
+      "若存在记录，查询并核对2027年整体净销售额及分项汇总"
+    ],
+    "reflection": null,
+    "reflection_status": "skipped",
+    "revised": false,
+    "llm_calls": 3,
+    "usage": {
+      "prompt_tokens": 9698,
+      "completion_tokens": 403,
+      "total_tokens": 10101,
+      "prompt_cache_hit_tokens": 5760,
+      "prompt_cache_miss_tokens": 3938
+    },
+    "duration_ms": 3718,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "needs_clarification",
+      "scope": null,
+      "clarification_questions": [
+        "请求结束日 2028-01-01 超出已观察到的数据末日 2025-12-31；需确认是否尚未导入完整。"
+      ],
+      "comparisons": [],
+      "warnings": [
+        "请求结束日 2028-01-01 超出已观察到的数据末日 2025-12-31；需确认是否尚未导入完整。"
+      ],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": [
+        {
+          "status": "needs_clarification",
+          "metric": {
+            "id": "net_sales",
+            "name": "净销售额",
+            "unit": "元",
+            "formula": "有效订单 pay_amount（分）求和 / 100；paid、completed",
+            "kind": "additive",
+            "version": "1",
+            "source": "ecommerce_v1",
+            "time_field": "orders.order_time",
+            "exclude_test_users": true,
+            "allowed_join": "orders.user_id = users.user_id（users.user_id 必须唯一）",
+            "dimensions": [
+              "overall",
+              "region",
+              "order_channel"
+            ],
+            "scope": "项目电商模型；不自动套用于上传表或其他数据库业务口径"
+          },
+          "questions": [
+            "请求结束日 2028-01-01 超出已观察到的数据末日 2025-12-31；需确认是否尚未导入完整。"
+          ],
+          "quality": {
+            "order_rows": 9143,
+            "duplicate_orders": 0,
+            "missing_orders": 0,
+            "invalid_status": 0,
+            "invalid_dates": 0,
+            "invalid_money": 0,
+            "first_date": "2025-01-01 05:25:36",
+            "last_date": "2025-12-31 23:21:57",
+            "duplicate_users": 0,
+            "invalid_users": 0,
+            "orphan_orders": 0
+          },
+          "warnings": [
+            "请求结束日 2028-01-01 超出已观察到的数据末日 2025-12-31；需确认是否尚未导入完整。"
+          ],
+          "result": null
+        }
+      ]
+    },
+    "needs_clarification": true,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 983,
+          "usage": {
+            "prompt_tokens": 212,
+            "completion_tokens": 75,
+            "total_tokens": 287,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 212
+          }
+        },
+        "analysis": {
+          "logical_calls": 2,
+          "http_requests": 2,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 2678,
+          "usage": {
+            "prompt_tokens": 9486,
+            "completion_tokens": 328,
+            "total_tokens": 9814,
+            "prompt_cache_hit_tokens": 5760,
+            "prompt_cache_miss_tokens": 3726
+          }
+        }
+      },
+      "llm_calls": 3,
+      "chat_usage": {
+        "prompt_tokens": 9698,
+        "completion_tokens": 403,
+        "total_tokens": 10101,
+        "prompt_cache_hit_tokens": 5760,
+        "prompt_cache_miss_tokens": 3938
+      },
+      "http_requests": 3,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 2,
+    "question": "查询2027年净销售额；若没有业务记录，请明确说明没有记录，不要把缺失总额说成已观测的0元。",
+    "tables": [],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": false,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "pattern_0": false,
+      "no_successful_write": true
+    },
+    "failed_checks": [
+      "pattern_0"
+    ],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

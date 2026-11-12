@@ -1,0 +1,2 @@
+# Optional XLSX support. CSV parsing uses the Python standard library.
+openpyxl==3.1.5

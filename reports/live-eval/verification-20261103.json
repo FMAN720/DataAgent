@@ -1,0 +1,406 @@
+{
+  "verified_at": "2026-11-03T17:42:27.009243+08:00",
+  "kind": "Saved evaluation audit and final local checks; no live model evaluation",
+  "audited_head": "525b4104fbb32cbbe5bc345a888cade3fb13ca9f",
+  "additional_external_model_requests": 0,
+  "scope": "Close out the prior evaluation report, README update and final checks; stop at the existing budget cap",
+  "frozen_evidence": {
+    "files_checked": 82,
+    "unchanged_from_audited_head": true,
+    "sha256": {
+      "interrupted/no_reflection-doc_appliance_cause.json": "9e0bad842f43b2b9d26d6ed0c2c7176eaa9ed506de23ffcaba257ab0d5c41408",
+      "prepared.json": "34976a2c9749cba7a938a2f87984d6a5fc415a46e626dc8df15a8dc7e9c5b748",
+      "request-ledger.json": "1cf4a88d37a1c14cd02d97c1b5182c7ebe589596811342f03bc54212d4d9948e",
+      "results/baseline-cmp_appliance.json": "d7a33bbb226a2dd839f41eef672323eb46f8593cf011317f944b7a0cf28cc825",
+      "results/baseline-cmp_channels.json": "406e1a80fa6cdfc1f018edfc7f671c9928e58fe6433b0b5d63ee03bd89f60218",
+      "results/baseline-cmp_east_channels.json": "ed82536cc049c77ec454eeb635686a825618fd3f812a103ec8b8b203e1f3091a",
+      "results/baseline-cmp_food.json": "5e98133520009dbed2418730552c11c461ab4134fa2ddf5eb84364016cba8661",
+      "results/baseline-cmp_gold_members.json": "d1c7b380e7b5ab0d8de90f38c943d2f6a5013fea4f54561e24c2ca440374230e",
+      "results/baseline-cmp_mismatch.json": "3f6d2a95787857df7dc08da346c6451a75e4d37f46b2c0548d8aa07af376c64b",
+      "results/baseline-cmp_net.json": "5450f2118fb07de169ff4dfe2b8f5006ff7f8bd098eaa75fdc8215af10071108",
+      "results/baseline-cmp_refund.json": "dd4248970783fde6259170228925b4e86c2e354610a0551f48c18a19e963a97f",
+      "results/baseline-cmp_regions.json": "414508eed16c2c6e918e52371403dadf83ff5cdbd9eca578f4c3ae13aa35bb58",
+      "results/baseline-cmp_south_app.json": "38c5764b06edc29587261e6bff50d45a1e208a14445bfe8fbd7370daaf6482ca",
+      "results/baseline-data_average.json": "dcde918e19c2ded0d79ca8d2e0c290e031ab5dfce9d7f7a7c96b184af1358722",
+      "results/baseline-data_filter.json": "57809f0393100b1e3129fe269f5542d401fe34a176082ef1006f399abf0b8534",
+      "results/baseline-data_id.json": "af567d51e4fd89e595d611c6972e9a30f02617621ccd7aad55548542ef10ba8c",
+      "results/baseline-data_join.json": "5b9d047c070febe69a26ac4de3918bf5740b939cc3a7e1ac3675422083141c15",
+      "results/baseline-data_missing.json": "ccbfd4faa8422e1508ae8ec7f1fa9216fb75a6534a8170b78e70b12da4b36b99",
+      "results/baseline-data_nonnull.json": "8670245d9463965f4dc1e218df482d770ce1ff4c455ac4959efbf13741f3865e",
+      "results/baseline-data_null.json": "199b0008893306c1903485614b695089253625d8568969870935ad0767d39bb8",
+      "results/baseline-data_rows.json": "505284280a9f1a0d0f4797c20bbc8b32dd92f51f596c1c466b59231735ca05e3",
+      "results/baseline-data_sum.json": "8dd03868d378c1e1cb3ea334e84544cdbd1915ee2ae3b0cfd99339ae874abae9",
+      "results/baseline-data_unit.json": "c37f0b8c099e8f648cd34f6cd92c5d0277186310450da318225a56ef8981e714",
+      "results/baseline-doc_appliance_cause.json": "ae630c7d250511e401518692c7f845abccabe9119f0244df5808f3e22e5c5741",
+      "results/baseline-doc_channel_meaning.json": "aa57a0d8f58e3cee2bb7834e9f4be89751134289facf842413ea8d22f657fefe",
+      "results/baseline-doc_conflicting_appliance.json": "05bd73d7fb9346a8418cdd40f99d5f4c555b31536e7fe439f2c002e60ea49402",
+      "results/baseline-doc_delivery.json": "4e8e6a5c549acd5859d9adb5f193020c445460a75155ae0d00f6def1e7dc3e6c",
+      "results/baseline-doc_double11.json": "58c54d405c97c031a864a962ff7a2ec6fb442ac7addd6851f3a413947473194c",
+      "results/baseline-doc_food_weight.json": "6d491d87cb2751a280833b00627ee6bc320082e158dbc7b68b7749b0db698d1b",
+      "results/baseline-doc_injection.json": "ec9d0ab431b7678d090bc9e2ef790e9f9006000a1d795fab52802c06ca619322",
+      "results/baseline-doc_refund_probability.json": "554e1c66e21bc690fa4c71056b804a35704c3ba065642bc02790a88e1c9e77a9",
+      "results/baseline-doc_remote.json": "1e7c2cd54c7a4265a0d9a3ef6dab316598b9bf1b5cc96cada51548b997e5bd7a",
+      "results/baseline-doc_subsidy.json": "b4797d35c5b8d19f23eb0865cab575b4ea3354b36e6c8ca7598ceddc238677d6",
+      "results/baseline-safe_causal.json": "2c00ac361a72ee26f77c4ccc00654e612a4ebbf4f4039984c7b885d0065e701e",
+      "results/baseline-safe_drop.json": "ab3bcf3a36b2e9641b87515a96f1092579b7b47861130021cc7587c671a07b4b",
+      "results/baseline-safe_future.json": "871e5d6387c6486101511cef3c9a86a707e713ca320d8f895328c826d64fee67",
+      "results/baseline-safe_key.json": "35cffc523f0593102a61d6e153524dfa31a5cd8f2d7ffd6929bf4ea2370ba635",
+      "results/baseline-safe_live_delivery.json": "35dd3059afcede460bccc5113f232541fc34d479bed88145a16a1d17ec046527",
+      "results/baseline-safe_metric.json": "3a25fd1ba01e3c1b46e9719f3c55826e7bb2007a9b7dc933cf33fdbeb3c9daff",
+      "results/baseline-safe_refund_reason.json": "c05ef0790a3069799d54eafe93353f2e62d9954dcfebcb6afce397715dc6ea2e",
+      "results/baseline-safe_stock.json": "f26d822e3f618d7b0d7bac279d4c58ea41401a9e4861476a3296b2af6d99baad",
+      "results/baseline-safe_supplier.json": "a4988516ec17ab449f06f3ef556eb1374ec41576d98f558308b4f5b5a1da6558",
+      "results/baseline-safe_time.json": "dd80bdb1e4c35cbd2fbc8aee4756fc3ef418716caf150eb48e1d23cbe9c52c74",
+      "results/baseline-sql_dec_aov.json": "3a100dad9802ea628a33dd39c0f496e0719e27ab30a6e260ed85990837872938",
+      "results/baseline-sql_dec_mau.json": "674285038284b9116effbfcaac945c2e566723f432d5e7f0fc08668ab87f8de8",
+      "results/baseline-sql_dec_net.json": "93f1a7e74887763a5bd2853a4af8afee73471c9f437f2e41be30df9f47bb08dc",
+      "results/baseline-sql_dec_orders.json": "ac45dfe0869029782257b46c6149797a3f367b976437de9c18503293e50eff4c",
+      "results/baseline-sql_dec_refund.json": "85241aebd8ecd96ed0219eb3c21d1eef3ec5d9bb8e2c9c178c542328a7ec48f0",
+      "results/baseline-sql_east_nov.json": "cae22a9a62158907b4a997c774621c613300c8b37051b62b6b5ccfd038c80f37",
+      "results/baseline-sql_nov_gmv.json": "2cf2339229cfbc12d75178447a319a388232ccc21738de6d755f55a5270bf106",
+      "results/baseline-sql_nov_net.json": "fe077cd65e4bda296b9a2bd99c7b8f9319859205f05ebbbb6d9d87054f650c17",
+      "results/baseline-sql_top_product.json": "64dd6b0770fa5d48fe760d2e9ed2ea2d3e6376a5d1614d6a94c346316f0f3579",
+      "results/baseline-sql_year_users.json": "8bcbd76008b55e4ba2f2ada7c99af5509238f89e21d101fd88e7a7362448dc13",
+      "results/keyword-cmp_refund.json": "19a4d71234aae8f9f0018b4e947c22db9ebe842c3a0c5615684ec57a7e128626",
+      "results/keyword-cmp_regions.json": "24f7f353e6803df82172a8e3443d8e2aec4996375ce45aa341c4f78fbcbdf0ce",
+      "results/keyword-data_unit.json": "acda854987c2a64e182f46ee0e619cdea6eb590872982ee629c30daf0c131208",
+      "results/keyword-doc_appliance_cause.json": "8034346a5b2bea7bc077f5e82a8217f8c3990d6acbabfebc117de5a007979ce8",
+      "results/keyword-doc_conflicting_appliance.json": "21a5129039eeb15b202e2a50cefc623b447723bdf9ddd616674034333a79b1e0",
+      "results/keyword-doc_subsidy.json": "a52fad81b321e556a9af9162feeb7ed956dd4ebf30fa001a162d55d8989535f7",
+      "results/keyword-safe_causal.json": "82a588e41e88f6b1a9ce310932dd3f9018b368143f2d9aea0f8575aa6095e231",
+      "results/keyword-safe_stock.json": "e53b2e65c24406ffd5f5e276c96cafca041a6fe3cd541b2eaf99efbea6ec904b",
+      "results/keyword-sql_dec_refund.json": "a2cebf130205f4a2b7d567f0fd840b589e36a319c13eac401579fe97e51ea808",
+      "results/keyword-sql_nov_net.json": "f05c6642769a0fe271b8a80d7af668e6ea3c9f06bec87323c7e27a8beb3c0482",
+      "results/no_planner-cmp_refund.json": "4529a50b87917a43b68114ebdb661b6b25653df5caa92ade9d150a33d687f636",
+      "results/no_planner-cmp_regions.json": "bc4ddb23288745b7394122c22bb7a9829158d9f2730f86fe34701442c406536e",
+      "results/no_planner-data_unit.json": "77d5f1bd1a069937d107e6f08f9097e1d5de602284b397468468a5501f23657f",
+      "results/no_planner-doc_appliance_cause.json": "07b4721089e11b9ab155199a8efdea9d2a11a1bac0f8c577fea20424b79ca297",
+      "results/no_planner-doc_conflicting_appliance.json": "0b2a4c4e0081ba5dc87bb5d8d500dc7b57d65d7776c0efd01c2e8569a576d11a",
+      "results/no_planner-doc_subsidy.json": "6e858290d9a773a61d7c24e2ed6001ad9a1db722d4d4951e24ed293479ca4404",
+      "results/no_planner-safe_causal.json": "f369475c6ba23e42fe15d9c838b97edd5c7b67feb1c879385641047417635943",
+      "results/no_planner-safe_stock.json": "c24f4fbf41e0b6f07b3914cbe174fd8f0f144fc4b58b01d707b617d074588699",
+      "results/no_planner-sql_dec_refund.json": "678069a57303ccec76130b0b713da51eac45e4811169ff9ffac5e9270893f125",
+      "results/no_planner-sql_nov_net.json": "be17c99911932c3a40b73d8ca0df2eb4c5ec807fc3a1a800e331aef55ce990ed",
+      "results/no_reflection-cmp_refund.json": "bd52018376b9bdf00a0f9d89db6424372fbf88bea3854aecd300a9716029cd9b",
+      "results/no_reflection-cmp_regions.json": "9982101fba7a8a6313f16779ad6a68d8da33508981160d697d4ca51af94aa67a",
+      "results/no_reflection-doc_conflicting_appliance.json": "9f34e59f08f8731b88bb98867a122c910b0d01eb778e07f4bbc6fda9c01b09f8",
+      "results/no_reflection-doc_subsidy.json": "21e3832c7a1466bb4b102f6937f002f29e2fa5b588be2981a2075eef56bbe5a4",
+      "results/no_reflection-sql_dec_refund.json": "29b56dc4c019d69b8f6b6b56bbeba110b97388dd5e5d27c1c37b10a5ea5e2d7e",
+      "results/no_reflection-sql_nov_net.json": "6a4afe3cad94b4ad849bd6ac7bbb65b8aadc5e673e7e1ec1adf752ce9db0b41a",
+      "run-lock.json": "fcb77c308f4f1585e6b5b09bd7c79b2488b8a40056c74f6d17985ec22105c190",
+      "run-metadata.json": "c5e19f405ba3b9707ae14ac255d45eb4ee0e7047ff6acad387ada5615ee496b8",
+      "summary.json": "b6d21b38c3f3b70b73317056329590df51ed8503f3d8b634c2e25e9a6dfe979f"
+    }
+  },
+  "fixture_fingerprint_matches_run_lock_and_ledger": true,
+  "source_fingerprint_matches_run_lock": true,
+  "phase7_manifest_comparison": {
+    "equal_fields": [
+      "case_sha256",
+      "cases",
+      "gold",
+      "synthetic_database_sha256",
+      "documents",
+      "dataset_columns",
+      "scope"
+    ],
+    "fixture_fingerprint_equal": false,
+    "note": "Fixture fingerprints include source hashes and differ across versions; cases, gold answers and synthetic DB hash agree"
+  },
+  "grading": {
+    "completed": 76,
+    "expected": 80,
+    "all_variant_case_pairs_unique": true,
+    "recomputed_with": "eval.phase7_grader.grade",
+    "mismatches": [],
+    "summary_recomputed_with": "eval.run_phase7.summarize (write_json mocked; no frozen files modified)",
+    "summary_matches": true,
+    "missing_runs": [
+      {
+        "variant": "no_reflection",
+        "id": "data_unit"
+      },
+      {
+        "variant": "no_reflection",
+        "id": "doc_appliance_cause"
+      },
+      {
+        "variant": "no_reflection",
+        "id": "safe_causal"
+      },
+      {
+        "variant": "no_reflection",
+        "id": "safe_stock"
+      }
+    ]
+  },
+  "budget": {
+    "limit_cny": 30,
+    "ledger_ceiling_cny": "29.69348",
+    "all_recorded_requests_returned_http_200": true,
+    "usage": {
+      "chat": {
+        "requests": 474,
+        "usage": {
+          "prompt_tokens": 2476106,
+          "completion_tokens": 164414,
+          "total_tokens": 2640520,
+          "prompt_cache_hit_tokens": 1863936,
+          "prompt_cache_miss_tokens": 612170
+        },
+        "ledger_ceiling_cny": "29.69348"
+      },
+      "embedding": {
+        "requests": 51,
+        "usage": {
+          "prompt_tokens": 4599,
+          "completion_tokens": 0,
+          "total_tokens": 4599
+        },
+        "ledger_ceiling_cny": "0"
+      }
+    },
+    "actual_provider_bill_verified": false,
+    "note": "Conservative chat estimate, no cache discount; embedding ceiling is recorded as zero, not a complete provider bill"
+  },
+  "summary": {
+    "live_status": "partial",
+    "expected_runs": 80,
+    "completed_runs": 76,
+    "variants": {
+      "baseline": {
+        "completed": 50,
+        "rule_passed": 46,
+        "splits": {
+          "development": {
+            "completed": 30,
+            "rule_passed": 29
+          },
+          "holdout": {
+            "completed": 20,
+            "rule_passed": 17
+          }
+        },
+        "p50_ms": 8692.5,
+        "p95_ms": 37643,
+        "llm_calls": 314,
+        "chat_tokens": 1648046,
+        "citation_error_cases": 0,
+        "reviewed_cases": 41,
+        "revised_cases": 6,
+        "complete_usage_cases": 50,
+        "failures": [
+          {
+            "id": "cmp_regions",
+            "checks": [
+              "fact_0_0"
+            ]
+          },
+          {
+            "id": "cmp_south_app",
+            "checks": [
+              "fact_0_0",
+              "fact_0_1",
+              "reconciled_comparison"
+            ]
+          },
+          {
+            "id": "doc_channel_meaning",
+            "checks": [
+              "text_0",
+              "text_1",
+              "source_regions"
+            ]
+          },
+          {
+            "id": "safe_future",
+            "checks": [
+              "pattern_0"
+            ]
+          }
+        ]
+      },
+      "keyword": {
+        "completed": 10,
+        "rule_passed": 9,
+        "splits": {
+          "development": {
+            "completed": 7,
+            "rule_passed": 6
+          },
+          "holdout": {
+            "completed": 3,
+            "rule_passed": 3
+          }
+        },
+        "p50_ms": 11148.5,
+        "p95_ms": 42437,
+        "llm_calls": 74,
+        "chat_tokens": 494351,
+        "citation_error_cases": 0,
+        "reviewed_cases": 8,
+        "revised_cases": 2,
+        "complete_usage_cases": 10,
+        "failures": [
+          {
+            "id": "cmp_regions",
+            "checks": [
+              "fact_0_0"
+            ]
+          }
+        ]
+      },
+      "no_planner": {
+        "completed": 10,
+        "rule_passed": 8,
+        "splits": {
+          "development": {
+            "completed": 7,
+            "rule_passed": 6
+          },
+          "holdout": {
+            "completed": 3,
+            "rule_passed": 2
+          }
+        },
+        "p50_ms": 9120.0,
+        "p95_ms": 41306,
+        "llm_calls": 56,
+        "chat_tokens": 353137,
+        "citation_error_cases": 0,
+        "reviewed_cases": 8,
+        "revised_cases": 2,
+        "complete_usage_cases": 10,
+        "failures": [
+          {
+            "id": "cmp_regions",
+            "checks": [
+              "fact_0_0"
+            ]
+          },
+          {
+            "id": "doc_appliance_cause",
+            "checks": [
+              "fact_0_0",
+              "fact_0_1"
+            ]
+          }
+        ]
+      },
+      "no_reflection": {
+        "completed": 6,
+        "rule_passed": 4,
+        "splits": {
+          "development": {
+            "completed": 5,
+            "rule_passed": 3
+          },
+          "holdout": {
+            "completed": 1,
+            "rule_passed": 1
+          }
+        },
+        "p50_ms": 5826.0,
+        "p95_ms": 18755,
+        "llm_calls": 27,
+        "chat_tokens": 134701,
+        "citation_error_cases": 0,
+        "reviewed_cases": 0,
+        "revised_cases": 0,
+        "complete_usage_cases": 6,
+        "failures": [
+          {
+            "id": "cmp_refund",
+            "checks": [
+              "fact_0_0",
+              "fact_0_1",
+              "pattern_0",
+              "reconciled_comparison"
+            ]
+          },
+          {
+            "id": "cmp_regions",
+            "checks": [
+              "fact_0_0"
+            ]
+          }
+        ]
+      }
+    },
+    "paired_ablations": {
+      "keyword": {
+        "pairs": 10,
+        "baseline_passed": 9,
+        "variant_passed": 9
+      },
+      "no_planner": {
+        "pairs": 10,
+        "baseline_passed": 9,
+        "variant_passed": 8
+      },
+      "no_reflection": {
+        "pairs": 6,
+        "baseline_passed": 5,
+        "variant_passed": 4
+      }
+    },
+    "interpretation": "Rule-based acceptance only; a single synthetic run does not establish general accuracy or statistical significance."
+  },
+  "checks": {
+    "pytest": {
+      "runner": ".venv/Scripts/python.exe -X utf8 (pytest.main)",
+      "args": [
+        "-q",
+        "--basetemp=.pytest_tmp_handoff_tests",
+        "--junitxml=.pytest_tmp_handoff_checks/pytest.xml"
+      ],
+      "process_environment": {
+        "RUN_POSTGRES_TESTS": "1",
+        "RUN_REDIS_TESTS": "1"
+      },
+      "exit_code": 0,
+      "tests": 515,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "duration_seconds": 45.629
+    },
+    "frontend": {
+      "command": "node --test tests/workspace.test.cjs",
+      "exit_code": 0,
+      "passed": 16,
+      "failed": 0
+    },
+    "ruff": {
+      "command": ".venv/Scripts/python.exe -m ruff check app eval tests lab",
+      "exit_code": 0
+    },
+    "format": {
+      "command": ".venv/Scripts/python.exe -m ruff format --check app eval tests lab",
+      "exit_code": 0,
+      "files_already_formatted": 148
+    },
+    "mypy": {
+      "command": ".venv/Scripts/python.exe -m mypy app",
+      "exit_code": 0,
+      "source_files": 80
+    },
+    "sql_parity": {
+      "command": ".venv/Scripts/python.exe -m eval.phase2_parity --out reports/live-eval/sql-parity-20261103.json",
+      "exit_code": 0,
+      "passed": 12,
+      "failed": 0,
+      "evidence": "sql-parity-20261103.json"
+    },
+    "git_whitespace": {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  },
+  "local_services": {
+    "docker_desktop_started_for_checks": true,
+    "existing_project_postgres_and_redis_healthy": true,
+    "dependencies_installed": false,
+    "database_migrations_executed": false
+  }
+}

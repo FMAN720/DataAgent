@@ -1,0 +1,2246 @@
+{
+  "created_at": "2026-10-22T10:28:04.220190+00:00",
+  "documents": 15,
+  "questions": 20,
+  "scope": "Committed synthetic app/demo/documents and eval/phase5_cases only",
+  "model_calls_chat": 0,
+  "calibration_questions": 0,
+  "holdout_questions": 20,
+  "confirmation_after_gate_change": true,
+  "persistent_embedding_flag_changed": false,
+  "status": "completed",
+  "selected_vector_threshold": 0.6,
+  "threshold_applied_to_persistent_config": true,
+  "calibration": [],
+  "holdout": {
+    "keyword@0.35": {
+      "answerable": 10,
+      "unanswerable": 10,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
+      "mrr": 1.0,
+      "no_answer_accuracy": 0.0,
+      "balanced_score": 0.5
+    },
+    "keyword@0.6": {
+      "answerable": 10,
+      "unanswerable": 10,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
+      "mrr": 1.0,
+      "no_answer_accuracy": 0.0,
+      "balanced_score": 0.5
+    },
+    "vector@0.35": {
+      "answerable": 10,
+      "unanswerable": 10,
+      "hit_at_1": 0.9,
+      "hit_at_5": 1.0,
+      "mrr": 0.95,
+      "no_answer_accuracy": 0.0,
+      "balanced_score": 0.5
+    },
+    "vector@0.6": {
+      "answerable": 10,
+      "unanswerable": 10,
+      "hit_at_1": 0.9,
+      "hit_at_5": 1.0,
+      "mrr": 0.95,
+      "no_answer_accuracy": 0.6,
+      "balanced_score": 0.8
+    },
+    "hybrid@0.35": {
+      "answerable": 10,
+      "unanswerable": 10,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
+      "mrr": 1.0,
+      "no_answer_accuracy": 0.0,
+      "balanced_score": 0.5
+    },
+    "hybrid@0.6": {
+      "answerable": 10,
+      "unanswerable": 10,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
+      "mrr": 1.0,
+      "no_answer_accuracy": 0.0,
+      "balanced_score": 0.5
+    },
+    "hybrid_gated@0.35": {
+      "answerable": 10,
+      "unanswerable": 10,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
+      "mrr": 1.0,
+      "no_answer_accuracy": 0.0,
+      "balanced_score": 0.5
+    },
+    "hybrid_gated@0.6": {
+      "answerable": 10,
+      "unanswerable": 10,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
+      "mrr": 1.0,
+      "no_answer_accuracy": 0.6,
+      "balanced_score": 0.8
+    }
+  },
+  "results": {
+    "keyword@0.35": [
+      {
+        "id": "confirmation-00",
+        "query": "双十一期间的优惠金额是怎样按比例设定的？",
+        "expected": "double11",
+        "rank": 1,
+        "returned": [
+          "double11",
+          "double11",
+          "fashion",
+          "double11",
+          "spring"
+        ],
+        "maximum_similarity": 0.6234733833952786
+      },
+      {
+        "id": "confirmation-01",
+        "query": "家电周报里提到的临时补贴在哪个日期终止？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances",
+          "contradiction",
+          "double11"
+        ],
+        "maximum_similarity": 0.7074463541837732
+      },
+      {
+        "id": "confirmation-02",
+        "query": "年货备货内容运营主要围绕什么商品？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "phones",
+          "food",
+          "fashion",
+          "food"
+        ],
+        "maximum_similarity": 0.6701891622003666
+      },
+      {
+        "id": "confirmation-03",
+        "query": "哪份复盘提到九月份的换机专题？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "phones",
+          "fashion",
+          "double11",
+          "double11"
+        ],
+        "maximum_similarity": 0.6045485734939575
+      },
+      {
+        "id": "confirmation-04",
+        "query": "秋冬上新在十一月和十二月分别采用多大品类权重？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion",
+          "refunds",
+          "food",
+          "appliances",
+          "fashion"
+        ],
+        "maximum_similarity": 0.7120053768157959
+      },
+      {
+        "id": "confirmation-05",
+        "query": "从工单主题能直接得到各退款原因的比例吗？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "refunds",
+          "food",
+          "appliances",
+          "refunds"
+        ],
+        "maximum_similarity": 0.7681930751973163
+      },
+      {
+        "id": "confirmation-06",
+        "query": "二月份订单权重低于一月份的设定是什么？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "fashion",
+          "refunds",
+          "appliances",
+          "food"
+        ],
+        "maximum_similarity": 0.7015546769367065
+      },
+      {
+        "id": "confirmation-07",
+        "query": "计算实收时要排除哪些订单与测试用户？",
+        "expected": "metrics",
+        "rank": 1,
+        "returned": [
+          "metrics",
+          "double11",
+          "spring",
+          "fashion",
+          "phones"
+        ],
+        "maximum_similarity": 0.6757837936749336
+      },
+      {
+        "id": "confirmation-08",
+        "query": "小程序订单和广告获客分别存在哪个渠道字段？",
+        "expected": "regions",
+        "rank": 1,
+        "returned": [
+          "regions",
+          "phones",
+          "fashion",
+          "appliances",
+          "spring"
+        ],
+        "maximum_similarity": 0.7598723852520337
+      },
+      {
+        "id": "confirmation-09",
+        "query": "服务约定对偏远地区送达时间是如何表述的？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery",
+          "delivery",
+          "unrelated",
+          "metrics"
+        ],
+        "maximum_similarity": 0.6248099170455287
+      },
+      {
+        "id": "confirmation-10",
+        "query": "今天华东仓库盘亏了多少件商品？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "regions",
+          "food",
+          "regions",
+          "phones",
+          "food"
+        ],
+        "maximum_similarity": 0.49900543689727783
+      },
+      {
+        "id": "confirmation-11",
+        "query": "本周每位配送员的准时送达率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "appliances",
+          "delivery",
+          "phones",
+          "delivery"
+        ],
+        "maximum_similarity": 0.6186466671649659
+      },
+      {
+        "id": "confirmation-12",
+        "query": "某手机品牌的售后故障率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "phones",
+          "refunds",
+          "phones",
+          "appliances"
+        ],
+        "maximum_similarity": 0.49428074044825876
+      },
+      {
+        "id": "confirmation-13",
+        "query": "今年双十一广告预算最终花了多少元？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "double11",
+          "regions",
+          "phones",
+          "phones",
+          "food"
+        ],
+        "maximum_similarity": 0.5363653898239173
+      },
+      {
+        "id": "confirmation-14",
+        "query": "这次年货活动的净利润实际是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "food",
+          "food",
+          "unrelated",
+          "phones",
+          "double11"
+        ],
+        "maximum_similarity": 0.6060324491868155
+      },
+      {
+        "id": "confirmation-15",
+        "query": "冬季服饰退货中尺码不合适具体占比多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "fashion",
+          "refunds",
+          "fashion",
+          "fashion",
+          "fashion"
+        ],
+        "maximum_similarity": 0.5661027690111031
+      },
+      {
+        "id": "confirmation-16",
+        "query": "家电补贴是哪位运营经理审批的？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances",
+          "appliances",
+          "double11"
+        ],
+        "maximum_similarity": 0.5726603524291315
+      },
+      {
+        "id": "confirmation-17",
+        "query": "客服工单的平均首次回复用了多少分钟？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "refunds",
+          "refunds",
+          "delivery",
+          "refunds",
+          "phones"
+        ],
+        "maximum_similarity": 0.6085714464528241
+      },
+      {
+        "id": "confirmation-18",
+        "query": "春节期间每一天的仓库开门时间是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "spring",
+          "spring",
+          "regions",
+          "food",
+          "metrics"
+        ],
+        "maximum_similarity": 0.5190629649720818
+      },
+      {
+        "id": "confirmation-19",
+        "query": "九月发布会各手机品牌的具体广告点击率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "phones",
+          "phones",
+          "regions",
+          "phones"
+        ],
+        "maximum_similarity": 0.6405436229057807
+      }
+    ],
+    "keyword@0.6": [
+      {
+        "id": "confirmation-00",
+        "query": "双十一期间的优惠金额是怎样按比例设定的？",
+        "expected": "double11",
+        "rank": 1,
+        "returned": [
+          "double11",
+          "double11",
+          "fashion",
+          "double11",
+          "spring"
+        ],
+        "maximum_similarity": 0.6234733833952786
+      },
+      {
+        "id": "confirmation-01",
+        "query": "家电周报里提到的临时补贴在哪个日期终止？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances",
+          "contradiction",
+          "double11"
+        ],
+        "maximum_similarity": 0.7074463541837732
+      },
+      {
+        "id": "confirmation-02",
+        "query": "年货备货内容运营主要围绕什么商品？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "phones",
+          "food",
+          "fashion",
+          "food"
+        ],
+        "maximum_similarity": 0.6701891622003666
+      },
+      {
+        "id": "confirmation-03",
+        "query": "哪份复盘提到九月份的换机专题？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "phones",
+          "fashion",
+          "double11",
+          "double11"
+        ],
+        "maximum_similarity": 0.6045485734939575
+      },
+      {
+        "id": "confirmation-04",
+        "query": "秋冬上新在十一月和十二月分别采用多大品类权重？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion",
+          "refunds",
+          "food",
+          "appliances",
+          "fashion"
+        ],
+        "maximum_similarity": 0.7120053768157959
+      },
+      {
+        "id": "confirmation-05",
+        "query": "从工单主题能直接得到各退款原因的比例吗？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "refunds",
+          "food",
+          "appliances",
+          "refunds"
+        ],
+        "maximum_similarity": 0.7681930751973163
+      },
+      {
+        "id": "confirmation-06",
+        "query": "二月份订单权重低于一月份的设定是什么？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "fashion",
+          "refunds",
+          "appliances",
+          "food"
+        ],
+        "maximum_similarity": 0.7015546769367065
+      },
+      {
+        "id": "confirmation-07",
+        "query": "计算实收时要排除哪些订单与测试用户？",
+        "expected": "metrics",
+        "rank": 1,
+        "returned": [
+          "metrics",
+          "double11",
+          "spring",
+          "fashion",
+          "phones"
+        ],
+        "maximum_similarity": 0.6757837936749336
+      },
+      {
+        "id": "confirmation-08",
+        "query": "小程序订单和广告获客分别存在哪个渠道字段？",
+        "expected": "regions",
+        "rank": 1,
+        "returned": [
+          "regions",
+          "phones",
+          "fashion",
+          "appliances",
+          "spring"
+        ],
+        "maximum_similarity": 0.7598723852520337
+      },
+      {
+        "id": "confirmation-09",
+        "query": "服务约定对偏远地区送达时间是如何表述的？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery",
+          "delivery",
+          "unrelated",
+          "metrics"
+        ],
+        "maximum_similarity": 0.6248099170455287
+      },
+      {
+        "id": "confirmation-10",
+        "query": "今天华东仓库盘亏了多少件商品？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "regions",
+          "food",
+          "regions",
+          "phones",
+          "food"
+        ],
+        "maximum_similarity": 0.49900543689727783
+      },
+      {
+        "id": "confirmation-11",
+        "query": "本周每位配送员的准时送达率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "appliances",
+          "delivery",
+          "phones",
+          "delivery"
+        ],
+        "maximum_similarity": 0.6186466671649659
+      },
+      {
+        "id": "confirmation-12",
+        "query": "某手机品牌的售后故障率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "phones",
+          "refunds",
+          "phones",
+          "appliances"
+        ],
+        "maximum_similarity": 0.49428074044825876
+      },
+      {
+        "id": "confirmation-13",
+        "query": "今年双十一广告预算最终花了多少元？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "double11",
+          "regions",
+          "phones",
+          "phones",
+          "food"
+        ],
+        "maximum_similarity": 0.5363653898239173
+      },
+      {
+        "id": "confirmation-14",
+        "query": "这次年货活动的净利润实际是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "food",
+          "food",
+          "unrelated",
+          "phones",
+          "double11"
+        ],
+        "maximum_similarity": 0.6060324491868155
+      },
+      {
+        "id": "confirmation-15",
+        "query": "冬季服饰退货中尺码不合适具体占比多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "fashion",
+          "refunds",
+          "fashion",
+          "fashion",
+          "fashion"
+        ],
+        "maximum_similarity": 0.5661027690111031
+      },
+      {
+        "id": "confirmation-16",
+        "query": "家电补贴是哪位运营经理审批的？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances",
+          "appliances",
+          "double11"
+        ],
+        "maximum_similarity": 0.5726603524291315
+      },
+      {
+        "id": "confirmation-17",
+        "query": "客服工单的平均首次回复用了多少分钟？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "refunds",
+          "refunds",
+          "delivery",
+          "refunds",
+          "phones"
+        ],
+        "maximum_similarity": 0.6085714464528241
+      },
+      {
+        "id": "confirmation-18",
+        "query": "春节期间每一天的仓库开门时间是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "spring",
+          "spring",
+          "regions",
+          "food",
+          "metrics"
+        ],
+        "maximum_similarity": 0.5190629649720818
+      },
+      {
+        "id": "confirmation-19",
+        "query": "九月发布会各手机品牌的具体广告点击率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "phones",
+          "phones",
+          "regions",
+          "phones"
+        ],
+        "maximum_similarity": 0.6405436229057807
+      }
+    ],
+    "vector@0.35": [
+      {
+        "id": "confirmation-00",
+        "query": "双十一期间的优惠金额是怎样按比例设定的？",
+        "expected": "double11",
+        "rank": 2,
+        "returned": [
+          "fashion",
+          "double11",
+          "food",
+          "appliances",
+          "appliances"
+        ],
+        "maximum_similarity": 0.6234733833952786
+      },
+      {
+        "id": "confirmation-01",
+        "query": "家电周报里提到的临时补贴在哪个日期终止？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "appliances",
+          "contradiction",
+          "appliances",
+          "appliances"
+        ],
+        "maximum_similarity": 0.7074463541837732
+      },
+      {
+        "id": "confirmation-02",
+        "query": "年货备货内容运营主要围绕什么商品？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "food",
+          "food",
+          "phones",
+          "fashion"
+        ],
+        "maximum_similarity": 0.6701891622003666
+      },
+      {
+        "id": "confirmation-03",
+        "query": "哪份复盘提到九月份的换机专题？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "phones",
+          "phones",
+          "double11",
+          "appliances"
+        ],
+        "maximum_similarity": 0.6045485734939575
+      },
+      {
+        "id": "confirmation-04",
+        "query": "秋冬上新在十一月和十二月分别采用多大品类权重？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion",
+          "food",
+          "appliances",
+          "double11",
+          "phones"
+        ],
+        "maximum_similarity": 0.7120053768157959
+      },
+      {
+        "id": "confirmation-05",
+        "query": "从工单主题能直接得到各退款原因的比例吗？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "refunds",
+          "refunds",
+          "metrics",
+          "metrics"
+        ],
+        "maximum_similarity": 0.7681930751973163
+      },
+      {
+        "id": "confirmation-06",
+        "query": "二月份订单权重低于一月份的设定是什么？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "appliances",
+          "fashion",
+          "spring",
+          "double11"
+        ],
+        "maximum_similarity": 0.7015546769367065
+      },
+      {
+        "id": "confirmation-07",
+        "query": "计算实收时要排除哪些订单与测试用户？",
+        "expected": "metrics",
+        "rank": 1,
+        "returned": [
+          "metrics",
+          "double11",
+          "delivery",
+          "food",
+          "refunds"
+        ],
+        "maximum_similarity": 0.6757837936749336
+      },
+      {
+        "id": "confirmation-08",
+        "query": "小程序订单和广告获客分别存在哪个渠道字段？",
+        "expected": "regions",
+        "rank": 1,
+        "returned": [
+          "regions",
+          "phones",
+          "fashion",
+          "refunds",
+          "phones"
+        ],
+        "maximum_similarity": 0.7598723852520337
+      },
+      {
+        "id": "confirmation-09",
+        "query": "服务约定对偏远地区送达时间是如何表述的？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery",
+          "delivery",
+          "delivery",
+          "spring"
+        ],
+        "maximum_similarity": 0.6248099170455287
+      },
+      {
+        "id": "confirmation-10",
+        "query": "今天华东仓库盘亏了多少件商品？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "appliances",
+          "refunds",
+          "metrics",
+          "food",
+          "appliances"
+        ],
+        "maximum_similarity": 0.49900543689727783
+      },
+      {
+        "id": "confirmation-11",
+        "query": "本周每位配送员的准时送达率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "spring",
+          "refunds",
+          "spring",
+          "double11"
+        ],
+        "maximum_similarity": 0.6186466671649659
+      },
+      {
+        "id": "confirmation-12",
+        "query": "某手机品牌的售后故障率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "phones",
+          "appliances",
+          "refunds",
+          "refunds"
+        ],
+        "maximum_similarity": 0.49428074044825876
+      },
+      {
+        "id": "confirmation-13",
+        "query": "今年双十一广告预算最终花了多少元？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "double11",
+          "fashion",
+          "contradiction",
+          "appliances",
+          "double11"
+        ],
+        "maximum_similarity": 0.5363653898239173
+      },
+      {
+        "id": "confirmation-14",
+        "query": "这次年货活动的净利润实际是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "food",
+          "food",
+          "double11",
+          "contradiction",
+          "food"
+        ],
+        "maximum_similarity": 0.6060324491868155
+      },
+      {
+        "id": "confirmation-15",
+        "query": "冬季服饰退货中尺码不合适具体占比多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "refunds",
+          "refunds",
+          "refunds",
+          "fashion",
+          "fashion"
+        ],
+        "maximum_similarity": 0.5661027690111031
+      },
+      {
+        "id": "confirmation-16",
+        "query": "家电补贴是哪位运营经理审批的？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "appliances",
+          "appliances",
+          "contradiction",
+          "appliances",
+          "double11"
+        ],
+        "maximum_similarity": 0.5726603524291315
+      },
+      {
+        "id": "confirmation-17",
+        "query": "客服工单的平均首次回复用了多少分钟？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "refunds",
+          "delivery",
+          "refunds",
+          "refunds",
+          "metrics"
+        ],
+        "maximum_similarity": 0.6085714464528241
+      },
+      {
+        "id": "confirmation-18",
+        "query": "春节期间每一天的仓库开门时间是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "spring",
+          "delivery",
+          "spring",
+          "food",
+          "spring"
+        ],
+        "maximum_similarity": 0.5190629649720818
+      },
+      {
+        "id": "confirmation-19",
+        "query": "九月发布会各手机品牌的具体广告点击率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "phones",
+          "appliances",
+          "phones",
+          "phones"
+        ],
+        "maximum_similarity": 0.6405436229057807
+      }
+    ],
+    "vector@0.6": [
+      {
+        "id": "confirmation-00",
+        "query": "双十一期间的优惠金额是怎样按比例设定的？",
+        "expected": "double11",
+        "rank": 2,
+        "returned": [
+          "fashion",
+          "double11"
+        ],
+        "maximum_similarity": 0.6234733833952786
+      },
+      {
+        "id": "confirmation-01",
+        "query": "家电周报里提到的临时补贴在哪个日期终止？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances"
+        ],
+        "maximum_similarity": 0.7074463541837732
+      },
+      {
+        "id": "confirmation-02",
+        "query": "年货备货内容运营主要围绕什么商品？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food"
+        ],
+        "maximum_similarity": 0.6701891622003666
+      },
+      {
+        "id": "confirmation-03",
+        "query": "哪份复盘提到九月份的换机专题？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones"
+        ],
+        "maximum_similarity": 0.6045485734939575
+      },
+      {
+        "id": "confirmation-04",
+        "query": "秋冬上新在十一月和十二月分别采用多大品类权重？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion"
+        ],
+        "maximum_similarity": 0.7120053768157959
+      },
+      {
+        "id": "confirmation-05",
+        "query": "从工单主题能直接得到各退款原因的比例吗？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "refunds",
+          "refunds",
+          "metrics",
+          "metrics"
+        ],
+        "maximum_similarity": 0.7681930751973163
+      },
+      {
+        "id": "confirmation-06",
+        "query": "二月份订单权重低于一月份的设定是什么？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring"
+        ],
+        "maximum_similarity": 0.7015546769367065
+      },
+      {
+        "id": "confirmation-07",
+        "query": "计算实收时要排除哪些订单与测试用户？",
+        "expected": "metrics",
+        "rank": 1,
+        "returned": [
+          "metrics",
+          "double11",
+          "delivery",
+          "food",
+          "refunds"
+        ],
+        "maximum_similarity": 0.6757837936749336
+      },
+      {
+        "id": "confirmation-08",
+        "query": "小程序订单和广告获客分别存在哪个渠道字段？",
+        "expected": "regions",
+        "rank": 1,
+        "returned": [
+          "regions",
+          "phones",
+          "fashion"
+        ],
+        "maximum_similarity": 0.7598723852520337
+      },
+      {
+        "id": "confirmation-09",
+        "query": "服务约定对偏远地区送达时间是如何表述的？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery"
+        ],
+        "maximum_similarity": 0.6248099170455287
+      },
+      {
+        "id": "confirmation-10",
+        "query": "今天华东仓库盘亏了多少件商品？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.49900543689727783
+      },
+      {
+        "id": "confirmation-11",
+        "query": "本周每位配送员的准时送达率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery"
+        ],
+        "maximum_similarity": 0.6186466671649659
+      },
+      {
+        "id": "confirmation-12",
+        "query": "某手机品牌的售后故障率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.49428074044825876
+      },
+      {
+        "id": "confirmation-13",
+        "query": "今年双十一广告预算最终花了多少元？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.5363653898239173
+      },
+      {
+        "id": "confirmation-14",
+        "query": "这次年货活动的净利润实际是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "food"
+        ],
+        "maximum_similarity": 0.6060324491868155
+      },
+      {
+        "id": "confirmation-15",
+        "query": "冬季服饰退货中尺码不合适具体占比多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.5661027690111031
+      },
+      {
+        "id": "confirmation-16",
+        "query": "家电补贴是哪位运营经理审批的？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.5726603524291315
+      },
+      {
+        "id": "confirmation-17",
+        "query": "客服工单的平均首次回复用了多少分钟？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "refunds"
+        ],
+        "maximum_similarity": 0.6085714464528241
+      },
+      {
+        "id": "confirmation-18",
+        "query": "春节期间每一天的仓库开门时间是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.5190629649720818
+      },
+      {
+        "id": "confirmation-19",
+        "query": "九月发布会各手机品牌的具体广告点击率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones"
+        ],
+        "maximum_similarity": 0.6405436229057807
+      }
+    ],
+    "hybrid@0.35": [
+      {
+        "id": "confirmation-00",
+        "query": "双十一期间的优惠金额是怎样按比例设定的？",
+        "expected": "double11",
+        "rank": 1,
+        "returned": [
+          "double11",
+          "fashion",
+          "double11",
+          "spring",
+          "food"
+        ],
+        "maximum_similarity": 0.6234733833952786
+      },
+      {
+        "id": "confirmation-01",
+        "query": "家电周报里提到的临时补贴在哪个日期终止？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances",
+          "appliances",
+          "double11"
+        ],
+        "maximum_similarity": 0.7074463541837732
+      },
+      {
+        "id": "confirmation-02",
+        "query": "年货备货内容运营主要围绕什么商品？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "food",
+          "food",
+          "phones",
+          "phones"
+        ],
+        "maximum_similarity": 0.6701891622003666
+      },
+      {
+        "id": "confirmation-03",
+        "query": "哪份复盘提到九月份的换机专题？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "phones",
+          "double11",
+          "fashion",
+          "phones"
+        ],
+        "maximum_similarity": 0.6045485734939575
+      },
+      {
+        "id": "confirmation-04",
+        "query": "秋冬上新在十一月和十二月分别采用多大品类权重？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion",
+          "food",
+          "refunds",
+          "double11",
+          "appliances"
+        ],
+        "maximum_similarity": 0.7120053768157959
+      },
+      {
+        "id": "confirmation-05",
+        "query": "从工单主题能直接得到各退款原因的比例吗？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "refunds",
+          "refunds",
+          "fashion",
+          "metrics"
+        ],
+        "maximum_similarity": 0.7681930751973163
+      },
+      {
+        "id": "confirmation-06",
+        "query": "二月份订单权重低于一月份的设定是什么？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "fashion",
+          "refunds",
+          "double11",
+          "food"
+        ],
+        "maximum_similarity": 0.7015546769367065
+      },
+      {
+        "id": "confirmation-07",
+        "query": "计算实收时要排除哪些订单与测试用户？",
+        "expected": "metrics",
+        "rank": 1,
+        "returned": [
+          "metrics",
+          "double11",
+          "delivery",
+          "spring",
+          "fashion"
+        ],
+        "maximum_similarity": 0.6757837936749336
+      },
+      {
+        "id": "confirmation-08",
+        "query": "小程序订单和广告获客分别存在哪个渠道字段？",
+        "expected": "regions",
+        "rank": 1,
+        "returned": [
+          "regions",
+          "phones",
+          "fashion",
+          "appliances",
+          "metrics"
+        ],
+        "maximum_similarity": 0.7598723852520337
+      },
+      {
+        "id": "confirmation-09",
+        "query": "服务约定对偏远地区送达时间是如何表述的？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery",
+          "delivery",
+          "unrelated",
+          "metrics"
+        ],
+        "maximum_similarity": 0.6248099170455287
+      },
+      {
+        "id": "confirmation-10",
+        "query": "今天华东仓库盘亏了多少件商品？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "food",
+          "appliances",
+          "regions",
+          "refunds",
+          "food"
+        ],
+        "maximum_similarity": 0.49900543689727783
+      },
+      {
+        "id": "confirmation-11",
+        "query": "本周每位配送员的准时送达率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "delivery",
+          "refunds",
+          "phones",
+          "spring"
+        ],
+        "maximum_similarity": 0.6186466671649659
+      },
+      {
+        "id": "confirmation-12",
+        "query": "某手机品牌的售后故障率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "phones",
+          "phones",
+          "appliances",
+          "refunds"
+        ],
+        "maximum_similarity": 0.49428074044825876
+      },
+      {
+        "id": "confirmation-13",
+        "query": "今年双十一广告预算最终花了多少元？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "double11",
+          "fashion",
+          "appliances",
+          "food",
+          "double11"
+        ],
+        "maximum_similarity": 0.5363653898239173
+      },
+      {
+        "id": "confirmation-14",
+        "query": "这次年货活动的净利润实际是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "food",
+          "food",
+          "double11",
+          "double11",
+          "food"
+        ],
+        "maximum_similarity": 0.6060324491868155
+      },
+      {
+        "id": "confirmation-15",
+        "query": "冬季服饰退货中尺码不合适具体占比多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "refunds",
+          "fashion",
+          "fashion",
+          "fashion",
+          "metrics"
+        ],
+        "maximum_similarity": 0.5661027690111031
+      },
+      {
+        "id": "confirmation-16",
+        "query": "家电补贴是哪位运营经理审批的？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances",
+          "appliances",
+          "double11"
+        ],
+        "maximum_similarity": 0.5726603524291315
+      },
+      {
+        "id": "confirmation-17",
+        "query": "客服工单的平均首次回复用了多少分钟？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "refunds",
+          "refunds",
+          "delivery",
+          "refunds",
+          "appliances"
+        ],
+        "maximum_similarity": 0.6085714464528241
+      },
+      {
+        "id": "confirmation-18",
+        "query": "春节期间每一天的仓库开门时间是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "spring",
+          "spring",
+          "delivery",
+          "fashion",
+          "regions"
+        ],
+        "maximum_similarity": 0.5190629649720818
+      },
+      {
+        "id": "confirmation-19",
+        "query": "九月发布会各手机品牌的具体广告点击率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "phones",
+          "phones",
+          "phones",
+          "regions"
+        ],
+        "maximum_similarity": 0.6405436229057807
+      }
+    ],
+    "hybrid@0.6": [
+      {
+        "id": "confirmation-00",
+        "query": "双十一期间的优惠金额是怎样按比例设定的？",
+        "expected": "double11",
+        "rank": 1,
+        "returned": [
+          "double11",
+          "fashion",
+          "double11",
+          "double11",
+          "spring"
+        ],
+        "maximum_similarity": 0.6234733833952786
+      },
+      {
+        "id": "confirmation-01",
+        "query": "家电周报里提到的临时补贴在哪个日期终止？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances",
+          "contradiction",
+          "double11"
+        ],
+        "maximum_similarity": 0.7074463541837732
+      },
+      {
+        "id": "confirmation-02",
+        "query": "年货备货内容运营主要围绕什么商品？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "phones",
+          "food",
+          "fashion",
+          "food"
+        ],
+        "maximum_similarity": 0.6701891622003666
+      },
+      {
+        "id": "confirmation-03",
+        "query": "哪份复盘提到九月份的换机专题？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "phones",
+          "fashion",
+          "double11",
+          "double11"
+        ],
+        "maximum_similarity": 0.6045485734939575
+      },
+      {
+        "id": "confirmation-04",
+        "query": "秋冬上新在十一月和十二月分别采用多大品类权重？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion",
+          "refunds",
+          "food",
+          "appliances",
+          "fashion"
+        ],
+        "maximum_similarity": 0.7120053768157959
+      },
+      {
+        "id": "confirmation-05",
+        "query": "从工单主题能直接得到各退款原因的比例吗？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "refunds",
+          "refunds",
+          "fashion",
+          "metrics"
+        ],
+        "maximum_similarity": 0.7681930751973163
+      },
+      {
+        "id": "confirmation-06",
+        "query": "二月份订单权重低于一月份的设定是什么？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "fashion",
+          "refunds",
+          "appliances",
+          "food"
+        ],
+        "maximum_similarity": 0.7015546769367065
+      },
+      {
+        "id": "confirmation-07",
+        "query": "计算实收时要排除哪些订单与测试用户？",
+        "expected": "metrics",
+        "rank": 1,
+        "returned": [
+          "metrics",
+          "double11",
+          "delivery",
+          "spring",
+          "fashion"
+        ],
+        "maximum_similarity": 0.6757837936749336
+      },
+      {
+        "id": "confirmation-08",
+        "query": "小程序订单和广告获客分别存在哪个渠道字段？",
+        "expected": "regions",
+        "rank": 1,
+        "returned": [
+          "regions",
+          "phones",
+          "fashion",
+          "appliances",
+          "spring"
+        ],
+        "maximum_similarity": 0.7598723852520337
+      },
+      {
+        "id": "confirmation-09",
+        "query": "服务约定对偏远地区送达时间是如何表述的？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery",
+          "delivery",
+          "unrelated",
+          "metrics"
+        ],
+        "maximum_similarity": 0.6248099170455287
+      },
+      {
+        "id": "confirmation-10",
+        "query": "今天华东仓库盘亏了多少件商品？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "regions",
+          "food",
+          "regions",
+          "phones",
+          "food"
+        ],
+        "maximum_similarity": 0.49900543689727783
+      },
+      {
+        "id": "confirmation-11",
+        "query": "本周每位配送员的准时送达率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "appliances",
+          "delivery",
+          "phones",
+          "delivery"
+        ],
+        "maximum_similarity": 0.6186466671649659
+      },
+      {
+        "id": "confirmation-12",
+        "query": "某手机品牌的售后故障率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "phones",
+          "refunds",
+          "phones",
+          "appliances"
+        ],
+        "maximum_similarity": 0.49428074044825876
+      },
+      {
+        "id": "confirmation-13",
+        "query": "今年双十一广告预算最终花了多少元？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "double11",
+          "regions",
+          "phones",
+          "phones",
+          "food"
+        ],
+        "maximum_similarity": 0.5363653898239173
+      },
+      {
+        "id": "confirmation-14",
+        "query": "这次年货活动的净利润实际是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "food",
+          "food",
+          "unrelated",
+          "phones",
+          "double11"
+        ],
+        "maximum_similarity": 0.6060324491868155
+      },
+      {
+        "id": "confirmation-15",
+        "query": "冬季服饰退货中尺码不合适具体占比多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "fashion",
+          "refunds",
+          "fashion",
+          "fashion",
+          "fashion"
+        ],
+        "maximum_similarity": 0.5661027690111031
+      },
+      {
+        "id": "confirmation-16",
+        "query": "家电补贴是哪位运营经理审批的？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances",
+          "appliances",
+          "double11"
+        ],
+        "maximum_similarity": 0.5726603524291315
+      },
+      {
+        "id": "confirmation-17",
+        "query": "客服工单的平均首次回复用了多少分钟？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "refunds",
+          "refunds",
+          "delivery",
+          "refunds",
+          "phones"
+        ],
+        "maximum_similarity": 0.6085714464528241
+      },
+      {
+        "id": "confirmation-18",
+        "query": "春节期间每一天的仓库开门时间是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "spring",
+          "spring",
+          "regions",
+          "food",
+          "metrics"
+        ],
+        "maximum_similarity": 0.5190629649720818
+      },
+      {
+        "id": "confirmation-19",
+        "query": "九月发布会各手机品牌的具体广告点击率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "phones",
+          "phones",
+          "regions",
+          "phones"
+        ],
+        "maximum_similarity": 0.6405436229057807
+      }
+    ],
+    "hybrid_gated@0.35": [
+      {
+        "id": "confirmation-00",
+        "query": "双十一期间的优惠金额是怎样按比例设定的？",
+        "expected": "double11",
+        "rank": 1,
+        "returned": [
+          "double11",
+          "fashion",
+          "double11",
+          "spring",
+          "food"
+        ],
+        "maximum_similarity": 0.6234733833952786
+      },
+      {
+        "id": "confirmation-01",
+        "query": "家电周报里提到的临时补贴在哪个日期终止？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances",
+          "appliances",
+          "double11"
+        ],
+        "maximum_similarity": 0.7074463541837732
+      },
+      {
+        "id": "confirmation-02",
+        "query": "年货备货内容运营主要围绕什么商品？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "food",
+          "food",
+          "phones",
+          "phones"
+        ],
+        "maximum_similarity": 0.6701891622003666
+      },
+      {
+        "id": "confirmation-03",
+        "query": "哪份复盘提到九月份的换机专题？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "phones",
+          "double11",
+          "fashion",
+          "phones"
+        ],
+        "maximum_similarity": 0.6045485734939575
+      },
+      {
+        "id": "confirmation-04",
+        "query": "秋冬上新在十一月和十二月分别采用多大品类权重？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion",
+          "food",
+          "refunds",
+          "double11",
+          "appliances"
+        ],
+        "maximum_similarity": 0.7120053768157959
+      },
+      {
+        "id": "confirmation-05",
+        "query": "从工单主题能直接得到各退款原因的比例吗？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "refunds",
+          "refunds",
+          "fashion",
+          "metrics"
+        ],
+        "maximum_similarity": 0.7681930751973163
+      },
+      {
+        "id": "confirmation-06",
+        "query": "二月份订单权重低于一月份的设定是什么？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "fashion",
+          "refunds",
+          "double11",
+          "food"
+        ],
+        "maximum_similarity": 0.7015546769367065
+      },
+      {
+        "id": "confirmation-07",
+        "query": "计算实收时要排除哪些订单与测试用户？",
+        "expected": "metrics",
+        "rank": 1,
+        "returned": [
+          "metrics",
+          "double11",
+          "delivery",
+          "spring",
+          "fashion"
+        ],
+        "maximum_similarity": 0.6757837936749336
+      },
+      {
+        "id": "confirmation-08",
+        "query": "小程序订单和广告获客分别存在哪个渠道字段？",
+        "expected": "regions",
+        "rank": 1,
+        "returned": [
+          "regions",
+          "phones",
+          "fashion",
+          "appliances",
+          "metrics"
+        ],
+        "maximum_similarity": 0.7598723852520337
+      },
+      {
+        "id": "confirmation-09",
+        "query": "服务约定对偏远地区送达时间是如何表述的？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery",
+          "delivery",
+          "unrelated",
+          "metrics"
+        ],
+        "maximum_similarity": 0.6248099170455287
+      },
+      {
+        "id": "confirmation-10",
+        "query": "今天华东仓库盘亏了多少件商品？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "food",
+          "appliances",
+          "regions",
+          "refunds",
+          "food"
+        ],
+        "maximum_similarity": 0.49900543689727783
+      },
+      {
+        "id": "confirmation-11",
+        "query": "本周每位配送员的准时送达率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "delivery",
+          "refunds",
+          "phones",
+          "spring"
+        ],
+        "maximum_similarity": 0.6186466671649659
+      },
+      {
+        "id": "confirmation-12",
+        "query": "某手机品牌的售后故障率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "phones",
+          "phones",
+          "appliances",
+          "refunds"
+        ],
+        "maximum_similarity": 0.49428074044825876
+      },
+      {
+        "id": "confirmation-13",
+        "query": "今年双十一广告预算最终花了多少元？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "double11",
+          "fashion",
+          "appliances",
+          "food",
+          "double11"
+        ],
+        "maximum_similarity": 0.5363653898239173
+      },
+      {
+        "id": "confirmation-14",
+        "query": "这次年货活动的净利润实际是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "food",
+          "food",
+          "double11",
+          "double11",
+          "food"
+        ],
+        "maximum_similarity": 0.6060324491868155
+      },
+      {
+        "id": "confirmation-15",
+        "query": "冬季服饰退货中尺码不合适具体占比多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "refunds",
+          "fashion",
+          "fashion",
+          "fashion",
+          "metrics"
+        ],
+        "maximum_similarity": 0.5661027690111031
+      },
+      {
+        "id": "confirmation-16",
+        "query": "家电补贴是哪位运营经理审批的？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances",
+          "appliances",
+          "double11"
+        ],
+        "maximum_similarity": 0.5726603524291315
+      },
+      {
+        "id": "confirmation-17",
+        "query": "客服工单的平均首次回复用了多少分钟？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "refunds",
+          "refunds",
+          "delivery",
+          "refunds",
+          "appliances"
+        ],
+        "maximum_similarity": 0.6085714464528241
+      },
+      {
+        "id": "confirmation-18",
+        "query": "春节期间每一天的仓库开门时间是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "spring",
+          "spring",
+          "delivery",
+          "fashion",
+          "regions"
+        ],
+        "maximum_similarity": 0.5190629649720818
+      },
+      {
+        "id": "confirmation-19",
+        "query": "九月发布会各手机品牌的具体广告点击率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "phones",
+          "phones",
+          "phones",
+          "regions"
+        ],
+        "maximum_similarity": 0.6405436229057807
+      }
+    ],
+    "hybrid_gated@0.6": [
+      {
+        "id": "confirmation-00",
+        "query": "双十一期间的优惠金额是怎样按比例设定的？",
+        "expected": "double11",
+        "rank": 1,
+        "returned": [
+          "double11",
+          "fashion",
+          "double11",
+          "double11",
+          "spring"
+        ],
+        "maximum_similarity": 0.6234733833952786
+      },
+      {
+        "id": "confirmation-01",
+        "query": "家电周报里提到的临时补贴在哪个日期终止？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances",
+          "contradiction",
+          "double11"
+        ],
+        "maximum_similarity": 0.7074463541837732
+      },
+      {
+        "id": "confirmation-02",
+        "query": "年货备货内容运营主要围绕什么商品？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "phones",
+          "food",
+          "fashion",
+          "food"
+        ],
+        "maximum_similarity": 0.6701891622003666
+      },
+      {
+        "id": "confirmation-03",
+        "query": "哪份复盘提到九月份的换机专题？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "phones",
+          "fashion",
+          "double11",
+          "double11"
+        ],
+        "maximum_similarity": 0.6045485734939575
+      },
+      {
+        "id": "confirmation-04",
+        "query": "秋冬上新在十一月和十二月分别采用多大品类权重？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion",
+          "refunds",
+          "food",
+          "appliances",
+          "fashion"
+        ],
+        "maximum_similarity": 0.7120053768157959
+      },
+      {
+        "id": "confirmation-05",
+        "query": "从工单主题能直接得到各退款原因的比例吗？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "refunds",
+          "refunds",
+          "fashion",
+          "metrics"
+        ],
+        "maximum_similarity": 0.7681930751973163
+      },
+      {
+        "id": "confirmation-06",
+        "query": "二月份订单权重低于一月份的设定是什么？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "fashion",
+          "refunds",
+          "appliances",
+          "food"
+        ],
+        "maximum_similarity": 0.7015546769367065
+      },
+      {
+        "id": "confirmation-07",
+        "query": "计算实收时要排除哪些订单与测试用户？",
+        "expected": "metrics",
+        "rank": 1,
+        "returned": [
+          "metrics",
+          "double11",
+          "delivery",
+          "spring",
+          "fashion"
+        ],
+        "maximum_similarity": 0.6757837936749336
+      },
+      {
+        "id": "confirmation-08",
+        "query": "小程序订单和广告获客分别存在哪个渠道字段？",
+        "expected": "regions",
+        "rank": 1,
+        "returned": [
+          "regions",
+          "phones",
+          "fashion",
+          "appliances",
+          "spring"
+        ],
+        "maximum_similarity": 0.7598723852520337
+      },
+      {
+        "id": "confirmation-09",
+        "query": "服务约定对偏远地区送达时间是如何表述的？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery",
+          "delivery",
+          "unrelated",
+          "metrics"
+        ],
+        "maximum_similarity": 0.6248099170455287
+      },
+      {
+        "id": "confirmation-10",
+        "query": "今天华东仓库盘亏了多少件商品？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.49900543689727783
+      },
+      {
+        "id": "confirmation-11",
+        "query": "本周每位配送员的准时送达率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "appliances",
+          "delivery",
+          "phones",
+          "delivery"
+        ],
+        "maximum_similarity": 0.6186466671649659
+      },
+      {
+        "id": "confirmation-12",
+        "query": "某手机品牌的售后故障率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.49428074044825876
+      },
+      {
+        "id": "confirmation-13",
+        "query": "今年双十一广告预算最终花了多少元？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.5363653898239173
+      },
+      {
+        "id": "confirmation-14",
+        "query": "这次年货活动的净利润实际是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "food",
+          "food",
+          "unrelated",
+          "phones",
+          "double11"
+        ],
+        "maximum_similarity": 0.6060324491868155
+      },
+      {
+        "id": "confirmation-15",
+        "query": "冬季服饰退货中尺码不合适具体占比多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.5661027690111031
+      },
+      {
+        "id": "confirmation-16",
+        "query": "家电补贴是哪位运营经理审批的？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.5726603524291315
+      },
+      {
+        "id": "confirmation-17",
+        "query": "客服工单的平均首次回复用了多少分钟？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "refunds",
+          "refunds",
+          "delivery",
+          "refunds",
+          "phones"
+        ],
+        "maximum_similarity": 0.6085714464528241
+      },
+      {
+        "id": "confirmation-18",
+        "query": "春节期间每一天的仓库开门时间是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.5190629649720818
+      },
+      {
+        "id": "confirmation-19",
+        "query": "九月发布会各手机品牌的具体广告点击率是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "phones",
+          "phones",
+          "regions",
+          "phones"
+        ],
+        "maximum_similarity": 0.6405436229057807
+      }
+    ]
+  },
+  "verified_service_queries": 40,
+  "timing_note": "Queries reuse in-memory real embeddings; not an uncached end-to-end latency benchmark",
+  "relevance_note": "Expected document identity only; this is not an LLM final-answer or causal-reasoning evaluation",
+  "synthetic_rows_cleaned_up": true,
+  "http_requests_total": 13,
+  "input_characters_total": 13684,
+  "run_usage": {
+    "requests": 5,
+    "input_tokens": 4362,
+    "texts": 76,
+    "failures": 0
+  },
+  "limits": {
+    "http_requests": 120,
+    "input_characters": 100000
+  }
+}

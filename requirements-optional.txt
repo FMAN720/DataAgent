@@ -1,0 +1,11 @@
+# 可选依赖合集：按需安装，也可以只装其中某一个文件
+#   PostgreSQL 作为分析库，以及文档、导入、图片、历史功能
+-r requirements-postgres.txt
+#   Redis 共享会话
+-r requirements-redis.txt
+#   文本 PDF 解析
+-r requirements-documents.txt
+#   XLSX 导入
+-r requirements-imports.txt
+#   图片与扫描 PDF
+-r requirements-vision.txt

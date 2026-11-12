@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "support",
+  "name": "客服解决率",
+  "description": "模板：确认每行统计范围不重叠。整体解决率为总解决数/总工单数，不平均各组解决率。",
+  "reference_date": "today",
+  "metrics": [{
+    "id": "resolution",
+    "name": "解决率",
+    "table": "uploads.your_support",
+    "primary_key": ["business_date","team"],
+    "date_column": "business_date",
+    "aggregation": "ratio",
+    "time_behavior": "flow",
+    "storage_unit": "比例",
+    "numerator_column": "resolved_count",
+    "denominator_column": "ticket_count",
+    "dimensions": ["team"],
+    "non_negative_columns": ["resolved_count","ticket_count"]
+  }],
+  "document_ids": []
+}

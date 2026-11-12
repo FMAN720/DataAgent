@@ -1,0 +1,2549 @@
+{
+  "created_at": "2026-10-22T10:16:48.500758+00:00",
+  "documents": 15,
+  "questions": 60,
+  "scope": "Committed synthetic app/demo/documents and eval/phase5_cases only",
+  "model_calls_chat": 0,
+  "calibration_questions": 30,
+  "holdout_questions": 30,
+  "persistent_embedding_flag_changed": false,
+  "status": "completed",
+  "selected_vector_threshold": 0.6,
+  "threshold_applied_to_persistent_config": false,
+  "calibration": [
+    {
+      "threshold": 0.35,
+      "answerable": 20,
+      "unanswerable": 10,
+      "hit_at_1": 0.95,
+      "hit_at_5": 1.0,
+      "mrr": 0.975,
+      "no_answer_accuracy": 0.0,
+      "balanced_score": 0.5
+    },
+    {
+      "threshold": 0.4,
+      "answerable": 20,
+      "unanswerable": 10,
+      "hit_at_1": 0.95,
+      "hit_at_5": 1.0,
+      "mrr": 0.975,
+      "no_answer_accuracy": 0.0,
+      "balanced_score": 0.5
+    },
+    {
+      "threshold": 0.45,
+      "answerable": 20,
+      "unanswerable": 10,
+      "hit_at_1": 0.95,
+      "hit_at_5": 1.0,
+      "mrr": 0.975,
+      "no_answer_accuracy": 0.2,
+      "balanced_score": 0.6
+    },
+    {
+      "threshold": 0.5,
+      "answerable": 20,
+      "unanswerable": 10,
+      "hit_at_1": 0.95,
+      "hit_at_5": 1.0,
+      "mrr": 0.975,
+      "no_answer_accuracy": 0.5,
+      "balanced_score": 0.75
+    },
+    {
+      "threshold": 0.55,
+      "answerable": 20,
+      "unanswerable": 10,
+      "hit_at_1": 0.95,
+      "hit_at_5": 1.0,
+      "mrr": 0.975,
+      "no_answer_accuracy": 0.9,
+      "balanced_score": 0.95
+    },
+    {
+      "threshold": 0.6,
+      "answerable": 20,
+      "unanswerable": 10,
+      "hit_at_1": 0.95,
+      "hit_at_5": 1.0,
+      "mrr": 0.975,
+      "no_answer_accuracy": 1.0,
+      "balanced_score": 1.0
+    },
+    {
+      "threshold": 0.65,
+      "answerable": 20,
+      "unanswerable": 10,
+      "hit_at_1": 0.75,
+      "hit_at_5": 0.8,
+      "mrr": 0.775,
+      "no_answer_accuracy": 1.0,
+      "balanced_score": 0.9
+    },
+    {
+      "threshold": 0.7,
+      "answerable": 20,
+      "unanswerable": 10,
+      "hit_at_1": 0.25,
+      "hit_at_5": 0.3,
+      "mrr": 0.275,
+      "no_answer_accuracy": 1.0,
+      "balanced_score": 0.65
+    },
+    {
+      "threshold": 0.75,
+      "answerable": 20,
+      "unanswerable": 10,
+      "hit_at_1": 0.05,
+      "hit_at_5": 0.05,
+      "mrr": 0.05,
+      "no_answer_accuracy": 1.0,
+      "balanced_score": 0.525
+    },
+    {
+      "threshold": 0.8,
+      "answerable": 20,
+      "unanswerable": 10,
+      "hit_at_1": 0.0,
+      "hit_at_5": 0.0,
+      "mrr": 0.0,
+      "no_answer_accuracy": 1.0,
+      "balanced_score": 0.5
+    }
+  ],
+  "holdout": {
+    "keyword@0.35": {
+      "answerable": 20,
+      "unanswerable": 10,
+      "hit_at_1": 0.75,
+      "hit_at_5": 1.0,
+      "mrr": 0.8583333333333334,
+      "no_answer_accuracy": 0.0,
+      "balanced_score": 0.5
+    },
+    "keyword@0.6": {
+      "answerable": 20,
+      "unanswerable": 10,
+      "hit_at_1": 0.75,
+      "hit_at_5": 1.0,
+      "mrr": 0.8583333333333334,
+      "no_answer_accuracy": 0.0,
+      "balanced_score": 0.5
+    },
+    "vector@0.35": {
+      "answerable": 20,
+      "unanswerable": 10,
+      "hit_at_1": 1.0,
+      "hit_at_5": 1.0,
+      "mrr": 1.0,
+      "no_answer_accuracy": 0.0,
+      "balanced_score": 0.5
+    },
+    "vector@0.6": {
+      "answerable": 20,
+      "unanswerable": 10,
+      "hit_at_1": 0.9,
+      "hit_at_5": 0.9,
+      "mrr": 0.9,
+      "no_answer_accuracy": 0.9,
+      "balanced_score": 0.9
+    },
+    "hybrid@0.35": {
+      "answerable": 20,
+      "unanswerable": 10,
+      "hit_at_1": 0.9,
+      "hit_at_5": 1.0,
+      "mrr": 0.95,
+      "no_answer_accuracy": 0.0,
+      "balanced_score": 0.5
+    },
+    "hybrid@0.6": {
+      "answerable": 20,
+      "unanswerable": 10,
+      "hit_at_1": 0.9,
+      "hit_at_5": 1.0,
+      "mrr": 0.9416666666666667,
+      "no_answer_accuracy": 0.0,
+      "balanced_score": 0.5
+    }
+  },
+  "results": {
+    "keyword@0.35": [
+      {
+        "id": "holdout-00",
+        "query": "十一月大促折扣按商品合计的什么比例生成？",
+        "expected": "double11",
+        "rank": 1,
+        "returned": [
+          "double11",
+          "food",
+          "fashion",
+          "food",
+          "food"
+        ],
+        "maximum_similarity": 0.6308528372899547
+      },
+      {
+        "id": "holdout-01",
+        "query": "年度集中促销期间的订单抽样权重设成几？",
+        "expected": "double11",
+        "rank": 2,
+        "returned": [
+          "fashion",
+          "double11",
+          "phones",
+          "regions",
+          "spring"
+        ],
+        "maximum_similarity": 0.627932071685791
+      },
+      {
+        "id": "holdout-02",
+        "query": "演示情景里十二月还延续家电同等补贴吗？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances",
+          "refunds",
+          "double11"
+        ],
+        "maximum_similarity": 0.6946010175585152
+      },
+      {
+        "id": "holdout-03",
+        "query": "大促后家电回落场景采用什么选品系数？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "refunds",
+          "appliances",
+          "double11",
+          "refunds"
+        ],
+        "maximum_similarity": 0.6940266258684843
+      },
+      {
+        "id": "holdout-04",
+        "query": "十二月备年货方案的重点商品类别是什么？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "food",
+          "fashion",
+          "appliances",
+          "double11"
+        ],
+        "maximum_similarity": 0.6519803003066871
+      },
+      {
+        "id": "holdout-05",
+        "query": "1.4 对应哪个年货品类的演示选品设置？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "fashion",
+          "food",
+          "phones",
+          "regions"
+        ],
+        "maximum_similarity": 0.7420781101034959
+      },
+      {
+        "id": "holdout-06",
+        "query": "换机需求和专题介绍出自哪次发布活动？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "appliances",
+          "double11",
+          "phones",
+          "food"
+        ],
+        "maximum_similarity": 0.5256866843326907
+      },
+      {
+        "id": "holdout-07",
+        "query": "九月发布期数码品类用了几倍抽样系数？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "phones",
+          "fashion",
+          "double11",
+          "food"
+        ],
+        "maximum_similarity": 0.6424974203109741
+      },
+      {
+        "id": "holdout-08",
+        "query": "秋冬服饰计划里的两个上新月权重是什么？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion",
+          "fashion",
+          "fashion",
+          "phones",
+          "phones"
+        ],
+        "maximum_similarity": 0.629268307366023
+      },
+      {
+        "id": "holdout-09",
+        "query": "为什么秋冬上新不能把品类明细求和直接替代净实收？",
+        "expected": "fashion",
+        "rank": 2,
+        "returned": [
+          "metrics",
+          "fashion",
+          "fashion",
+          "double11",
+          "phones"
+        ],
+        "maximum_similarity": 0.6322758793830872
+      },
+      {
+        "id": "holdout-10",
+        "query": "客服汇总中非大促月和大促月退款状态概率有什么变化？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "refunds",
+          "refunds",
+          "metrics",
+          "refunds"
+        ],
+        "maximum_similarity": 0.7099482762875228
+      },
+      {
+        "id": "holdout-11",
+        "query": "想知道某类客诉占全部退款多少，需要补充什么数据？",
+        "expected": "refunds",
+        "rank": 3,
+        "returned": [
+          "double11",
+          "fashion",
+          "refunds",
+          "food",
+          "refunds"
+        ],
+        "maximum_similarity": 0.731580040799977
+      },
+      {
+        "id": "holdout-12",
+        "query": "春节期间的演示订单量采用什么季节权重？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "spring",
+          "fashion",
+          "food",
+          "food"
+        ],
+        "maximum_similarity": 0.6705315905492562
+      },
+      {
+        "id": "holdout-13",
+        "query": "一月二月总订单量对比还要考虑什么时间差异？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "contradiction",
+          "double11",
+          "appliances",
+          "refunds"
+        ],
+        "maximum_similarity": 0.726931095123291
+      },
+      {
+        "id": "holdout-14",
+        "query": "项目订单的最小金额单位是什么？",
+        "expected": "metrics",
+        "rank": 3,
+        "returned": [
+          "food",
+          "double11",
+          "metrics",
+          "metrics",
+          "food"
+        ],
+        "maximum_similarity": 0.5392388105392456
+      },
+      {
+        "id": "holdout-15",
+        "query": "为什么取消退款订单和测试账号不能计入净实收？",
+        "expected": "metrics",
+        "rank": 1,
+        "returned": [
+          "metrics",
+          "spring",
+          "double11",
+          "refunds",
+          "metrics"
+        ],
+        "maximum_similarity": 0.6642563943404458
+      },
+      {
+        "id": "holdout-16",
+        "query": "EAST、NORTH 对应哪些中文区域？",
+        "expected": "regions",
+        "rank": 1,
+        "returned": [
+          "regions",
+          "regions",
+          "fashion",
+          "food",
+          "regions"
+        ],
+        "maximum_similarity": 0.6770055697563642
+      },
+      {
+        "id": "holdout-17",
+        "query": "app、web 和 ads、referral 为什么不能混作一个渠道？",
+        "expected": "regions",
+        "rank": 2,
+        "returned": [
+          "phones",
+          "regions",
+          "double11",
+          "appliances",
+          "metrics"
+        ],
+        "maximum_similarity": 0.6609737468926605
+      },
+      {
+        "id": "holdout-18",
+        "query": "额外合成服务约定里发货后通常多久送达？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery",
+          "delivery",
+          "unrelated",
+          "refunds"
+        ],
+        "maximum_similarity": 0.6709905862808228
+      },
+      {
+        "id": "holdout-19",
+        "query": "偏远地址在这份合成物流约定里需要等几个工作日？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery",
+          "delivery",
+          "spring",
+          "regions"
+        ],
+        "maximum_similarity": 0.6363022327423096
+      },
+      {
+        "id": "holdout-20",
+        "query": "每个仓的实时库存数量是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "food",
+          "regions",
+          "delivery",
+          "appliances",
+          "phones"
+        ],
+        "maximum_similarity": 0.6031450392690335
+      },
+      {
+        "id": "holdout-21",
+        "query": "年度采购合同的付款条件是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "food",
+          "fashion",
+          "double11",
+          "delivery"
+        ],
+        "maximum_similarity": 0.5636377334594727
+      },
+      {
+        "id": "holdout-22",
+        "query": "竞争对手最近一个月销售额是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "metrics",
+          "spring",
+          "double11",
+          "phones",
+          "food"
+        ],
+        "maximum_similarity": 0.5300527495114365
+      },
+      {
+        "id": "holdout-23",
+        "query": "明天北京是否会下雨？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "unrelated",
+          "appliances",
+          "regions",
+          "phones",
+          "double11"
+        ],
+        "maximum_similarity": 0.4639133193441224
+      },
+      {
+        "id": "holdout-24",
+        "query": "月球近地点距离为多少千米？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones"
+        ],
+        "maximum_similarity": 0.37022280033419186
+      },
+      {
+        "id": "holdout-25",
+        "query": "会员王女士的身份证号码是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "regions",
+          "fashion",
+          "appliances"
+        ],
+        "maximum_similarity": 0.44640159606933594
+      },
+      {
+        "id": "holdout-26",
+        "query": "本季度员工薪资总额是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "unrelated",
+          "refunds",
+          "appliances",
+          "refunds",
+          "phones"
+        ],
+        "maximum_similarity": 0.493300974768343
+      },
+      {
+        "id": "holdout-27",
+        "query": "今年股东每股获得多少现金分红？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "unrelated"
+        ],
+        "maximum_similarity": 0.4955335855484009
+      },
+      {
+        "id": "holdout-28",
+        "query": "跨境包裹现在到哪个海关了？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "delivery"
+        ],
+        "maximum_similarity": 0.5320318062324418
+      },
+      {
+        "id": "holdout-29",
+        "query": "聊天服务商账户里还剩多少余额？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "phones"
+        ],
+        "maximum_similarity": 0.5555013749302263
+      }
+    ],
+    "keyword@0.6": [
+      {
+        "id": "holdout-00",
+        "query": "十一月大促折扣按商品合计的什么比例生成？",
+        "expected": "double11",
+        "rank": 1,
+        "returned": [
+          "double11",
+          "food",
+          "fashion",
+          "food",
+          "food"
+        ],
+        "maximum_similarity": 0.6308528372899547
+      },
+      {
+        "id": "holdout-01",
+        "query": "年度集中促销期间的订单抽样权重设成几？",
+        "expected": "double11",
+        "rank": 2,
+        "returned": [
+          "fashion",
+          "double11",
+          "phones",
+          "regions",
+          "spring"
+        ],
+        "maximum_similarity": 0.627932071685791
+      },
+      {
+        "id": "holdout-02",
+        "query": "演示情景里十二月还延续家电同等补贴吗？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances",
+          "refunds",
+          "double11"
+        ],
+        "maximum_similarity": 0.6946010175585152
+      },
+      {
+        "id": "holdout-03",
+        "query": "大促后家电回落场景采用什么选品系数？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "refunds",
+          "appliances",
+          "double11",
+          "refunds"
+        ],
+        "maximum_similarity": 0.6940266258684843
+      },
+      {
+        "id": "holdout-04",
+        "query": "十二月备年货方案的重点商品类别是什么？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "food",
+          "fashion",
+          "appliances",
+          "double11"
+        ],
+        "maximum_similarity": 0.6519803003066871
+      },
+      {
+        "id": "holdout-05",
+        "query": "1.4 对应哪个年货品类的演示选品设置？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "fashion",
+          "food",
+          "phones",
+          "regions"
+        ],
+        "maximum_similarity": 0.7420781101034959
+      },
+      {
+        "id": "holdout-06",
+        "query": "换机需求和专题介绍出自哪次发布活动？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "appliances",
+          "double11",
+          "phones",
+          "food"
+        ],
+        "maximum_similarity": 0.5256866843326907
+      },
+      {
+        "id": "holdout-07",
+        "query": "九月发布期数码品类用了几倍抽样系数？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "phones",
+          "fashion",
+          "double11",
+          "food"
+        ],
+        "maximum_similarity": 0.6424974203109741
+      },
+      {
+        "id": "holdout-08",
+        "query": "秋冬服饰计划里的两个上新月权重是什么？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion",
+          "fashion",
+          "fashion",
+          "phones",
+          "phones"
+        ],
+        "maximum_similarity": 0.629268307366023
+      },
+      {
+        "id": "holdout-09",
+        "query": "为什么秋冬上新不能把品类明细求和直接替代净实收？",
+        "expected": "fashion",
+        "rank": 2,
+        "returned": [
+          "metrics",
+          "fashion",
+          "fashion",
+          "double11",
+          "phones"
+        ],
+        "maximum_similarity": 0.6322758793830872
+      },
+      {
+        "id": "holdout-10",
+        "query": "客服汇总中非大促月和大促月退款状态概率有什么变化？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "refunds",
+          "refunds",
+          "metrics",
+          "refunds"
+        ],
+        "maximum_similarity": 0.7099482762875228
+      },
+      {
+        "id": "holdout-11",
+        "query": "想知道某类客诉占全部退款多少，需要补充什么数据？",
+        "expected": "refunds",
+        "rank": 3,
+        "returned": [
+          "double11",
+          "fashion",
+          "refunds",
+          "food",
+          "refunds"
+        ],
+        "maximum_similarity": 0.731580040799977
+      },
+      {
+        "id": "holdout-12",
+        "query": "春节期间的演示订单量采用什么季节权重？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "spring",
+          "fashion",
+          "food",
+          "food"
+        ],
+        "maximum_similarity": 0.6705315905492562
+      },
+      {
+        "id": "holdout-13",
+        "query": "一月二月总订单量对比还要考虑什么时间差异？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "contradiction",
+          "double11",
+          "appliances",
+          "refunds"
+        ],
+        "maximum_similarity": 0.726931095123291
+      },
+      {
+        "id": "holdout-14",
+        "query": "项目订单的最小金额单位是什么？",
+        "expected": "metrics",
+        "rank": 3,
+        "returned": [
+          "food",
+          "double11",
+          "metrics",
+          "metrics",
+          "food"
+        ],
+        "maximum_similarity": 0.5392388105392456
+      },
+      {
+        "id": "holdout-15",
+        "query": "为什么取消退款订单和测试账号不能计入净实收？",
+        "expected": "metrics",
+        "rank": 1,
+        "returned": [
+          "metrics",
+          "spring",
+          "double11",
+          "refunds",
+          "metrics"
+        ],
+        "maximum_similarity": 0.6642563943404458
+      },
+      {
+        "id": "holdout-16",
+        "query": "EAST、NORTH 对应哪些中文区域？",
+        "expected": "regions",
+        "rank": 1,
+        "returned": [
+          "regions",
+          "regions",
+          "fashion",
+          "food",
+          "regions"
+        ],
+        "maximum_similarity": 0.6770055697563642
+      },
+      {
+        "id": "holdout-17",
+        "query": "app、web 和 ads、referral 为什么不能混作一个渠道？",
+        "expected": "regions",
+        "rank": 2,
+        "returned": [
+          "phones",
+          "regions",
+          "double11",
+          "appliances",
+          "metrics"
+        ],
+        "maximum_similarity": 0.6609737468926605
+      },
+      {
+        "id": "holdout-18",
+        "query": "额外合成服务约定里发货后通常多久送达？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery",
+          "delivery",
+          "unrelated",
+          "refunds"
+        ],
+        "maximum_similarity": 0.6709905862808228
+      },
+      {
+        "id": "holdout-19",
+        "query": "偏远地址在这份合成物流约定里需要等几个工作日？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery",
+          "delivery",
+          "spring",
+          "regions"
+        ],
+        "maximum_similarity": 0.6363022327423096
+      },
+      {
+        "id": "holdout-20",
+        "query": "每个仓的实时库存数量是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "food",
+          "regions",
+          "delivery",
+          "appliances",
+          "phones"
+        ],
+        "maximum_similarity": 0.6031450392690335
+      },
+      {
+        "id": "holdout-21",
+        "query": "年度采购合同的付款条件是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "food",
+          "fashion",
+          "double11",
+          "delivery"
+        ],
+        "maximum_similarity": 0.5636377334594727
+      },
+      {
+        "id": "holdout-22",
+        "query": "竞争对手最近一个月销售额是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "metrics",
+          "spring",
+          "double11",
+          "phones",
+          "food"
+        ],
+        "maximum_similarity": 0.5300527495114365
+      },
+      {
+        "id": "holdout-23",
+        "query": "明天北京是否会下雨？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "unrelated",
+          "appliances",
+          "regions",
+          "phones",
+          "double11"
+        ],
+        "maximum_similarity": 0.4639133193441224
+      },
+      {
+        "id": "holdout-24",
+        "query": "月球近地点距离为多少千米？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones"
+        ],
+        "maximum_similarity": 0.37022280033419186
+      },
+      {
+        "id": "holdout-25",
+        "query": "会员王女士的身份证号码是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "regions",
+          "fashion",
+          "appliances"
+        ],
+        "maximum_similarity": 0.44640159606933594
+      },
+      {
+        "id": "holdout-26",
+        "query": "本季度员工薪资总额是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "unrelated",
+          "refunds",
+          "appliances",
+          "refunds",
+          "phones"
+        ],
+        "maximum_similarity": 0.493300974768343
+      },
+      {
+        "id": "holdout-27",
+        "query": "今年股东每股获得多少现金分红？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "unrelated"
+        ],
+        "maximum_similarity": 0.4955335855484009
+      },
+      {
+        "id": "holdout-28",
+        "query": "跨境包裹现在到哪个海关了？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "delivery"
+        ],
+        "maximum_similarity": 0.5320318062324418
+      },
+      {
+        "id": "holdout-29",
+        "query": "聊天服务商账户里还剩多少余额？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "phones"
+        ],
+        "maximum_similarity": 0.5555013749302263
+      }
+    ],
+    "vector@0.35": [
+      {
+        "id": "holdout-00",
+        "query": "十一月大促折扣按商品合计的什么比例生成？",
+        "expected": "double11",
+        "rank": 1,
+        "returned": [
+          "double11",
+          "fashion",
+          "appliances",
+          "food",
+          "appliances"
+        ],
+        "maximum_similarity": 0.6308528372899547
+      },
+      {
+        "id": "holdout-01",
+        "query": "年度集中促销期间的订单抽样权重设成几？",
+        "expected": "double11",
+        "rank": 1,
+        "returned": [
+          "double11",
+          "food",
+          "fashion",
+          "spring",
+          "phones"
+        ],
+        "maximum_similarity": 0.627932071685791
+      },
+      {
+        "id": "holdout-02",
+        "query": "演示情景里十二月还延续家电同等补贴吗？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances",
+          "appliances",
+          "fashion"
+        ],
+        "maximum_similarity": 0.6946010175585152
+      },
+      {
+        "id": "holdout-03",
+        "query": "大促后家电回落场景采用什么选品系数？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "double11",
+          "appliances",
+          "food",
+          "refunds"
+        ],
+        "maximum_similarity": 0.6940266258684843
+      },
+      {
+        "id": "holdout-04",
+        "query": "十二月备年货方案的重点商品类别是什么？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "fashion",
+          "appliances",
+          "food",
+          "double11"
+        ],
+        "maximum_similarity": 0.6519803003066871
+      },
+      {
+        "id": "holdout-05",
+        "query": "1.4 对应哪个年货品类的演示选品设置？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "food",
+          "fashion",
+          "spring",
+          "spring"
+        ],
+        "maximum_similarity": 0.7420781101034959
+      },
+      {
+        "id": "holdout-06",
+        "query": "换机需求和专题介绍出自哪次发布活动？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "phones",
+          "appliances",
+          "phones",
+          "appliances"
+        ],
+        "maximum_similarity": 0.5256866843326907
+      },
+      {
+        "id": "holdout-07",
+        "query": "九月发布期数码品类用了几倍抽样系数？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "phones",
+          "fashion",
+          "food",
+          "refunds"
+        ],
+        "maximum_similarity": 0.6424974203109741
+      },
+      {
+        "id": "holdout-08",
+        "query": "秋冬服饰计划里的两个上新月权重是什么？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion",
+          "fashion",
+          "phones",
+          "spring",
+          "food"
+        ],
+        "maximum_similarity": 0.629268307366023
+      },
+      {
+        "id": "holdout-09",
+        "query": "为什么秋冬上新不能把品类明细求和直接替代净实收？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion",
+          "metrics",
+          "contradiction",
+          "fashion",
+          "metrics"
+        ],
+        "maximum_similarity": 0.6322758793830872
+      },
+      {
+        "id": "holdout-10",
+        "query": "客服汇总中非大促月和大促月退款状态概率有什么变化？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "refunds",
+          "refunds",
+          "spring",
+          "appliances"
+        ],
+        "maximum_similarity": 0.7099482762875228
+      },
+      {
+        "id": "holdout-11",
+        "query": "想知道某类客诉占全部退款多少，需要补充什么数据？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "metrics",
+          "refunds",
+          "refunds",
+          "appliances"
+        ],
+        "maximum_similarity": 0.731580040799977
+      },
+      {
+        "id": "holdout-12",
+        "query": "春节期间的演示订单量采用什么季节权重？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "spring",
+          "food",
+          "fashion",
+          "double11"
+        ],
+        "maximum_similarity": 0.6705315905492562
+      },
+      {
+        "id": "holdout-13",
+        "query": "一月二月总订单量对比还要考虑什么时间差异？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "refunds",
+          "double11",
+          "fashion",
+          "appliances"
+        ],
+        "maximum_similarity": 0.726931095123291
+      },
+      {
+        "id": "holdout-14",
+        "query": "项目订单的最小金额单位是什么？",
+        "expected": "metrics",
+        "rank": 1,
+        "returned": [
+          "metrics",
+          "regions",
+          "food",
+          "phones",
+          "metrics"
+        ],
+        "maximum_similarity": 0.5392388105392456
+      },
+      {
+        "id": "holdout-15",
+        "query": "为什么取消退款订单和测试账号不能计入净实收？",
+        "expected": "metrics",
+        "rank": 1,
+        "returned": [
+          "metrics",
+          "metrics",
+          "refunds",
+          "refunds",
+          "refunds"
+        ],
+        "maximum_similarity": 0.6642563943404458
+      },
+      {
+        "id": "holdout-16",
+        "query": "EAST、NORTH 对应哪些中文区域？",
+        "expected": "regions",
+        "rank": 1,
+        "returned": [
+          "regions",
+          "regions",
+          "regions",
+          "phones"
+        ],
+        "maximum_similarity": 0.6770055697563642
+      },
+      {
+        "id": "holdout-17",
+        "query": "app、web 和 ads、referral 为什么不能混作一个渠道？",
+        "expected": "regions",
+        "rank": 1,
+        "returned": [
+          "regions",
+          "phones",
+          "fashion",
+          "regions",
+          "phones"
+        ],
+        "maximum_similarity": 0.6609737468926605
+      },
+      {
+        "id": "holdout-18",
+        "query": "额外合成服务约定里发货后通常多久送达？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery",
+          "delivery",
+          "refunds",
+          "food"
+        ],
+        "maximum_similarity": 0.6709905862808228
+      },
+      {
+        "id": "holdout-19",
+        "query": "偏远地址在这份合成物流约定里需要等几个工作日？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "spring",
+          "delivery",
+          "delivery",
+          "food"
+        ],
+        "maximum_similarity": 0.6363022327423096
+      },
+      {
+        "id": "holdout-20",
+        "query": "每个仓的实时库存数量是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "appliances",
+          "metrics",
+          "food",
+          "fashion",
+          "refunds"
+        ],
+        "maximum_similarity": 0.6031450392690335
+      },
+      {
+        "id": "holdout-21",
+        "query": "年度采购合同的付款条件是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "food",
+          "contradiction",
+          "delivery",
+          "delivery"
+        ],
+        "maximum_similarity": 0.5636377334594727
+      },
+      {
+        "id": "holdout-22",
+        "query": "竞争对手最近一个月销售额是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "contradiction",
+          "appliances",
+          "phones",
+          "spring",
+          "metrics"
+        ],
+        "maximum_similarity": 0.5300527495114365
+      },
+      {
+        "id": "holdout-23",
+        "query": "明天北京是否会下雨？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "spring",
+          "spring",
+          "delivery",
+          "appliances",
+          "fashion"
+        ],
+        "maximum_similarity": 0.4639133193441224
+      },
+      {
+        "id": "holdout-24",
+        "query": "月球近地点距离为多少千米？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "spring",
+          "delivery"
+        ],
+        "maximum_similarity": 0.37022280033419186
+      },
+      {
+        "id": "holdout-25",
+        "query": "会员王女士的身份证号码是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "regions",
+          "metrics",
+          "appliances",
+          "fashion",
+          "refunds"
+        ],
+        "maximum_similarity": 0.44640159606933594
+      },
+      {
+        "id": "holdout-26",
+        "query": "本季度员工薪资总额是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "contradiction",
+          "metrics",
+          "refunds",
+          "appliances",
+          "double11"
+        ],
+        "maximum_similarity": 0.493300974768343
+      },
+      {
+        "id": "holdout-27",
+        "query": "今年股东每股获得多少现金分红？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "food",
+          "phones",
+          "appliances",
+          "double11",
+          "phones"
+        ],
+        "maximum_similarity": 0.4955335855484009
+      },
+      {
+        "id": "holdout-28",
+        "query": "跨境包裹现在到哪个海关了？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "delivery",
+          "metrics",
+          "food",
+          "spring"
+        ],
+        "maximum_similarity": 0.5320318062324418
+      },
+      {
+        "id": "holdout-29",
+        "query": "聊天服务商账户里还剩多少余额？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "appliances",
+          "metrics",
+          "refunds",
+          "metrics",
+          "refunds"
+        ],
+        "maximum_similarity": 0.5555013749302263
+      }
+    ],
+    "vector@0.6": [
+      {
+        "id": "holdout-00",
+        "query": "十一月大促折扣按商品合计的什么比例生成？",
+        "expected": "double11",
+        "rank": 1,
+        "returned": [
+          "double11",
+          "fashion"
+        ],
+        "maximum_similarity": 0.6308528372899547
+      },
+      {
+        "id": "holdout-01",
+        "query": "年度集中促销期间的订单抽样权重设成几？",
+        "expected": "double11",
+        "rank": 1,
+        "returned": [
+          "double11"
+        ],
+        "maximum_similarity": 0.627932071685791
+      },
+      {
+        "id": "holdout-02",
+        "query": "演示情景里十二月还延续家电同等补贴吗？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances"
+        ],
+        "maximum_similarity": 0.6946010175585152
+      },
+      {
+        "id": "holdout-03",
+        "query": "大促后家电回落场景采用什么选品系数？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances"
+        ],
+        "maximum_similarity": 0.6940266258684843
+      },
+      {
+        "id": "holdout-04",
+        "query": "十二月备年货方案的重点商品类别是什么？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food"
+        ],
+        "maximum_similarity": 0.6519803003066871
+      },
+      {
+        "id": "holdout-05",
+        "query": "1.4 对应哪个年货品类的演示选品设置？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "food"
+        ],
+        "maximum_similarity": 0.7420781101034959
+      },
+      {
+        "id": "holdout-06",
+        "query": "换机需求和专题介绍出自哪次发布活动？",
+        "expected": "phones",
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.5256866843326907
+      },
+      {
+        "id": "holdout-07",
+        "query": "九月发布期数码品类用了几倍抽样系数？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones"
+        ],
+        "maximum_similarity": 0.6424974203109741
+      },
+      {
+        "id": "holdout-08",
+        "query": "秋冬服饰计划里的两个上新月权重是什么？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion"
+        ],
+        "maximum_similarity": 0.629268307366023
+      },
+      {
+        "id": "holdout-09",
+        "query": "为什么秋冬上新不能把品类明细求和直接替代净实收？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion"
+        ],
+        "maximum_similarity": 0.6322758793830872
+      },
+      {
+        "id": "holdout-10",
+        "query": "客服汇总中非大促月和大促月退款状态概率有什么变化？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "refunds",
+          "refunds",
+          "spring"
+        ],
+        "maximum_similarity": 0.7099482762875228
+      },
+      {
+        "id": "holdout-11",
+        "query": "想知道某类客诉占全部退款多少，需要补充什么数据？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "metrics",
+          "refunds",
+          "refunds",
+          "appliances"
+        ],
+        "maximum_similarity": 0.731580040799977
+      },
+      {
+        "id": "holdout-12",
+        "query": "春节期间的演示订单量采用什么季节权重？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring"
+        ],
+        "maximum_similarity": 0.6705315905492562
+      },
+      {
+        "id": "holdout-13",
+        "query": "一月二月总订单量对比还要考虑什么时间差异？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "refunds",
+          "double11",
+          "fashion",
+          "appliances"
+        ],
+        "maximum_similarity": 0.726931095123291
+      },
+      {
+        "id": "holdout-14",
+        "query": "项目订单的最小金额单位是什么？",
+        "expected": "metrics",
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.5392388105392456
+      },
+      {
+        "id": "holdout-15",
+        "query": "为什么取消退款订单和测试账号不能计入净实收？",
+        "expected": "metrics",
+        "rank": 1,
+        "returned": [
+          "metrics",
+          "metrics",
+          "refunds",
+          "refunds",
+          "refunds"
+        ],
+        "maximum_similarity": 0.6642563943404458
+      },
+      {
+        "id": "holdout-16",
+        "query": "EAST、NORTH 对应哪些中文区域？",
+        "expected": "regions",
+        "rank": 1,
+        "returned": [
+          "regions"
+        ],
+        "maximum_similarity": 0.6770055697563642
+      },
+      {
+        "id": "holdout-17",
+        "query": "app、web 和 ads、referral 为什么不能混作一个渠道？",
+        "expected": "regions",
+        "rank": 1,
+        "returned": [
+          "regions",
+          "phones"
+        ],
+        "maximum_similarity": 0.6609737468926605
+      },
+      {
+        "id": "holdout-18",
+        "query": "额外合成服务约定里发货后通常多久送达？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery"
+        ],
+        "maximum_similarity": 0.6709905862808228
+      },
+      {
+        "id": "holdout-19",
+        "query": "偏远地址在这份合成物流约定里需要等几个工作日？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery"
+        ],
+        "maximum_similarity": 0.6363022327423096
+      },
+      {
+        "id": "holdout-20",
+        "query": "每个仓的实时库存数量是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "appliances"
+        ],
+        "maximum_similarity": 0.6031450392690335
+      },
+      {
+        "id": "holdout-21",
+        "query": "年度采购合同的付款条件是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.5636377334594727
+      },
+      {
+        "id": "holdout-22",
+        "query": "竞争对手最近一个月销售额是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.5300527495114365
+      },
+      {
+        "id": "holdout-23",
+        "query": "明天北京是否会下雨？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.4639133193441224
+      },
+      {
+        "id": "holdout-24",
+        "query": "月球近地点距离为多少千米？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.37022280033419186
+      },
+      {
+        "id": "holdout-25",
+        "query": "会员王女士的身份证号码是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.44640159606933594
+      },
+      {
+        "id": "holdout-26",
+        "query": "本季度员工薪资总额是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.493300974768343
+      },
+      {
+        "id": "holdout-27",
+        "query": "今年股东每股获得多少现金分红？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.4955335855484009
+      },
+      {
+        "id": "holdout-28",
+        "query": "跨境包裹现在到哪个海关了？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.5320318062324418
+      },
+      {
+        "id": "holdout-29",
+        "query": "聊天服务商账户里还剩多少余额？",
+        "expected": null,
+        "rank": null,
+        "returned": [],
+        "maximum_similarity": 0.5555013749302263
+      }
+    ],
+    "hybrid@0.35": [
+      {
+        "id": "holdout-00",
+        "query": "十一月大促折扣按商品合计的什么比例生成？",
+        "expected": "double11",
+        "rank": 1,
+        "returned": [
+          "double11",
+          "fashion",
+          "food",
+          "food",
+          "appliances"
+        ],
+        "maximum_similarity": 0.6308528372899547
+      },
+      {
+        "id": "holdout-01",
+        "query": "年度集中促销期间的订单抽样权重设成几？",
+        "expected": "double11",
+        "rank": 1,
+        "returned": [
+          "double11",
+          "fashion",
+          "spring",
+          "food",
+          "phones"
+        ],
+        "maximum_similarity": 0.627932071685791
+      },
+      {
+        "id": "holdout-02",
+        "query": "演示情景里十二月还延续家电同等补贴吗？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances",
+          "double11",
+          "food"
+        ],
+        "maximum_similarity": 0.6946010175585152
+      },
+      {
+        "id": "holdout-03",
+        "query": "大促后家电回落场景采用什么选品系数？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "double11",
+          "appliances",
+          "appliances",
+          "refunds"
+        ],
+        "maximum_similarity": 0.6940266258684843
+      },
+      {
+        "id": "holdout-04",
+        "query": "十二月备年货方案的重点商品类别是什么？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "fashion",
+          "food",
+          "appliances",
+          "double11"
+        ],
+        "maximum_similarity": 0.6519803003066871
+      },
+      {
+        "id": "holdout-05",
+        "query": "1.4 对应哪个年货品类的演示选品设置？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "food",
+          "fashion",
+          "spring",
+          "double11"
+        ],
+        "maximum_similarity": 0.7420781101034959
+      },
+      {
+        "id": "holdout-06",
+        "query": "换机需求和专题介绍出自哪次发布活动？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "appliances",
+          "phones",
+          "phones",
+          "fashion"
+        ],
+        "maximum_similarity": 0.5256866843326907
+      },
+      {
+        "id": "holdout-07",
+        "query": "九月发布期数码品类用了几倍抽样系数？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "phones",
+          "fashion",
+          "food",
+          "double11"
+        ],
+        "maximum_similarity": 0.6424974203109741
+      },
+      {
+        "id": "holdout-08",
+        "query": "秋冬服饰计划里的两个上新月权重是什么？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion",
+          "fashion",
+          "phones",
+          "fashion",
+          "food"
+        ],
+        "maximum_similarity": 0.629268307366023
+      },
+      {
+        "id": "holdout-09",
+        "query": "为什么秋冬上新不能把品类明细求和直接替代净实收？",
+        "expected": "fashion",
+        "rank": 2,
+        "returned": [
+          "metrics",
+          "fashion",
+          "fashion",
+          "food",
+          "appliances"
+        ],
+        "maximum_similarity": 0.6322758793830872
+      },
+      {
+        "id": "holdout-10",
+        "query": "客服汇总中非大促月和大促月退款状态概率有什么变化？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "refunds",
+          "refunds",
+          "refunds",
+          "metrics"
+        ],
+        "maximum_similarity": 0.7099482762875228
+      },
+      {
+        "id": "holdout-11",
+        "query": "想知道某类客诉占全部退款多少，需要补充什么数据？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "refunds",
+          "double11",
+          "fashion",
+          "metrics"
+        ],
+        "maximum_similarity": 0.731580040799977
+      },
+      {
+        "id": "holdout-12",
+        "query": "春节期间的演示订单量采用什么季节权重？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "spring",
+          "food",
+          "fashion",
+          "double11"
+        ],
+        "maximum_similarity": 0.6705315905492562
+      },
+      {
+        "id": "holdout-13",
+        "query": "一月二月总订单量对比还要考虑什么时间差异？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "double11",
+          "appliances",
+          "fashion",
+          "refunds"
+        ],
+        "maximum_similarity": 0.726931095123291
+      },
+      {
+        "id": "holdout-14",
+        "query": "项目订单的最小金额单位是什么？",
+        "expected": "metrics",
+        "rank": 1,
+        "returned": [
+          "metrics",
+          "food",
+          "metrics",
+          "double11",
+          "phones"
+        ],
+        "maximum_similarity": 0.5392388105392456
+      },
+      {
+        "id": "holdout-15",
+        "query": "为什么取消退款订单和测试账号不能计入净实收？",
+        "expected": "metrics",
+        "rank": 1,
+        "returned": [
+          "metrics",
+          "metrics",
+          "refunds",
+          "spring",
+          "double11"
+        ],
+        "maximum_similarity": 0.6642563943404458
+      },
+      {
+        "id": "holdout-16",
+        "query": "EAST、NORTH 对应哪些中文区域？",
+        "expected": "regions",
+        "rank": 1,
+        "returned": [
+          "regions",
+          "regions",
+          "phones",
+          "regions",
+          "fashion"
+        ],
+        "maximum_similarity": 0.6770055697563642
+      },
+      {
+        "id": "holdout-17",
+        "query": "app、web 和 ads、referral 为什么不能混作一个渠道？",
+        "expected": "regions",
+        "rank": 2,
+        "returned": [
+          "phones",
+          "regions",
+          "fashion",
+          "food",
+          "double11"
+        ],
+        "maximum_similarity": 0.6609737468926605
+      },
+      {
+        "id": "holdout-18",
+        "query": "额外合成服务约定里发货后通常多久送达？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery",
+          "delivery",
+          "spring",
+          "unrelated"
+        ],
+        "maximum_similarity": 0.6709905862808228
+      },
+      {
+        "id": "holdout-19",
+        "query": "偏远地址在这份合成物流约定里需要等几个工作日？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery",
+          "spring",
+          "delivery",
+          "delivery"
+        ],
+        "maximum_similarity": 0.6363022327423096
+      },
+      {
+        "id": "holdout-20",
+        "query": "每个仓的实时库存数量是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "food",
+          "appliances",
+          "fashion",
+          "phones",
+          "injection"
+        ],
+        "maximum_similarity": 0.6031450392690335
+      },
+      {
+        "id": "holdout-21",
+        "query": "年度采购合同的付款条件是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "food",
+          "delivery",
+          "contradiction",
+          "double11",
+          "spring"
+        ],
+        "maximum_similarity": 0.5636377334594727
+      },
+      {
+        "id": "holdout-22",
+        "query": "竞争对手最近一个月销售额是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "metrics",
+          "phones",
+          "appliances",
+          "contradiction",
+          "fashion"
+        ],
+        "maximum_similarity": 0.5300527495114365
+      },
+      {
+        "id": "holdout-23",
+        "query": "明天北京是否会下雨？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "unrelated",
+          "regions",
+          "spring",
+          "appliances",
+          "spring"
+        ],
+        "maximum_similarity": 0.4639133193441224
+      },
+      {
+        "id": "holdout-24",
+        "query": "月球近地点距离为多少千米？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "spring",
+          "delivery"
+        ],
+        "maximum_similarity": 0.37022280033419186
+      },
+      {
+        "id": "holdout-25",
+        "query": "会员王女士的身份证号码是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "regions",
+          "fashion",
+          "appliances",
+          "metrics",
+          "refunds"
+        ],
+        "maximum_similarity": 0.44640159606933594
+      },
+      {
+        "id": "holdout-26",
+        "query": "本季度员工薪资总额是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "refunds",
+          "appliances",
+          "refunds",
+          "unrelated",
+          "phones"
+        ],
+        "maximum_similarity": 0.493300974768343
+      },
+      {
+        "id": "holdout-27",
+        "query": "今年股东每股获得多少现金分红？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "unrelated",
+          "food",
+          "phones",
+          "appliances"
+        ],
+        "maximum_similarity": 0.4955335855484009
+      },
+      {
+        "id": "holdout-28",
+        "query": "跨境包裹现在到哪个海关了？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "delivery",
+          "delivery",
+          "metrics",
+          "food"
+        ],
+        "maximum_similarity": 0.5320318062324418
+      },
+      {
+        "id": "holdout-29",
+        "query": "聊天服务商账户里还剩多少余额？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "phones",
+          "appliances",
+          "metrics",
+          "refunds"
+        ],
+        "maximum_similarity": 0.5555013749302263
+      }
+    ],
+    "hybrid@0.6": [
+      {
+        "id": "holdout-00",
+        "query": "十一月大促折扣按商品合计的什么比例生成？",
+        "expected": "double11",
+        "rank": 1,
+        "returned": [
+          "double11",
+          "fashion",
+          "food",
+          "food",
+          "food"
+        ],
+        "maximum_similarity": 0.6308528372899547
+      },
+      {
+        "id": "holdout-01",
+        "query": "年度集中促销期间的订单抽样权重设成几？",
+        "expected": "double11",
+        "rank": 1,
+        "returned": [
+          "double11",
+          "fashion",
+          "phones",
+          "regions",
+          "spring"
+        ],
+        "maximum_similarity": 0.627932071685791
+      },
+      {
+        "id": "holdout-02",
+        "query": "演示情景里十二月还延续家电同等补贴吗？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "contradiction",
+          "appliances",
+          "refunds",
+          "double11"
+        ],
+        "maximum_similarity": 0.6946010175585152
+      },
+      {
+        "id": "holdout-03",
+        "query": "大促后家电回落场景采用什么选品系数？",
+        "expected": "appliances",
+        "rank": 1,
+        "returned": [
+          "appliances",
+          "refunds",
+          "appliances",
+          "double11",
+          "refunds"
+        ],
+        "maximum_similarity": 0.6940266258684843
+      },
+      {
+        "id": "holdout-04",
+        "query": "十二月备年货方案的重点商品类别是什么？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "food",
+          "fashion",
+          "appliances",
+          "double11"
+        ],
+        "maximum_similarity": 0.6519803003066871
+      },
+      {
+        "id": "holdout-05",
+        "query": "1.4 对应哪个年货品类的演示选品设置？",
+        "expected": "food",
+        "rank": 1,
+        "returned": [
+          "food",
+          "food",
+          "fashion",
+          "phones",
+          "regions"
+        ],
+        "maximum_similarity": 0.7420781101034959
+      },
+      {
+        "id": "holdout-06",
+        "query": "换机需求和专题介绍出自哪次发布活动？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "appliances",
+          "double11",
+          "phones",
+          "food"
+        ],
+        "maximum_similarity": 0.5256866843326907
+      },
+      {
+        "id": "holdout-07",
+        "query": "九月发布期数码品类用了几倍抽样系数？",
+        "expected": "phones",
+        "rank": 1,
+        "returned": [
+          "phones",
+          "phones",
+          "fashion",
+          "double11",
+          "food"
+        ],
+        "maximum_similarity": 0.6424974203109741
+      },
+      {
+        "id": "holdout-08",
+        "query": "秋冬服饰计划里的两个上新月权重是什么？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion",
+          "fashion",
+          "fashion",
+          "phones",
+          "phones"
+        ],
+        "maximum_similarity": 0.629268307366023
+      },
+      {
+        "id": "holdout-09",
+        "query": "为什么秋冬上新不能把品类明细求和直接替代净实收？",
+        "expected": "fashion",
+        "rank": 1,
+        "returned": [
+          "fashion",
+          "metrics",
+          "fashion",
+          "double11",
+          "phones"
+        ],
+        "maximum_similarity": 0.6322758793830872
+      },
+      {
+        "id": "holdout-10",
+        "query": "客服汇总中非大促月和大促月退款状态概率有什么变化？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "refunds",
+          "refunds",
+          "spring",
+          "refunds"
+        ],
+        "maximum_similarity": 0.7099482762875228
+      },
+      {
+        "id": "holdout-11",
+        "query": "想知道某类客诉占全部退款多少，需要补充什么数据？",
+        "expected": "refunds",
+        "rank": 1,
+        "returned": [
+          "refunds",
+          "refunds",
+          "metrics",
+          "refunds",
+          "double11"
+        ],
+        "maximum_similarity": 0.731580040799977
+      },
+      {
+        "id": "holdout-12",
+        "query": "春节期间的演示订单量采用什么季节权重？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "spring",
+          "fashion",
+          "food",
+          "food"
+        ],
+        "maximum_similarity": 0.6705315905492562
+      },
+      {
+        "id": "holdout-13",
+        "query": "一月二月总订单量对比还要考虑什么时间差异？",
+        "expected": "spring",
+        "rank": 1,
+        "returned": [
+          "spring",
+          "double11",
+          "appliances",
+          "fashion",
+          "contradiction"
+        ],
+        "maximum_similarity": 0.726931095123291
+      },
+      {
+        "id": "holdout-14",
+        "query": "项目订单的最小金额单位是什么？",
+        "expected": "metrics",
+        "rank": 3,
+        "returned": [
+          "food",
+          "double11",
+          "metrics",
+          "metrics",
+          "food"
+        ],
+        "maximum_similarity": 0.5392388105392456
+      },
+      {
+        "id": "holdout-15",
+        "query": "为什么取消退款订单和测试账号不能计入净实收？",
+        "expected": "metrics",
+        "rank": 1,
+        "returned": [
+          "metrics",
+          "metrics",
+          "refunds",
+          "refunds",
+          "refunds"
+        ],
+        "maximum_similarity": 0.6642563943404458
+      },
+      {
+        "id": "holdout-16",
+        "query": "EAST、NORTH 对应哪些中文区域？",
+        "expected": "regions",
+        "rank": 1,
+        "returned": [
+          "regions",
+          "regions",
+          "fashion",
+          "food",
+          "regions"
+        ],
+        "maximum_similarity": 0.6770055697563642
+      },
+      {
+        "id": "holdout-17",
+        "query": "app、web 和 ads、referral 为什么不能混作一个渠道？",
+        "expected": "regions",
+        "rank": 2,
+        "returned": [
+          "phones",
+          "regions",
+          "double11",
+          "appliances",
+          "metrics"
+        ],
+        "maximum_similarity": 0.6609737468926605
+      },
+      {
+        "id": "holdout-18",
+        "query": "额外合成服务约定里发货后通常多久送达？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery",
+          "delivery",
+          "unrelated",
+          "refunds"
+        ],
+        "maximum_similarity": 0.6709905862808228
+      },
+      {
+        "id": "holdout-19",
+        "query": "偏远地址在这份合成物流约定里需要等几个工作日？",
+        "expected": "delivery",
+        "rank": 1,
+        "returned": [
+          "delivery",
+          "delivery",
+          "delivery",
+          "spring",
+          "regions"
+        ],
+        "maximum_similarity": 0.6363022327423096
+      },
+      {
+        "id": "holdout-20",
+        "query": "每个仓的实时库存数量是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "appliances",
+          "food",
+          "regions",
+          "delivery",
+          "phones"
+        ],
+        "maximum_similarity": 0.6031450392690335
+      },
+      {
+        "id": "holdout-21",
+        "query": "年度采购合同的付款条件是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "food",
+          "fashion",
+          "double11",
+          "delivery"
+        ],
+        "maximum_similarity": 0.5636377334594727
+      },
+      {
+        "id": "holdout-22",
+        "query": "竞争对手最近一个月销售额是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "metrics",
+          "spring",
+          "double11",
+          "phones",
+          "food"
+        ],
+        "maximum_similarity": 0.5300527495114365
+      },
+      {
+        "id": "holdout-23",
+        "query": "明天北京是否会下雨？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "unrelated",
+          "appliances",
+          "regions",
+          "phones",
+          "double11"
+        ],
+        "maximum_similarity": 0.4639133193441224
+      },
+      {
+        "id": "holdout-24",
+        "query": "月球近地点距离为多少千米？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones"
+        ],
+        "maximum_similarity": 0.37022280033419186
+      },
+      {
+        "id": "holdout-25",
+        "query": "会员王女士的身份证号码是什么？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "regions",
+          "fashion",
+          "appliances"
+        ],
+        "maximum_similarity": 0.44640159606933594
+      },
+      {
+        "id": "holdout-26",
+        "query": "本季度员工薪资总额是多少？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "unrelated",
+          "refunds",
+          "appliances",
+          "refunds",
+          "phones"
+        ],
+        "maximum_similarity": 0.493300974768343
+      },
+      {
+        "id": "holdout-27",
+        "query": "今年股东每股获得多少现金分红？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "phones",
+          "unrelated"
+        ],
+        "maximum_similarity": 0.4955335855484009
+      },
+      {
+        "id": "holdout-28",
+        "query": "跨境包裹现在到哪个海关了？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "delivery"
+        ],
+        "maximum_similarity": 0.5320318062324418
+      },
+      {
+        "id": "holdout-29",
+        "query": "聊天服务商账户里还剩多少余额？",
+        "expected": null,
+        "rank": null,
+        "returned": [
+          "delivery",
+          "phones"
+        ],
+        "maximum_similarity": 0.5555013749302263
+      }
+    ]
+  },
+  "verified_service_queries": 30,
+  "timing_note": "Queries reuse in-memory real embeddings; not an uncached end-to-end latency benchmark",
+  "relevance_note": "Expected document identity only; this is not an LLM final-answer or causal-reasoning evaluation",
+  "synthetic_rows_cleaned_up": true,
+  "http_requests_total": 8,
+  "input_characters_total": 7163,
+  "run_usage": {
+    "requests": 8,
+    "input_tokens": 4916,
+    "texts": 116,
+    "failures": 0
+  },
+  "limits": {
+    "http_requests": 120,
+    "input_characters": 100000
+  }
+}

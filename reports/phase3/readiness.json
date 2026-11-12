@@ -1,0 +1,13 @@
+{
+  "http_status": 200,
+  "readiness": {
+    "status": "ready",
+    "agent": "up",
+    "analysis_database": "up",
+    "document_database": "up",
+    "database": "up",
+    "app_env": "development",
+    "document_retrieval": "up",
+    "embedding": "disabled"
+  }
+}

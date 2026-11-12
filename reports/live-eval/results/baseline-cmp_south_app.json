@@ -1,0 +1,220 @@
+{
+  "id": "cmp_south_app",
+  "category": "comparison",
+  "split": "holdout",
+  "variant": "baseline",
+  "question": "只看华南区域的app端，比较2025年11月和12月净销售额，给两个周期金额，使用整体维度。",
+  "response": {
+    "answer": "开始分析前，请补充以下信息：\n1. 该时间和筛选范围未找到业务订单，不能将没有记录直接解释为业务零值。",
+    "success": true,
+    "trace_id": "aa853d30-f2fe-46c0-91b9-2343f1d85a49",
+    "session_id": "baebcbf6-b309-4036-b128-b9392e42654a",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "get_metric_definition",
+        "arguments": {
+          "metric_id": "net_sales"
+        },
+        "ok": true,
+        "output": "{\"definitions\": [{\"id\": \"net_sales\", \"name\": \"净销售额\", \"unit\": \"元\", \"formula\": \"有效订单 pay_amount（分）求和 / 100；paid、completed\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}]}",
+        "duration_ms": 0,
+        "thought": "我会先确认指标定义，然后查询这两个周期。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_glossary",
+        "arguments": {
+          "query": "净销售额 区域 渠道 口径"
+        },
+        "ok": true,
+        "output": "## 净销售额（营收 / 销售额）\n净销售额 = 有效订单的实付金额之和，即 GMV 扣除已退款订单。\nSQL 口径：`SUM(pay_amount)`，条件 `status IN ('paid', 'completed')`，并排除测试账号。\n用户说「销售额」「营收」「收入」时，默认指净销售额。\n\n## 客单价（AOV）\n客单价 = 净销售额 / 有效订单数，单位换算成元。\nSQL 口径：`SUM(pay_amount) / COUNT(*) / 100.0`，条件 `status IN ('paid', 'completed')`，排除测试账号。\n\n## 品类销售额\n品类销售额按订单明细的成交金额统计：`SUM(order_items.item_amount)`，关联 products、categories，只统计有效订单（status IN ('paid', 'completed')）并排除测试账号。\n注意：item_amount 未分摊订单级优惠，因此各品类销售额之和会略大于净销售额，这是预期内的差异。",
+        "duration_ms": 0,
+        "thought": "我会先确认指标定义，然后查询这两个周期。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "query_metric",
+        "arguments": {
+          "metric_id": "net_sales",
+          "source": "ecommerce_v1",
+          "start": "2025-12-01",
+          "end": "2026-01-01",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "dimension": "overall",
+          "region_code": "SOUTH_CHINA",
+          "order_channel": "app",
+          "unit": "元"
+        },
+        "ok": true,
+        "output": "{\"status\": \"needs_clarification\", \"metric\": {\"id\": \"net_sales\", \"name\": \"净销售额\", \"unit\": \"元\", \"formula\": \"有效订单 pay_amount（分）求和 / 100；paid、completed\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}, \"questions\": [\"该时间和筛选范围未找到业务订单，不能将没有记录直接解释为业务零值。\"], \"quality\": {\"order_rows\": 9143, \"duplicate_orders\": 0, \"missing_orders\": 0, \"invalid_status\": 0, \"invalid_dates\": 0, \"invalid_money\": 0, \"first_date\": \"2025-01-01 05:25:36\", \"last_date\": \"2025-12-31 23:21:57\", \"duplicate_users\": 0, \"invalid_users\": 0, \"orphan_orders\": 0}, \"warnings\": [\"该时间和筛选范围未找到业务订单，不能将没有记录直接解释为业务零值。\"], \"result\": null}",
+        "duration_ms": 48,
+        "thought": ""
+      }
+    ],
+    "plan": [
+      "确认净销售额指标口径、来源与单位，明确两个周期为2025年11月和12月，筛选范围为华南区域且终端为app端，维度使用整体维度",
+      "分别查询并核对两个周期在华南区域app端的整体净销售额，输出11月和12月金额",
+      "对比两个周期金额，计算差额与变化幅度，并确认数据完整性与口径一致性"
+    ],
+    "reflection": null,
+    "reflection_status": "skipped",
+    "revised": false,
+    "llm_calls": 3,
+    "usage": {
+      "prompt_tokens": 9556,
+      "completion_tokens": 393,
+      "total_tokens": 9949,
+      "prompt_cache_hit_tokens": 5760,
+      "prompt_cache_miss_tokens": 3796
+    },
+    "duration_ms": 3150,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "needs_clarification",
+      "scope": null,
+      "clarification_questions": [
+        "该时间和筛选范围未找到业务订单，不能将没有记录直接解释为业务零值。"
+      ],
+      "comparisons": [],
+      "warnings": [
+        "该时间和筛选范围未找到业务订单，不能将没有记录直接解释为业务零值。"
+      ],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": [
+        {
+          "status": "needs_clarification",
+          "metric": {
+            "id": "net_sales",
+            "name": "净销售额",
+            "unit": "元",
+            "formula": "有效订单 pay_amount（分）求和 / 100；paid、completed",
+            "kind": "additive",
+            "version": "1",
+            "source": "ecommerce_v1",
+            "time_field": "orders.order_time",
+            "exclude_test_users": true,
+            "allowed_join": "orders.user_id = users.user_id（users.user_id 必须唯一）",
+            "dimensions": [
+              "overall",
+              "region",
+              "order_channel"
+            ],
+            "scope": "项目电商模型；不自动套用于上传表或其他数据库业务口径"
+          },
+          "questions": [
+            "该时间和筛选范围未找到业务订单，不能将没有记录直接解释为业务零值。"
+          ],
+          "quality": {
+            "order_rows": 9143,
+            "duplicate_orders": 0,
+            "missing_orders": 0,
+            "invalid_status": 0,
+            "invalid_dates": 0,
+            "invalid_money": 0,
+            "first_date": "2025-01-01 05:25:36",
+            "last_date": "2025-12-31 23:21:57",
+            "duplicate_users": 0,
+            "invalid_users": 0,
+            "orphan_orders": 0
+          },
+          "warnings": [
+            "该时间和筛选范围未找到业务订单，不能将没有记录直接解释为业务零值。"
+          ],
+          "result": null
+        }
+      ]
+    },
+    "needs_clarification": true,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1214,
+          "usage": {
+            "prompt_tokens": 209,
+            "completion_tokens": 85,
+            "total_tokens": 294,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 209
+          }
+        },
+        "analysis": {
+          "logical_calls": 2,
+          "http_requests": 2,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1880,
+          "usage": {
+            "prompt_tokens": 9347,
+            "completion_tokens": 308,
+            "total_tokens": 9655,
+            "prompt_cache_hit_tokens": 5760,
+            "prompt_cache_miss_tokens": 3587
+          }
+        }
+      },
+      "llm_calls": 3,
+      "chat_usage": {
+        "prompt_tokens": 9556,
+        "completion_tokens": 393,
+        "total_tokens": 9949,
+        "prompt_cache_hit_tokens": 5760,
+        "prompt_cache_miss_tokens": 3796
+      },
+      "http_requests": 3,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 2,
+    "question": "只看华南区域的app端，比较2025年11月和12月净销售额，给两个周期金额，使用整体维度。",
+    "tables": [],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": false,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": false,
+      "fact_0_1": false,
+      "reconciled_comparison": false
+    },
+    "failed_checks": [
+      "fact_0_0",
+      "fact_0_1",
+      "reconciled_comparison"
+    ],
+    "fact_details": [
+      {
+        "check": "fact_0_0",
+        "expected": 143152.09,
+        "stated": false,
+        "grounded": false
+      },
+      {
+        "check": "fact_0_1",
+        "expected": 62832.2,
+        "stated": false,
+        "grounded": false
+      }
+    ],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

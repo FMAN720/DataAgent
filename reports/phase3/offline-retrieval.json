@@ -1,0 +1,451 @@
+{
+  "created_at": "2026-10-22T05:03:17.866386+00:00",
+  "kind": "Synthetic pipeline acceptance; not real model retrieval quality",
+  "external_model_calls": 0,
+  "synthetic_embed_calls": 27,
+  "database_restarted": true,
+  "pending_jobs_recovered": 3,
+  "document_count": 3,
+  "question_count": 12,
+  "metrics": {
+    "keyword": {
+      "hit_at_3": 0.7,
+      "mrr": 0.7,
+      "no_answer_accuracy": 1.0,
+      "average_ms": 62.17
+    },
+    "vector": {
+      "hit_at_3": 1.0,
+      "mrr": 1.0,
+      "no_answer_accuracy": 1.0,
+      "average_ms": 183.92
+    },
+    "hybrid": {
+      "hit_at_3": 1.0,
+      "mrr": 1.0,
+      "no_answer_accuracy": 1.0,
+      "average_ms": 193.33
+    }
+  },
+  "results": [
+    {
+      "id": "sales_exact",
+      "query": "净销售额",
+      "mode": "keyword",
+      "expected": "sales",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:bc0f6098-8763-412e-a408-f95a2ce27709"
+      ],
+      "elapsed_ms": 68
+    },
+    {
+      "id": "sales_exact",
+      "query": "净销售额",
+      "mode": "vector",
+      "expected": "sales",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:bc0f6098-8763-412e-a408-f95a2ce27709"
+      ],
+      "elapsed_ms": 200
+    },
+    {
+      "id": "sales_exact",
+      "query": "净销售额",
+      "mode": "hybrid",
+      "expected": "sales",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:bc0f6098-8763-412e-a408-f95a2ce27709"
+      ],
+      "elapsed_ms": 208
+    },
+    {
+      "id": "sales_synonym",
+      "query": "实收收入如何计算",
+      "mode": "keyword",
+      "expected": "sales",
+      "hit_at_3": false,
+      "reciprocal_rank": 0,
+      "references": [],
+      "elapsed_ms": 42
+    },
+    {
+      "id": "sales_synonym",
+      "query": "实收收入如何计算",
+      "mode": "vector",
+      "expected": "sales",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:bc0f6098-8763-412e-a408-f95a2ce27709"
+      ],
+      "elapsed_ms": 192
+    },
+    {
+      "id": "sales_synonym",
+      "query": "实收收入如何计算",
+      "mode": "hybrid",
+      "expected": "sales",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:bc0f6098-8763-412e-a408-f95a2ce27709"
+      ],
+      "elapsed_ms": 178
+    },
+    {
+      "id": "sales_exclusion",
+      "query": "净销售额排除哪些订单",
+      "mode": "keyword",
+      "expected": "sales",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:bc0f6098-8763-412e-a408-f95a2ce27709",
+        "D:8fb6c8a7-eada-4cd3-b401-76259b754afc"
+      ],
+      "elapsed_ms": 70
+    },
+    {
+      "id": "sales_exclusion",
+      "query": "净销售额排除哪些订单",
+      "mode": "vector",
+      "expected": "sales",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:bc0f6098-8763-412e-a408-f95a2ce27709"
+      ],
+      "elapsed_ms": 203
+    },
+    {
+      "id": "sales_exclusion",
+      "query": "净销售额排除哪些订单",
+      "mode": "hybrid",
+      "expected": "sales",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:bc0f6098-8763-412e-a408-f95a2ce27709",
+        "D:8fb6c8a7-eada-4cd3-b401-76259b754afc"
+      ],
+      "elapsed_ms": 227
+    },
+    {
+      "id": "sales_units",
+      "query": "金额以什么单位存储",
+      "mode": "keyword",
+      "expected": "sales",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:bc0f6098-8763-412e-a408-f95a2ce27709"
+      ],
+      "elapsed_ms": 86
+    },
+    {
+      "id": "sales_units",
+      "query": "金额以什么单位存储",
+      "mode": "vector",
+      "expected": "sales",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:bc0f6098-8763-412e-a408-f95a2ce27709"
+      ],
+      "elapsed_ms": 232
+    },
+    {
+      "id": "sales_units",
+      "query": "金额以什么单位存储",
+      "mode": "hybrid",
+      "expected": "sales",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:bc0f6098-8763-412e-a408-f95a2ce27709"
+      ],
+      "elapsed_ms": 218
+    },
+    {
+      "id": "refund_exact",
+      "query": "退款率如何定义",
+      "mode": "keyword",
+      "expected": "refund",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:8fb6c8a7-eada-4cd3-b401-76259b754afc",
+        "D:bc0f6098-8763-412e-a408-f95a2ce27709"
+      ],
+      "elapsed_ms": 82
+    },
+    {
+      "id": "refund_exact",
+      "query": "退款率如何定义",
+      "mode": "vector",
+      "expected": "refund",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:8fb6c8a7-eada-4cd3-b401-76259b754afc"
+      ],
+      "elapsed_ms": 166
+    },
+    {
+      "id": "refund_exact",
+      "query": "退款率如何定义",
+      "mode": "hybrid",
+      "expected": "refund",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:8fb6c8a7-eada-4cd3-b401-76259b754afc",
+        "D:bc0f6098-8763-412e-a408-f95a2ce27709"
+      ],
+      "elapsed_ms": 162
+    },
+    {
+      "id": "refund_synonym",
+      "query": "退货比例是什么",
+      "mode": "keyword",
+      "expected": "refund",
+      "hit_at_3": false,
+      "reciprocal_rank": 0,
+      "references": [],
+      "elapsed_ms": 38
+    },
+    {
+      "id": "refund_synonym",
+      "query": "退货比例是什么",
+      "mode": "vector",
+      "expected": "refund",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:8fb6c8a7-eada-4cd3-b401-76259b754afc"
+      ],
+      "elapsed_ms": 170
+    },
+    {
+      "id": "refund_synonym",
+      "query": "退货比例是什么",
+      "mode": "hybrid",
+      "expected": "refund",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:8fb6c8a7-eada-4cd3-b401-76259b754afc"
+      ],
+      "elapsed_ms": 179
+    },
+    {
+      "id": "refund_requests",
+      "query": "refund_requests 能作为分子吗",
+      "mode": "keyword",
+      "expected": "refund",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:8fb6c8a7-eada-4cd3-b401-76259b754afc"
+      ],
+      "elapsed_ms": 71
+    },
+    {
+      "id": "refund_requests",
+      "query": "refund_requests 能作为分子吗",
+      "mode": "vector",
+      "expected": "refund",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:8fb6c8a7-eada-4cd3-b401-76259b754afc"
+      ],
+      "elapsed_ms": 173
+    },
+    {
+      "id": "refund_requests",
+      "query": "refund_requests 能作为分子吗",
+      "mode": "hybrid",
+      "expected": "refund",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:8fb6c8a7-eada-4cd3-b401-76259b754afc"
+      ],
+      "elapsed_ms": 189
+    },
+    {
+      "id": "delivery_exact",
+      "query": "配送时效",
+      "mode": "keyword",
+      "expected": "delivery",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:62275cd2-b585-4d94-8160-bbda654203e7"
+      ],
+      "elapsed_ms": 80
+    },
+    {
+      "id": "delivery_exact",
+      "query": "配送时效",
+      "mode": "vector",
+      "expected": "delivery",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:62275cd2-b585-4d94-8160-bbda654203e7"
+      ],
+      "elapsed_ms": 204
+    },
+    {
+      "id": "delivery_exact",
+      "query": "配送时效",
+      "mode": "hybrid",
+      "expected": "delivery",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:62275cd2-b585-4d94-8160-bbda654203e7"
+      ],
+      "elapsed_ms": 257
+    },
+    {
+      "id": "delivery_synonym",
+      "query": "多久送达",
+      "mode": "keyword",
+      "expected": "delivery",
+      "hit_at_3": false,
+      "reciprocal_rank": 0,
+      "references": [],
+      "elapsed_ms": 48
+    },
+    {
+      "id": "delivery_synonym",
+      "query": "多久送达",
+      "mode": "vector",
+      "expected": "delivery",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:62275cd2-b585-4d94-8160-bbda654203e7"
+      ],
+      "elapsed_ms": 194
+    },
+    {
+      "id": "delivery_synonym",
+      "query": "多久送达",
+      "mode": "hybrid",
+      "expected": "delivery",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:62275cd2-b585-4d94-8160-bbda654203e7"
+      ],
+      "elapsed_ms": 194
+    },
+    {
+      "id": "delivery_remote",
+      "query": "偏远地区需要几个工作日",
+      "mode": "keyword",
+      "expected": "delivery",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:62275cd2-b585-4d94-8160-bbda654203e7"
+      ],
+      "elapsed_ms": 79
+    },
+    {
+      "id": "delivery_remote",
+      "query": "偏远地区需要几个工作日",
+      "mode": "vector",
+      "expected": "delivery",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:62275cd2-b585-4d94-8160-bbda654203e7"
+      ],
+      "elapsed_ms": 181
+    },
+    {
+      "id": "delivery_remote",
+      "query": "偏远地区需要几个工作日",
+      "mode": "hybrid",
+      "expected": "delivery",
+      "hit_at_3": true,
+      "reciprocal_rank": 1.0,
+      "references": [
+        "D:62275cd2-b585-4d94-8160-bbda654203e7"
+      ],
+      "elapsed_ms": 181
+    },
+    {
+      "id": "unanswerable_space",
+      "query": "火星轨道参数",
+      "mode": "keyword",
+      "expected": null,
+      "hit_at_3": true,
+      "reciprocal_rank": 0,
+      "references": [],
+      "elapsed_ms": 40
+    },
+    {
+      "id": "unanswerable_space",
+      "query": "火星轨道参数",
+      "mode": "vector",
+      "expected": null,
+      "hit_at_3": true,
+      "reciprocal_rank": 0,
+      "references": [],
+      "elapsed_ms": 147
+    },
+    {
+      "id": "unanswerable_space",
+      "query": "火星轨道参数",
+      "mode": "hybrid",
+      "expected": null,
+      "hit_at_3": true,
+      "reciprocal_rank": 0,
+      "references": [],
+      "elapsed_ms": 157
+    },
+    {
+      "id": "unanswerable_inventory",
+      "query": "仓库库存盘点公式",
+      "mode": "keyword",
+      "expected": null,
+      "hit_at_3": true,
+      "reciprocal_rank": 0,
+      "references": [],
+      "elapsed_ms": 42
+    },
+    {
+      "id": "unanswerable_inventory",
+      "query": "仓库库存盘点公式",
+      "mode": "vector",
+      "expected": null,
+      "hit_at_3": true,
+      "reciprocal_rank": 0,
+      "references": [],
+      "elapsed_ms": 145
+    },
+    {
+      "id": "unanswerable_inventory",
+      "query": "仓库库存盘点公式",
+      "mode": "hybrid",
+      "expected": null,
+      "hit_at_3": true,
+      "reciprocal_rank": 0,
+      "references": [],
+      "elapsed_ms": 170
+    }
+  ],
+  "synthetic_rows_cleaned_up": true
+}

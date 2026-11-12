@@ -1,0 +1,55 @@
+# 本机凭据与环境变量；只提交无真实凭据的示例
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# Python 虚拟环境、编译与工具缓存
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# 演示数据库首次启动时生成；不提交本机业务数据
+/data/
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.log
+logs/
+node_modules/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# pytest 临时目录（--basetemp=.pytest_tmp_*）
+.pytest_tmp*/
+# 运行时数据：用户上传的原始文件、表格导入暂存、评测工作目录
+uploads/
+data/imports/
+reports/phase7/work/
+reports/live-eval/work/
+reports/live-eval/evaluation.lock
+reports/phase7/evaluation.lock
+# 本机生成的 PostgreSQL 账号密码
+.env.phase2*
+reports/live-eval*/**/*.log
+reports/live-eval*/*.log
+# 设计工具的本机选择与随机轮次记录，不作为项目设计规范提交
+.impeccable/questions/

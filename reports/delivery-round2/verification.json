@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-25",
+  "scope": "delivery round 2",
+  "python": {
+    "passed": 464,
+    "skipped": 0,
+    "failed": 0,
+    "evidence": "pytest.xml"
+  },
+  "frontend": {
+    "passed": 14,
+    "failed": 0,
+    "evidence": "ui-tests.xml"
+  },
+  "integration": "local PostgreSQL/pgvector and Redis",
+  "runtime_readonly_requests": 7,
+  "model_api_calls": 0,
+  "new_installations": 0,
+  "new_database_tables": 0,
+  "synthetic_demo_conversations_retained": 2,
+  "syntax_checks": "Python AST and node --check passed",
+  "credential_audit": {
+    "status": "passed",
+    "scope": "effective credentials after .env.phase2 overrides",
+    "files_checked": 32
+  },
+  "ui_review": "ship; four scored findings resolved",
+  "browser": {
+    "desktop_viewport": [
+      1280,
+      720
+    ],
+    "mobile_viewport": [
+      390,
+      844
+    ],
+    "mobile_page_scroll_width": 390,
+    "chart_scroll_container_width": 350,
+    "chart_scroll_content_width": 600,
+    "keyboard_arrow_right_scroll_left": 40,
+    "csv_download": "verified"
+  },
+  "limits": [
+    "No real model accuracy or ablation results",
+    "Local single-user only; no authentication or tenant isolation",
+    "Code-led local extension; no approved comp, concept seed or detector"
+  ],
+  "evidence": [
+    "README.md",
+    "pytest.xml",
+    "ui-tests.xml",
+    "runtime-smoke.json",
+    "demo.json",
+    "finish-review.md",
+    "finish-verdict.md",
+    "design-verification.md",
+    "captures/desktop.png",
+    "captures/mobile.png",
+    "captures/desktop-contribution.png",
+    "captures/desktop-trend.png"
+  ]
+}

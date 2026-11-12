@@ -1,0 +1,102 @@
+{
+  "model_api_calls": 0,
+  "prefilled_transcription": true,
+  "persisted": true,
+  "fixtures": [
+    "tests\\fixtures\\vision_synthetic.png",
+    "tests\\fixtures\\vision_synthetic_scan.pdf"
+  ],
+  "draft": {
+    "id": "61423d6a-ef1b-48d5-9cef-f4d4adbc0519",
+    "filename": "合成演示-预置人工转录.png",
+    "mime_type": "image/png",
+    "content_hash": "b698f0e7a00f44488da0e32c0676616e478af8d0b11094ba8af4f7dc8191ebee",
+    "page_count": 1,
+    "status": "needs_review",
+    "revision": 1,
+    "error": null,
+    "model": null,
+    "selected_pages": [],
+    "attempts": [],
+    "pages": {
+      "1": {
+        "raw": {
+          "text": "合成演示：预置人工转录，非模型识别结果。金额单位元；第三行空白不能当作零。",
+          "tables": [
+            {
+              "title": "合成区域金额（元）",
+              "columns": [
+                "external_id",
+                "region_code",
+                "amount_yuan"
+              ],
+              "rows": [
+                [
+                  "001",
+                  "EAST",
+                  "12.30"
+                ],
+                [
+                  "002",
+                  "NORTH",
+                  "0.10"
+                ],
+                [
+                  "003",
+                  "WEST",
+                  null
+                ]
+              ],
+              "notes": "金额单位元；外部编号保留前导零，空白为缺失值。"
+            }
+          ],
+          "warnings": [
+            "这是演示程序预置转录，不代表视觉模型准确率；发布前请核对原图。"
+          ]
+        },
+        "origin": "manual",
+        "model": null,
+        "usage": {
+          "requests": 0
+        },
+        "edited": {
+          "text": "合成演示：预置人工转录，非模型识别结果。金额单位元；第三行空白不能当作零。",
+          "tables": [
+            {
+              "title": "合成区域金额（元）",
+              "columns": [
+                "external_id",
+                "region_code",
+                "amount_yuan"
+              ],
+              "rows": [
+                [
+                  "001",
+                  "EAST",
+                  "12.30"
+                ],
+                [
+                  "002",
+                  "NORTH",
+                  "0.10"
+                ],
+                [
+                  "003",
+                  "WEST",
+                  null
+                ]
+              ],
+              "notes": "金额单位元；外部编号保留前导零，空白为缺失值。"
+            }
+          ],
+          "warnings": [
+            "这是演示程序预置转录，不代表视觉模型准确率；发布前请核对原图。"
+          ]
+        },
+        "reviewed": false
+      }
+    },
+    "publications": [],
+    "created_at": "2026-10-25T03:52:14.070417+00:00"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "created_at": "2026-11-05T11:17:24.430880+00:00",
+  "passed": true,
+  "checks": [
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/health/ready",
+      "status": 200,
+      "ready": true
+    },
+    {
+      "path": "/workspace-config",
+      "status": 200,
+      "business_profiles_available": true,
+      "analysis_tasks_available": true
+    },
+    {
+      "path": "/api/v1/datasets",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/documents",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/conversations",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/business-profiles",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/analysis-tasks",
+      "status": 200
+    },
+    {
+      "path": "/assets/business.js?v=20261105-core1",
+      "status": 200
+    }
+  ],
+  "provider_requests": 0,
+  "read_only": true
+}

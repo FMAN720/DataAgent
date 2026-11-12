@@ -1,0 +1,261 @@
+{
+  "id": "sql_nov_gmv",
+  "category": "sql",
+  "split": "development",
+  "variant": "baseline",
+  "question": "2025年11月GMV是多少元？按已支付订单口径，包含后来全额退款的订单。",
+  "response": {
+    "answer": "**2025年11月 GMV = 1,148,420.00 元**\n\n关键数字：\n- 计入 GMV 的订单数：1,153 单（paid + completed + refunded）\n- 其中后来全额退款的订单：114 单，实付金额 101,161.77 元（按口径仍计入 GMV）\n- 已排除 cancelled 订单和内部测试账号\n\n口径：GMV = 已支付订单（status 为 paid/completed/refunded）的实付金额 pay_amount 之和，包含之后全额退款的订单，排除测试账号，按下单时间 order_time 统计 2025-11-01 至 2025-11-30，金额单位由分换算为元。",
+    "success": true,
+    "trace_id": "2e290484-bdd9-4e14-8ac0-963d236b56f8",
+    "session_id": "9ca278a6-3b4c-4c4f-a77e-1ff955bd2f52",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_glossary",
+        "arguments": {
+          "query": "GMV"
+        },
+        "ok": true,
+        "output": "## GMV（成交总额）\nGMV = 已支付订单的实付金额之和，包含之后发生退款的订单。\nSQL 口径：`SUM(pay_amount)`，条件 `status IN ('paid', 'completed', 'refunded')`，并排除测试账号。\n注意：GMV 不包含 cancelled 订单；也不是 total_amount（未扣优惠的原价）之和。\n\n## 净销售额（营收 / 销售额）\n净销售额 = 有效订单的实付金额之和，即 GMV 扣除已退款订单。\nSQL 口径：`SUM(pay_amount)`，条件 `status IN ('paid', 'completed')`，并排除测试账号。\n用户说「销售额」「营收」「收入」时，默认指净销售额。\n\n## 有效订单\n有效订单指已支付且未全额退款的订单：`orders.status IN ('paid', 'completed')`。\n- cancelled：下单后未支付即取消，不计入任何销售类指标。\n- refunded：已全额退款，计入 GMV，但不计入净销售额和有效订单数。",
+        "duration_ms": 0,
+        "thought": "我先查一下 GMV 的业务口径和表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_tables",
+        "arguments": {
+          "question": "GMV 已支付订单 订单金额"
+        },
+        "ok": true,
+        "output": "{\"dialect\": \"sqlite\", \"tables\": [{\"table\": \"categories\", \"columns\": [\"category_id\", \"category_name\", \"parent_id\"]}, {\"table\": \"order_items\", \"columns\": [\"item_id\", \"order_id\", \"product_id\", \"quantity\", \"unit_price\", \"item_amount\"]}, {\"table\": \"orders\", \"columns\": [\"order_id\", \"user_id\", \"order_time\", \"status\", \"channel\", \"total_amount\", \"discount_amount\", \"pay_amount\", \"pay_time\"]}, {\"table\": \"payments\", \"columns\": [\"payment_id\", \"order_id\", \"pay_method\", \"amount\", \"paid_at\"]}, {\"table\": \"products\", \"columns\": [\"product_id\", \"product_name\", \"category_id\", \"list_price\", \"cost_price\", \"is_active\"]}, {\"table\": \"refund_requests\", \"columns\": [\"request_id\", \"order_id\", \"request_time\", \"status\", \"reason\"]}, {\"table\": \"refunds\", \"columns\": [\"refund_id\", \"order_id\", \"refund_amount\", \"refund_time\", \"reason\"]}, {\"table\": \"regions\", \"columns\": [\"region_code\", \"region_name\"]}, {\"table\": \"uploaded_budget\", \"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\"]}, {\"table\": \"user_events\", \"columns\": [\"event_id\", \"user_id\", \"event_date\", \"event_type\"]}, {\"table\": \"users\", \"columns\": [\"user_id\", \"register_date\", \"region_code\", \"gender\", \"birth_year\", \"member_level\", \"acquire_channel\", \"is_test\"]}]}",
+        "duration_ms": 4,
+        "thought": "我先查一下 GMV 的业务口径和表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "orders",
+            "users"
+          ]
+        },
+        "ok": true,
+        "output": "表 orders\n  order_id INTEGER\n  user_id INTEGER NOT NULL\n  order_time TEXT NOT NULL  -- 下单时间 YYYY-MM-DD HH:MM:SS\n  status TEXT NOT NULL  -- paid 已支付 / completed 已完成 / cancelled 已取消（未支付） / refunded 已全额退款\n  channel TEXT NOT NULL  -- 下单端：app / web / mini_program\n  total_amount INTEGER NOT NULL  -- 商品原价合计，单位：分\n  discount_amount INTEGER NOT NULL  -- 优惠金额，单位：分\n  pay_amount INTEGER NOT NULL  -- 实付金额 = total_amount - discount_amount，单位：分；cancelled 订单为 0\n  pay_time TEXT  -- 支付时间；cancelled 为 NULL\n  外键: user_id -> users(user_id)\n  样例 (order_id | user_id | order_time | status | channel | total_amount | discount_amount | pay_amount | pay_time):\n  1 | 350 | 2025-01-26 14:43:02 | completed | web | 538710 | 0 | 538710 | 2025-01-26 15:10:02\n  2 | 930 | 2025-01-26 20:03:44 | completed | app | 15930 | 343 | 15587 | 2025-01-26 20:28:44\n  3 | 390 | 2025-01-01 17:46:50 | refunded | web | 12900 | 0 | 12900 | 2025-01-01 18:12:50\n\n表 users\n  user_id INTEGER\n  register_date TEXT NOT NULL  -- 注册日期 YYYY-MM-DD\n  region_code TEXT NOT NULL\n  gender TEXT  -- M / F / NULL（未填写）\n  birth_year INTEGER\n  member_level TEXT NOT NULL  -- normal / silver / gold\n  acquire_channel TEXT NOT NULL  -- 拉新渠道：organic / ads / referral\n  is_test INTEGER NOT NULL  -- 1 表示内部测试账号，统计时必须排除\n  外键: region_code -> regions(region_code)\n  样例 (user_id | register_date | region_code | gender | birth_year | member_level | acquire_channel | is_test):\n  1 | 2024-04-17 | NORTH | F | 1975 | normal | ads | 0\n  2 | 2024-11-26 | NORTH | None | 1983 | silver | ads | 0\n  3 | 2025-12-03 | EAST | F | 1989 | silver | organic | 0",
+        "duration_ms": 1,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT COUNT(*) AS order_cnt, SUM(o.pay_amount) AS gmv_fen, ROUND(SUM(o.pay_amount)/100.0, 2) AS gmv_yuan,\n       SUM(CASE WHEN o.status='refunded' THEN 1 ELSE 0 END) AS refunded_cnt,\n       SUM(CASE WHEN o.status='refunded' THEN o.pay_amount ELSE 0 END)/100.0 AS refunded_yuan\nFROM orders o JOIN users u ON o.user_id = u.user_id\nWHERE o.status IN ('paid','completed','refunded')\n  AND u.is_test = 0\n  AND o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01'",
+          "purpose": "2025年11月GMV（已支付口径，含全额退款订单，排除测试账号）"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"order_cnt\", \"gmv_fen\", \"gmv_yuan\", \"refunded_cnt\", \"refunded_yuan\"], \"rows\": [[1153, 114842000, 1148420.0, 114, 101161.77]], \"row_count\": 1}",
+        "duration_ms": 1,
+        "thought": ""
+      }
+    ],
+    "plan": [
+      "确认GMV指标定义：已支付订单口径、包含后来全额退款的订单，明确金额单位为元及统计时间范围为2025年11月",
+      "查询2025年11月已支付订单的GMV总额，并核对订单状态与退款记录是否按口径完整纳入"
+    ],
+    "reflection": {
+      "passed": true,
+      "quality_score": 95,
+      "issues": [],
+      "summary": "回答中的关键数字与查询结果完全一致，口径符合GMV定义，已排除测试账号和cancelled订单，并正确包含全额退款订单。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "2025年11月GMV = 1,148,420.00元",
+          "status": "supported",
+          "evidence_ids": [
+            "E4"
+          ],
+          "reason": "查询结果gmv_yuan为1148420.0，与回答一致；E1确认GMV口径为已支付订单实付金额之和。"
+        },
+        {
+          "claim": "计入GMV的订单数1,153单（paid+completed+refunded）",
+          "status": "supported",
+          "evidence_ids": [
+            "E4"
+          ],
+          "reason": "查询结果order_cnt为1153，SQL条件为status IN ('paid','completed','refunded')。"
+        },
+        {
+          "claim": "后来全额退款的订单114单，实付金额101,161.77元",
+          "status": "supported",
+          "evidence_ids": [
+            "E4"
+          ],
+          "reason": "查询结果refunded_cnt为114，refunded_yuan为101161.77，与回答一致。"
+        },
+        {
+          "claim": "已排除cancelled订单和内部测试账号",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E3",
+            "E4"
+          ],
+          "reason": "E1口径要求排除测试账号且不含cancelled；E3说明is_test=1为测试账号；E4的SQL使用u.is_test=0且status仅取paid/completed/refunded。"
+        },
+        {
+          "claim": "按下单时间order_time统计2025-11-01至2025-11-30",
+          "status": "supported",
+          "evidence_ids": [
+            "E4"
+          ],
+          "reason": "SQL条件为order_time >= '2025-11-01' AND order_time < '2025-12-01'，覆盖整个11月。"
+        },
+        {
+          "claim": "金额单位由分换算为元",
+          "status": "supported",
+          "evidence_ids": [
+            "E3",
+            "E4"
+          ],
+          "reason": "E3说明pay_amount单位为分；E4中gmv_yuan由SUM(pay_amount)/100.0得出，未二次除以100。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 6,
+    "usage": {
+      "prompt_tokens": 23989,
+      "completion_tokens": 1087,
+      "total_tokens": 25076,
+      "prompt_cache_hit_tokens": 17152,
+      "prompt_cache_miss_tokens": 6837
+    },
+    "duration_ms": 7404,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 813,
+          "usage": {
+            "prompt_tokens": 206,
+            "completion_tokens": 65,
+            "total_tokens": 271,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 206
+          }
+        },
+        "analysis": {
+          "logical_calls": 4,
+          "http_requests": 4,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 4196,
+          "usage": {
+            "prompt_tokens": 21334,
+            "completion_tokens": 530,
+            "total_tokens": 21864,
+            "prompt_cache_hit_tokens": 16768,
+            "prompt_cache_miss_tokens": 4566
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 2381,
+          "usage": {
+            "prompt_tokens": 2449,
+            "completion_tokens": 492,
+            "total_tokens": 2941,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2065
+          }
+        }
+      },
+      "llm_calls": 6,
+      "chat_usage": {
+        "prompt_tokens": 23989,
+        "completion_tokens": 1087,
+        "total_tokens": 25076,
+        "prompt_cache_hit_tokens": 17152,
+        "prompt_cache_miss_tokens": 6837
+      },
+      "http_requests": 6,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 4,
+    "question": "2025年11月GMV是多少元？按已支付订单口径，包含后来全额退款的订单。",
+    "tables": [
+      {
+        "id": "result-4",
+        "title": "查询结果 · E4",
+        "columns": [
+          "order_cnt",
+          "gmv_fen",
+          "gmv_yuan",
+          "refunded_cnt",
+          "refunded_yuan"
+        ],
+        "rows": [
+          [
+            1153,
+            114842000,
+            1148420.0,
+            114,
+            101161.77
+          ]
+        ],
+        "evidence_ids": [
+          "E4"
+        ],
+        "scope": {},
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

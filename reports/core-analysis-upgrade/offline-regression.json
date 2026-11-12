@@ -1,0 +1,380 @@
+{
+  "kind": "offline_tool_and_workflow_regression",
+  "created_at": "2026-11-05T11:12:06.814106+00:00",
+  "passed": 21,
+  "total": 21,
+  "provider_requests": 0,
+  "limits": "Synthetic fixtures and scripted model; not live-model accuracy, causal validity or provider interoperability.",
+  "results": [
+    {
+      "id": "finance_cents",
+      "domain": "finance",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "value": true,
+        "validation": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": "323.45",
+      "validation": "passed",
+      "fixture_calls": 2,
+      "duration_ms": 73
+    },
+    {
+      "id": "finance_region",
+      "domain": "finance",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "value": true,
+        "validation": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": "123.45",
+      "validation": "passed",
+      "fixture_calls": 2,
+      "duration_ms": 117
+    },
+    {
+      "id": "real_zero",
+      "domain": "finance",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "value": true,
+        "validation": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": "0",
+      "validation": "passed",
+      "fixture_calls": 2,
+      "duration_ms": 107
+    },
+    {
+      "id": "empty_is_not_zero",
+      "domain": "finance",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "value": true,
+        "tool_status": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": null,
+      "validation": "not_applicable",
+      "fixture_calls": 2,
+      "duration_ms": 99
+    },
+    {
+      "id": "reject_empty_as_zero",
+      "domain": "finance",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "value": true,
+        "validation": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": null,
+      "validation": "failed",
+      "fixture_calls": 2,
+      "duration_ms": 122
+    },
+    {
+      "id": "reject_100x_money",
+      "domain": "finance",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "value": true,
+        "validation": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": "323.45",
+      "validation": "failed",
+      "fixture_calls": 2,
+      "duration_ms": 109
+    },
+    {
+      "id": "registered_stock",
+      "domain": "stock",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "value": true,
+        "validation": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": "15",
+      "validation": "passed",
+      "fixture_calls": 2,
+      "duration_ms": 90
+    },
+    {
+      "id": "registered_average",
+      "domain": "stock_average",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "value": true,
+        "validation": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": "15",
+      "validation": "passed",
+      "fixture_calls": 2,
+      "duration_ms": 96
+    },
+    {
+      "id": "registered_count",
+      "domain": "stock_count",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "value": true,
+        "validation": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": "2",
+      "validation": "passed",
+      "fixture_calls": 2,
+      "duration_ms": 94
+    },
+    {
+      "id": "weighted_rate",
+      "domain": "support",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "value": true,
+        "validation": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": "82.72727273",
+      "validation": "passed",
+      "fixture_calls": 2,
+      "duration_ms": 100
+    },
+    {
+      "id": "reject_average_of_rates",
+      "domain": "support",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "value": true,
+        "validation": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": "82.72727273",
+      "validation": "failed",
+      "fixture_calls": 2,
+      "duration_ms": 90
+    },
+    {
+      "id": "undefined_rate",
+      "domain": "support",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "value": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": null,
+      "validation": "not_applicable",
+      "fixture_calls": 2,
+      "duration_ms": 86
+    },
+    {
+      "id": "reject_undefined_zero",
+      "domain": "support",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "value": true,
+        "validation": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": null,
+      "validation": "failed",
+      "fixture_calls": 2,
+      "duration_ms": 105
+    },
+    {
+      "id": "duplicate_grain",
+      "domain": "finance",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "tool_status": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": null,
+      "validation": "not_applicable",
+      "fixture_calls": 1,
+      "duration_ms": 89
+    },
+    {
+      "id": "missing_amount",
+      "domain": "finance",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "tool_status": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": null,
+      "validation": "not_applicable",
+      "fixture_calls": 1,
+      "duration_ms": 90
+    },
+    {
+      "id": "invalid_calendar_date",
+      "domain": "finance",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "tool_status": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": null,
+      "validation": "not_applicable",
+      "fixture_calls": 1,
+      "duration_ms": 86
+    },
+    {
+      "id": "schema_drift",
+      "domain": "schema_drift",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": null,
+      "validation": "not_applicable",
+      "fixture_calls": 2,
+      "duration_ms": 88
+    },
+    {
+      "id": "bound_filter",
+      "domain": "finance",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "value": true,
+        "tool_status": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": null,
+      "validation": "not_applicable",
+      "fixture_calls": 2,
+      "duration_ms": 98
+    },
+    {
+      "id": "fixed_filter_cannot_be_removed",
+      "domain": "finance",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "value": true,
+        "tool_status": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": null,
+      "validation": "not_applicable",
+      "fixture_calls": 2,
+      "duration_ms": 87
+    },
+    {
+      "id": "reject_stock_sum_across_dates",
+      "domain": "stock",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": null,
+      "validation": "not_applicable",
+      "fixture_calls": 2,
+      "duration_ms": 72
+    },
+    {
+      "id": "reject_wrong_period",
+      "domain": "finance",
+      "passed": true,
+      "checks": {
+        "tool_ok": true,
+        "value": true,
+        "validation": true,
+        "clarification": true,
+        "success": true,
+        "persistent_task": true,
+        "profile_bound": true
+      },
+      "actual_value": "323.45",
+      "validation": "failed",
+      "fixture_calls": 2,
+      "duration_ms": 87
+    }
+  ]
+}

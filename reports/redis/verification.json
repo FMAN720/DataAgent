@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-23",
+  "python": {
+    "passed": 295,
+    "skipped": 68,
+    "failed": 0,
+    "redis_tests": 34,
+    "real_redis_integration": 7,
+    "command": "RUN_REDIS_TESTS=1 python -m pytest -q --basetemp=.pytest_tmp_redis_final --junitxml=reports/redis/pytest.xml",
+    "skipped_reasons": {
+      "Set RUN_POSTGRES_TESTS=1 for the dedicated local PostgreSQL": 34,
+      "Opt in with RUN_POSTGRES_TESTS=1": 34
+    }
+  },
+  "node": {
+    "passed": 6,
+    "failed": 0,
+    "command": "node --test --test-reporter=junit tests/workspace.test.cjs"
+  },
+  "dependencies": {
+    "redis": "5.3.1",
+    "PyJWT": "2.15.1",
+    "pip_check": "passed"
+  },
+  "deployment": {
+    "image": "redis:8.0.3",
+    "image_pulled": false,
+    "container": "data-analyst-session-redis",
+    "volume": "data-analyst-session-redis-data",
+    "binding": "127.0.0.1:16379",
+    "health": "healthy",
+    "ping": "PONG",
+    "configured_session_backend": "redis",
+    "old_app_18080_restarted": false
+  },
+  "paid_api_calls": 0,
+  "postgres_integration_run": false
+}

@@ -1,0 +1,107 @@
+{
+  "id": "safe_metric",
+  "category": "boundaries",
+  "split": "development",
+  "variant": "baseline",
+  "question": "比较2025年11月与12月的变化。我还没指定指标，也不允许默认销售额，请先澄清。",
+  "response": {
+    "answer": "我需要先确认指标，才能进行比较。请补充以下信息：\n\n1. **指标**：您想比较哪个指标？可选（本电商库固定口径）：\n   - 净销售额（net_sales）\n   - 有效订单数（order_count）\n   - 退款率（refund_rate）\n   - 或者您指定的其他指标（需说明计算口径）\n\n2. **维度**（可选）：整体对比，还是按某个维度拆解？\n   - 用户注册区域（region）\n   - 下单端（app / web / mini_program）\n   - 其他维度\n\n3. **时间范围确认**：我理解您指的是 **2025-11-01 至 2025-12-01**（11月）对比 **2025-12-01 至 2026-01-01**（12月），按左闭右开区间。如需按其他时间字段（如支付时间）统计，请说明。\n\n请告知指标（及维度），我再执行查询。",
+    "success": true,
+    "trace_id": "b0c91b61-76fe-4dcb-b59f-793986d28f80",
+    "session_id": "950d6d3f-6ee5-4e75-ae8f-7ac3038dc1e5",
+    "mode": "plan_execute",
+    "steps": [],
+    "plan": [],
+    "reflection": null,
+    "reflection_status": "skipped",
+    "revised": false,
+    "llm_calls": 2,
+    "usage": {
+      "prompt_tokens": 4552,
+      "completion_tokens": 218,
+      "total_tokens": 4770,
+      "prompt_cache_hit_tokens": 4096,
+      "prompt_cache_miss_tokens": 456
+    },
+    "duration_ms": 2369,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "unverified",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 703,
+          "usage": {
+            "prompt_tokens": 208,
+            "completion_tokens": 5,
+            "total_tokens": 213,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 208
+          }
+        },
+        "analysis": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1662,
+          "usage": {
+            "prompt_tokens": 4344,
+            "completion_tokens": 213,
+            "total_tokens": 4557,
+            "prompt_cache_hit_tokens": 4096,
+            "prompt_cache_miss_tokens": 248
+          }
+        }
+      },
+      "llm_calls": 2,
+      "chat_usage": {
+        "prompt_tokens": 4552,
+        "completion_tokens": 218,
+        "total_tokens": 4770,
+        "prompt_cache_hit_tokens": 4096,
+        "prompt_cache_miss_tokens": 456
+      },
+      "http_requests": 2,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 1,
+    "question": "比较2025年11月与12月的变化。我还没指定指标，也不允许默认销售额，请先澄清。",
+    "tables": [],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "pattern_0": true,
+      "clarified": true,
+      "no_business_query": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

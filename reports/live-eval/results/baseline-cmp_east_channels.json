@@ -1,0 +1,579 @@
+{
+  "id": "cmp_east_channels",
+  "category": "comparison",
+  "split": "holdout",
+  "variant": "baseline",
+  "question": "保持华东父级范围，按下单渠道拆解2025年11月到12月净销售额变化；同时给出华东两个周期的整体金额。",
+  "response": {
+    "answer": "**结论：华东净销售额 12 月环比下降 57,100.25 元（-19.8%），主要拖累来自 app 渠道（-63,168.79 元），web 渠道逆势增长 42,586.30 元，部分抵消了降幅。**\n\n华东整体（按用户注册区域 = 华东，按下单时间）\n\n| 周期 | 净销售额（元） |\n|---|---|\n| 2025年11月 | 287,844.92 |\n| 2025年12月 | 230,744.67 |\n| 变化 | -57,100.25（-19.8%） |\n\n按下单渠道拆解（华东范围内，分项合计与整体完全核对一致）\n\n| 下单渠道 | 11月（元） | 12月（元） | 变化（元） | 变化幅度 | 对整体降幅的贡献 |\n|---|---|---|---|---|---|\n| app | 176,849.76 | 113,680.97 | -63,168.79 | -35.7% | +110.6%（拖累） |\n| mini_program | 88,378.85 | 51,861.09 | -36,517.76 | -41.3% | +64.0%（拖累） |\n| web | 22,616.31 | 65,202.61 | +42,586.30 | +188.3% | -74.6%（抵消） |\n| 合计 | 287,844.92 | 230,744.67 | -57,100.25 | -19.8% | 100% |\n\n要点：\n- 变化集中在 app 与 mini_program 两个移动端渠道，两者合计减少 99,686.55 元；web 增加 42,586.30 元，抵消了约 74.6% 的降幅。\n- 结构上，web 的占比从 7.9% 升至 28.3%，app 从 61.4% 降至 49.3%，mini_program 从 30.7% 降至 22.5%。\n- 注意：11 月 30 天、12 月 31 天，本次未做日均调整；若按日均，降幅会更大（约 -22.4%）。\n- 以上仅为统计拆解，不能据此认定渠道活动、价格或系统变更导致了变化；如需归因，还需渠道活动/投放记录等同期资料验证。\n\n口径：净销售额 = 有效订单（paid、completed）实付金额之和，已排除测试账号，按用户注册区域=华东、下单时间统计；11月=2025-11-01～11-30，12月=2025-12-01～12-31。",
+    "success": true,
+    "trace_id": "3add1f77-0926-48aa-a65c-ef3ccf417946",
+    "session_id": "6a777272-6f4f-4933-afe3-b7468e3622bd",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "get_metric_definition",
+        "arguments": {
+          "metric_id": "net_sales"
+        },
+        "ok": true,
+        "output": "{\"definitions\": [{\"id\": \"net_sales\", \"name\": \"净销售额\", \"unit\": \"元\", \"formula\": \"有效订单 pay_amount（分）求和 / 100；paid、completed\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}]}",
+        "duration_ms": 0,
+        "thought": "我先确认指标口径和表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_tables",
+        "arguments": {
+          "question": "净销售额 订单 区域 下单渠道"
+        },
+        "ok": true,
+        "output": "{\"dialect\": \"sqlite\", \"tables\": [{\"table\": \"categories\", \"columns\": [\"category_id\", \"category_name\", \"parent_id\"]}, {\"table\": \"order_items\", \"columns\": [\"item_id\", \"order_id\", \"product_id\", \"quantity\", \"unit_price\", \"item_amount\"]}, {\"table\": \"orders\", \"columns\": [\"order_id\", \"user_id\", \"order_time\", \"status\", \"channel\", \"total_amount\", \"discount_amount\", \"pay_amount\", \"pay_time\"]}, {\"table\": \"payments\", \"columns\": [\"payment_id\", \"order_id\", \"pay_method\", \"amount\", \"paid_at\"]}, {\"table\": \"products\", \"columns\": [\"product_id\", \"product_name\", \"category_id\", \"list_price\", \"cost_price\", \"is_active\"]}, {\"table\": \"refund_requests\", \"columns\": [\"request_id\", \"order_id\", \"request_time\", \"status\", \"reason\"]}, {\"table\": \"refunds\", \"columns\": [\"refund_id\", \"order_id\", \"refund_amount\", \"refund_time\", \"reason\"]}, {\"table\": \"regions\", \"columns\": [\"region_code\", \"region_name\"]}, {\"table\": \"uploaded_budget\", \"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\"]}, {\"table\": \"user_events\", \"columns\": [\"event_id\", \"user_id\", \"event_date\", \"event_type\"]}, {\"table\": \"users\", \"columns\": [\"user_id\", \"register_date\", \"region_code\", \"gender\", \"birth_year\", \"member_level\", \"acquire_channel\", \"is_test\"]}]}",
+        "duration_ms": 3,
+        "thought": "我先确认指标口径和表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "orders",
+            "users",
+            "regions"
+          ]
+        },
+        "ok": true,
+        "output": "表 orders\n  order_id INTEGER\n  user_id INTEGER NOT NULL\n  order_time TEXT NOT NULL  -- 下单时间 YYYY-MM-DD HH:MM:SS\n  status TEXT NOT NULL  -- paid 已支付 / completed 已完成 / cancelled 已取消（未支付） / refunded 已全额退款\n  channel TEXT NOT NULL  -- 下单端：app / web / mini_program\n  total_amount INTEGER NOT NULL  -- 商品原价合计，单位：分\n  discount_amount INTEGER NOT NULL  -- 优惠金额，单位：分\n  pay_amount INTEGER NOT NULL  -- 实付金额 = total_amount - discount_amount，单位：分；cancelled 订单为 0\n  pay_time TEXT  -- 支付时间；cancelled 为 NULL\n  外键: user_id -> users(user_id)\n  样例 (order_id | user_id | order_time | status | channel | total_amount | discount_amount | pay_amount | pay_time):\n  1 | 350 | 2025-01-26 14:43:02 | completed | web | 538710 | 0 | 538710 | 2025-01-26 15:10:02\n  2 | 930 | 2025-01-26 20:03:44 | completed | app | 15930 | 343 | 15587 | 2025-01-26 20:28:44\n  3 | 390 | 2025-01-01 17:46:50 | refunded | web | 12900 | 0 | 12900 | 2025-01-01 18:12:50\n\n表 users\n  user_id INTEGER\n  register_date TEXT NOT NULL  -- 注册日期 YYYY-MM-DD\n  region_code TEXT NOT NULL\n  gender TEXT  -- M / F / NULL（未填写）\n  birth_year INTEGER\n  member_level TEXT NOT NULL  -- normal / silver / gold\n  acquire_channel TEXT NOT NULL  -- 拉新渠道：organic / ads / referral\n  is_test INTEGER NOT NULL  -- 1 表示内部测试账号，统计时必须排除\n  外键: region_code -> regions(region_code)\n  样例 (user_id | register_date | region_code | gender | birth_year | member_level | acquire_channel | is_test):\n  1 | 2024-04-17 | NORTH | F | 1975 | normal | ads | 0\n  2 | 2024-11-26 | NORTH | None | 1983 | silver | ads | 0\n  3 | 2025-12-03 | EAST | F | 1989 | silver | organic | 0\n\n表 regions\n  region_code TEXT  -- 区域编码：EAST / NORTH / SOUTH / CENTRAL / WEST\n  region_name TEXT NOT NULL  -- 中文名：华东 / 华北 / 华南 / 华中 / 西部\n  样例 (region_code | region_name):\n  EAST | 华东\n  NORTH | 华北\n  SOUTH | 华南",
+        "duration_ms": 5,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "search_glossary",
+        "arguments": {
+          "query": "华东 区域 下单渠道 净销售额"
+        },
+        "ok": true,
+        "output": "## 净销售额（营收 / 销售额）\n净销售额 = 有效订单的实付金额之和，即 GMV 扣除已退款订单。\nSQL 口径：`SUM(pay_amount)`，条件 `status IN ('paid', 'completed')`，并排除测试账号。\n用户说「销售额」「营收」「收入」时，默认指净销售额。\n\n## 区域\nusers.region_code 存英文编码，regions 表提供中文名映射：\n- EAST = 华东，NORTH = 华北，SOUTH = 华南，CENTRAL = 华中，WEST = 西部。\n用户按中文提问时，先用 regions 表转换为编码再过滤；结果展示时用中文名。区域归属以用户的注册区域为准。\n\n## 品类销售额\n品类销售额按订单明细的成交金额统计：`SUM(order_items.item_amount)`，关联 products、categories，只统计有效订单（status IN ('paid', 'completed')）并排除测试账号。\n注意：item_amount 未分摊订单级优惠，因此各品类销售额之和会略大于净销售额，这是预期内的差异。",
+        "duration_ms": 1,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "prepare_analysis",
+        "arguments": {
+          "scope": {
+            "metric": "净销售额",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1",
+            "unit": "元",
+            "dimension": "下单渠道",
+            "base_start": "2025-11-01",
+            "base_end": "2025-12-01",
+            "current_start": "2025-12-01",
+            "current_end": "2026-01-01",
+            "filters": [
+              "region_code = EAST（华东，按用户注册区域）",
+              "status IN ('paid','completed')",
+              "排除 is_test = 1 测试账号"
+            ],
+            "assumptions": [
+              "11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31，按下单时间 order_time"
+            ]
+          }
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"scope\": {\"metric\": \"净销售额\", \"metric_kind\": \"additive\", \"source\": \"ecommerce_v1\", \"unit\": \"元\", \"dimension\": \"下单渠道\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [\"11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31，按下单时间 order_time\"], \"filters\": [\"region_code = EAST（华东，按用户注册区域）\", \"status IN ('paid','completed')\", \"排除 is_test = 1 测试账号\"]}, \"questions\": [], \"period_convention\": \"start_inclusive_end_exclusive\"}",
+        "duration_ms": 0,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 4,
+        "tool": "compare_periods",
+        "arguments": {
+          "scope": {
+            "assumptions": [
+              "11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31，按下单时间 order_time"
+            ],
+            "base_end": "2025-12-01",
+            "base_start": "2025-11-01",
+            "current_end": "2026-01-01",
+            "current_start": "2025-12-01",
+            "dimension": "下单渠道",
+            "filters": [
+              "region_code = EAST（华东，按用户注册区域）",
+              "status IN ('paid','completed')",
+              "排除 is_test = 1 测试账号"
+            ],
+            "metric": "净销售额",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1",
+            "unit": "元"
+          },
+          "detail_sql": "SELECT o.channel AS segment,\n       SUM(CASE WHEN o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01' THEN o.pay_amount ELSE 0 END)/100.0 AS base_value,\n       SUM(CASE WHEN o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01' THEN o.pay_amount ELSE 0 END)/100.0 AS current_value\nFROM orders o JOIN users u ON o.user_id = u.user_id\nWHERE u.region_code = 'EAST' AND u.is_test = 0\n  AND o.status IN ('paid','completed')\n  AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'\nGROUP BY o.channel",
+          "total_sql": "SELECT SUM(CASE WHEN o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01' THEN o.pay_amount ELSE 0 END)/100.0 AS base_value,\n       SUM(CASE WHEN o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01' THEN o.pay_amount ELSE 0 END)/100.0 AS current_value\nFROM orders o JOIN users u ON o.user_id = u.user_id\nWHERE u.region_code = 'EAST' AND u.is_test = 0\n  AND o.status IN ('paid','completed')\n  AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'"
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"scope\": {\"metric\": \"净销售额\", \"metric_kind\": \"additive\", \"source\": \"ecommerce_v1\", \"unit\": \"元\", \"dimension\": \"下单渠道\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [\"11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31，按下单时间 order_time\"], \"filters\": [\"region_code = EAST（华东，按用户注册区域）\", \"status IN ('paid','completed')\", \"排除 is_test = 1 测试账号\"]}, \"summary\": {\"base\": \"287844.92\", \"current\": \"230744.67\", \"delta\": \"-57100.25\", \"change_pct\": \"-19.83715745\"}, \"groups\": [{\"segment\": \"app\", \"base_value\": \"176849.76\", \"current_value\": \"113680.97\", \"delta\": \"-63168.79\", \"contribution_pct\": \"110.62786941\"}, {\"segment\": \"web\", \"base_value\": \"22616.31\", \"current_value\": \"65202.61\", \"delta\": \"42586.3\", \"contribution_pct\": \"-74.58163493\"}, {\"segment\": \"mini_program\", \"base_value\": \"88378.85\", \"current_value\": \"51861.09\", \"delta\": \"-36517.76\", \"contribution_pct\": \"63.95376553\"}], \"group_count\": 3, \"reconciliation\": {\"matched\": true, \"group_totals\": {\"base_value\": \"287844.92\", \"current_value\": \"230744.67\"}, \"differences\": {\"base_value\": \"0\", \"current_value\": \"0\"}}, \"warnings\": [\"贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。\", \"不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。\", \"两个周期天数不同，当前比较未自动做日均调整。\"], \"causal_claim_supported\": false}",
+        "duration_ms": 3,
+        "thought": ""
+      }
+    ],
+    "plan": [
+      "确认净销售额指标口径、来源、单位，以及2025年11月和12月两个周期，并明确分析范围限定为华东父级。",
+      "查询并核对华东整体在两个周期的净销售额总额及变化，作为父级基准。",
+      "在华东范围内按下单渠道查询两个周期的净销售额，核对各渠道分项合计与华东整体一致。",
+      "计算各下单渠道的金额变化与贡献，沿下单渠道维度定位主要变化来源，注意不同渠道贡献不可跨维度相加。",
+      "查找同期业务资料（如渠道活动、政策或系统变更），区分事实数据、资料解释与待验证假设，不将相关性表述为因果。"
+    ],
+    "reflection": {
+      "passed": true,
+      "quality_score": 96,
+      "issues": [],
+      "summary": "回答中的整体金额、渠道拆解、变化幅度与贡献度均与 compare_periods 输出一致，口径（华东注册区域、paid/completed、排除测试账号、下单时间、11月与12月边界）符合定义，且已明确区分统计拆解与因果归因。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "华东整体净销售额 2025年11月 287,844.92 元、12月 230,744.67 元，变化 -57,100.25 元（-19.8%）",
+          "status": "supported",
+          "evidence_ids": [
+            "E6",
+            "E1",
+            "E4"
+          ],
+          "reason": "E6 summary 直接给出 base=287844.92、current=230744.67、delta=-57100.25、change_pct=-19.837%，与回答一致；E1/E4 确认净销售额单位为元、pay_amount 分求和/100，未二次换算。"
+        },
+        {
+          "claim": "app 渠道 11月 176,849.76 元、12月 113,680.97 元，变化 -63,168.79 元（-35.7%），贡献 +110.6%",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "E6 groups 中 app 的 base_value/current_value/delta/contribution_pct 分别为 176849.76、113680.97、-63168.79、110.6279%，变化幅度 -35.7% 可由 delta/base 直接算出。"
+        },
+        {
+          "claim": "mini_program 渠道 11月 88,378.85 元、12月 51,861.09 元，变化 -36,517.76 元（-41.3%），贡献 +64.0%",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "E6 groups 中 mini_program 的数值为 88378.85、51861.09、-36517.76、63.9538%，变化幅度 -41.3% 可由 delta/base 算出。"
+        },
+        {
+          "claim": "web 渠道 11月 22,616.31 元、12月 65,202.61 元，变化 +42,586.30 元（+188.3%），贡献 -74.6%",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "E6 groups 中 web 的数值为 22616.31、65202.61、42586.3、-74.5816%，变化幅度 +188.3% 可由 delta/base 算出。"
+        },
+        {
+          "claim": "分项合计与整体完全核对一致（合计 287,844.92 / 230,744.67，变化 -57,100.25）",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "E6 reconciliation.matched=true，group_totals 与 summary 完全一致，differences 均为 0。"
+        },
+        {
+          "claim": "app 与 mini_program 合计减少 99,686.55 元；web 增加 42,586.30 元，抵消约 74.6% 的降幅",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "63,168.79+36,517.76=99,686.55；42,586.30/57,100.25≈74.6%，与 E6 的 web contribution_pct -74.58% 一致。"
+        },
+        {
+          "claim": "结构占比：web 从 7.9% 升至 28.3%，app 从 61.4% 降至 49.3%，mini_program 从 30.7% 降至 22.5%",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "由 E6 各渠道金额除以对应周期整体金额可直接算出：22,616.31/287,844.92≈7.9%、65,202.61/230,744.67≈28.3%、176,849.76/287,844.92≈61.4%、113,680.97/230,744.67≈49.3%、88,378.85/287,844.92≈30.7%、51,861.09/230,744.67≈22.5%。"
+        },
+        {
+          "claim": "口径：净销售额=有效订单（paid、completed）实付金额之和，排除测试账号，按用户注册区域=华东、下单时间统计；11月=2025-11-01～11-30，12月=2025-12-01～12-31",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E4",
+            "E5",
+            "E6"
+          ],
+          "reason": "E1/E4 定义净销售额为 paid/completed 的 pay_amount 求和并排除测试账号；E5/E6 的 filters 与时间边界（start_inclusive_end_exclusive）与回答所述一致。"
+        },
+        {
+          "claim": "未做日均调整；若按日均，降幅约 -22.4%",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "E6 warnings 明确未自动做日均调整；按 30/31 天折算：(230,744.67/31)/(287,844.92/30)-1≈-22.4%，可由 E6 数值直接算出。"
+        },
+        {
+          "claim": "以上仅为统计拆解，不能据此认定渠道活动、价格或系统变更导致了变化",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "E6 warnings 明确贡献是统计拆解、不能证明因果，causal_claim_supported=false，回答的措辞与之一致。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 7,
+    "usage": {
+      "prompt_tokens": 34464,
+      "completion_tokens": 2997,
+      "total_tokens": 37461,
+      "prompt_cache_hit_tokens": 24576,
+      "prompt_cache_miss_tokens": 9888
+    },
+    "duration_ms": 16725,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": {
+        "metric": "净销售额",
+        "metric_kind": "additive",
+        "source": "ecommerce_v1",
+        "unit": "元",
+        "dimension": "下单渠道",
+        "base_start": "2025-11-01",
+        "base_end": "2025-12-01",
+        "current_start": "2025-12-01",
+        "current_end": "2026-01-01",
+        "assumptions": [
+          "11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31，按下单时间 order_time"
+        ],
+        "filters": [
+          "region_code = EAST（华东，按用户注册区域）",
+          "status IN ('paid','completed')",
+          "排除 is_test = 1 测试账号"
+        ]
+      },
+      "clarification_questions": [],
+      "comparisons": [
+        {
+          "status": "ready",
+          "scope": {
+            "metric": "净销售额",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1",
+            "unit": "元",
+            "dimension": "下单渠道",
+            "base_start": "2025-11-01",
+            "base_end": "2025-12-01",
+            "current_start": "2025-12-01",
+            "current_end": "2026-01-01",
+            "assumptions": [
+              "11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31，按下单时间 order_time"
+            ],
+            "filters": [
+              "region_code = EAST（华东，按用户注册区域）",
+              "status IN ('paid','completed')",
+              "排除 is_test = 1 测试账号"
+            ]
+          },
+          "summary": {
+            "base": "287844.92",
+            "current": "230744.67",
+            "delta": "-57100.25",
+            "change_pct": "-19.83715745"
+          },
+          "groups": [
+            {
+              "segment": "app",
+              "base_value": "176849.76",
+              "current_value": "113680.97",
+              "delta": "-63168.79",
+              "contribution_pct": "110.62786941"
+            },
+            {
+              "segment": "web",
+              "base_value": "22616.31",
+              "current_value": "65202.61",
+              "delta": "42586.3",
+              "contribution_pct": "-74.58163493"
+            },
+            {
+              "segment": "mini_program",
+              "base_value": "88378.85",
+              "current_value": "51861.09",
+              "delta": "-36517.76",
+              "contribution_pct": "63.95376553"
+            }
+          ],
+          "group_count": 3,
+          "reconciliation": {
+            "matched": true,
+            "group_totals": {
+              "base_value": "287844.92",
+              "current_value": "230744.67"
+            },
+            "differences": {
+              "base_value": "0",
+              "current_value": "0"
+            }
+          },
+          "warnings": [
+            "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+            "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+            "两个周期天数不同，当前比较未自动做日均调整。"
+          ],
+          "causal_claim_supported": false
+        }
+      ],
+      "warnings": [
+        "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+        "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+        "两个周期天数不同，当前比较未自动做日均调整。"
+      ],
+      "comparison_count": 1,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1572,
+          "usage": {
+            "prompt_tokens": 214,
+            "completion_tokens": 146,
+            "total_tokens": 360,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 214
+          }
+        },
+        "analysis": {
+          "logical_calls": 5,
+          "http_requests": 5,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 9869,
+          "usage": {
+            "prompt_tokens": 29897,
+            "completion_tokens": 1563,
+            "total_tokens": 31460,
+            "prompt_cache_hit_tokens": 24192,
+            "prompt_cache_miss_tokens": 5705
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 5262,
+          "usage": {
+            "prompt_tokens": 4353,
+            "completion_tokens": 1288,
+            "total_tokens": 5641,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 3969
+          }
+        }
+      },
+      "llm_calls": 7,
+      "chat_usage": {
+        "prompt_tokens": 34464,
+        "completion_tokens": 2997,
+        "total_tokens": 37461,
+        "prompt_cache_hit_tokens": 24576,
+        "prompt_cache_miss_tokens": 9888
+      },
+      "http_requests": 7,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 5,
+    "question": "保持华东父级范围，按下单渠道拆解2025年11月到12月净销售额变化；同时给出华东两个周期的整体金额。",
+    "tables": [
+      {
+        "id": "result-6",
+        "title": "净销售额 · 下单渠道",
+        "columns": [
+          "下单渠道",
+          "基期（元）",
+          "当期（元）",
+          "变化（元）"
+        ],
+        "rows": [
+          [
+            "app",
+            "176849.76",
+            "113680.97",
+            "-63168.79"
+          ],
+          [
+            "web",
+            "22616.31",
+            "65202.61",
+            "42586.3"
+          ],
+          [
+            "mini_program",
+            "88378.85",
+            "51861.09",
+            "-36517.76"
+          ]
+        ],
+        "evidence_ids": [
+          "E6"
+        ],
+        "scope": {
+          "metric": "净销售额",
+          "metric_kind": "additive",
+          "source": "ecommerce_v1",
+          "unit": "元",
+          "dimension": "下单渠道",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "current_start": "2025-12-01",
+          "current_end": "2026-01-01",
+          "assumptions": [
+            "11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31，按下单时间 order_time"
+          ],
+          "filters": [
+            "region_code = EAST（华东，按用户注册区域）",
+            "status IN ('paid','completed')",
+            "排除 is_test = 1 测试账号"
+          ]
+        },
+        "truncated": false
+      }
+    ],
+    "charts": [
+      {
+        "id": "result-6-bar",
+        "table_id": "result-6",
+        "kind": "bar",
+        "title": "净销售额 · 下单渠道",
+        "unit": "元",
+        "labels": [
+          "app",
+          "web",
+          "mini_program"
+        ],
+        "series": [
+          {
+            "name": "基期",
+            "values": [
+              "176849.76",
+              "22616.31",
+              "88378.85"
+            ]
+          },
+          {
+            "name": "当期",
+            "values": [
+              "113680.97",
+              "65202.61",
+              "51861.09"
+            ]
+          }
+        ],
+        "evidence_ids": [
+          "E6"
+        ],
+        "scope": {
+          "metric": "净销售额",
+          "metric_kind": "additive",
+          "source": "ecommerce_v1",
+          "unit": "元",
+          "dimension": "下单渠道",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "current_start": "2025-12-01",
+          "current_end": "2026-01-01",
+          "assumptions": [
+            "11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31，按下单时间 order_time"
+          ],
+          "filters": [
+            "region_code = EAST（华东，按用户注册区域）",
+            "status IN ('paid','completed')",
+            "排除 is_test = 1 测试账号"
+          ]
+        }
+      },
+      {
+        "id": "result-6-contribution",
+        "table_id": "result-6",
+        "kind": "contribution",
+        "title": "净销售额 · 下单渠道",
+        "unit": "元",
+        "labels": [
+          "app",
+          "web",
+          "mini_program"
+        ],
+        "series": [
+          {
+            "name": "变化贡献",
+            "values": [
+              "-63168.79",
+              "42586.3",
+              "-36517.76"
+            ]
+          }
+        ],
+        "evidence_ids": [
+          "E6"
+        ],
+        "scope": {
+          "metric": "净销售额",
+          "metric_kind": "additive",
+          "source": "ecommerce_v1",
+          "unit": "元",
+          "dimension": "下单渠道",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "current_start": "2025-12-01",
+          "current_end": "2026-01-01",
+          "assumptions": [
+            "11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31，按下单时间 order_time"
+          ],
+          "filters": [
+            "region_code = EAST（华东，按用户注册区域）",
+            "status IN ('paid','completed')",
+            "排除 is_test = 1 测试账号"
+          ]
+        }
+      }
+    ],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true,
+      "fact_0_1": true,
+      "reconciled_comparison": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-25",
+  "vision_model": "deepseek-ai/DeepSeek-V4.1-Flash",
+  "served_version": "1017 per SiliconFlow release notes dated 2026-10-21",
+  "vision_enabled": true,
+  "key_reuse_verified": true,
+  "vision_client_initialized": true,
+  "local_service_status": "ready",
+  "paid_model_requests": 0,
+  "real_inference_verified": false,
+  "source": "https://docs.siliconflow.cn/docs/release-notes/overview"
+}

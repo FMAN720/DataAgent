@@ -1,0 +1,120 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "capture": "home-desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "capture": "business-desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "capture": "business-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "capture": "business-320",
+      "width": 320,
+      "height": 740,
+      "scrollWidth": 320,
+      "scrollHeight": 740,
+      "document_overflow": false
+    },
+    {
+      "capture": "home-320",
+      "width": 320,
+      "height": 740,
+      "scrollWidth": 320,
+      "scrollHeight": 740,
+      "document_overflow": false
+    },
+    {
+      "capture": "task-desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "capture": "task-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "capture": "task-320",
+      "width": 320,
+      "height": 740,
+      "scrollWidth": 320,
+      "scrollHeight": 740,
+      "document_overflow": false
+    },
+    {
+      "capture": "answer-desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "capture": "answer-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "capture": "validation-desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "capture": "validation-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "capture": "version-conflict",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "interaction": "Real mouse/keyboard and synthesized file selection: native profile editor, JSON import/export, save-only semantics, 320px usable composer, task inspection, two-click recovery, preserved draft, answer-only body, validation provenance in optional details, and revision-conflict draft retention",
+      "passed": true
+    }
+  ],
+  "profileWrites": 1,
+  "chatRequests": 1,
+  "browserErrors": [],
+  "persistentWrites": 0,
+  "fixtureDownloads": 1,
+  "providerRequests": 0,
+  "method": "Isolated installed headless Chrome; all API responses intercepted synthetic fixtures; actual mouse/keyboard and CDP file selection. Only owned QA files downloaded. No real Key, provider request or user-data mutation."
+}

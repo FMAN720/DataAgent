@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#191a19">
+  <title>DataAgent · 分析工作台</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/workspace.css?v=20261106-models1">
+  <script type="module" src="/assets/workspace.js?v=20261106-models1"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到工作区</a>
+  <div class="app-shell">
+    <aside id="workspace-navigation" class="navigation" aria-label="分析会话与数据">
+      <div class="navigation-brand"><a class="brand" href="/" aria-label="DataAgent 数据分析助手首页"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 24V17m9 7V8m9 16V12"/><path class="brand-link" d="m7 10 9-5 9 3"/></svg><span>数据分析助手<small>DataAgent</small></span></a><button id="sidebar-close" class="quiet icon-button" type="button" aria-label="收起侧栏"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></button></div>
+      <button id="new-chat" class="new-analysis" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>新建分析</button>
+      <nav aria-label="工作区导航">
+        <button class="nav-item active" data-view="chat" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v12H9l-5 4zM8 8h8M8 12h5"/></svg>分析对话</button>
+        <button class="nav-item" data-view="datasets"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></svg>表格数据</button>
+        <button class="nav-item" data-view="documents"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H5v18h14V8zM14 3v6h5M8 13h8M8 17h5"/></svg>业务文档</button>
+        <button class="nav-item" data-view="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg>检索资料</button>
+        <button id="tasks-open" class="nav-item" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>分析任务</button>
+        <button id="business-open" class="nav-item" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-3-2-7-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-2-1-6-1-9 1zM12 5v15"/></svg>业务口径</button>
+      </nav>
+      <div class="session-group"><div class="history-heading"><button id="history-toggle" class="quiet" type="button" aria-expanded="true" aria-controls="analysis-history">最近分析<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4"/></svg></button><button id="history-refresh" class="quiet icon-button" type="button" aria-label="刷新历史会话"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M19 12a7 7 0 0 0-12-5L4 10m16 4-3 3a7 7 0 0 1-12-5"/></svg></button></div><section id="analysis-history" class="analysis-history" aria-label="历史会话"><div id="history-list"><p class="muted">正在读取会话…</p></div></section></div>
+      <div class="nav-footer"><button id="model-settings-open" class="quiet model-settings-entry" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 3 1 3 3 1 3-1 1 4-3 2-1 3 1 3-4 2-2-3-3-1-3 1-2-4 3-2 1-3-1-3z"/><circle cx="12" cy="12" r="3"/></svg><span>API 设置<small id="model-settings-label">连接你自己的模型</small></span></button><div class="workspace-label"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16v12H4zM8 8V4h8v4M4 13h16M10 13v3h4v-3"/></svg><span>本地工作空间<small>数据 · 分析 · 证据</small></span></div><a href="/docs" target="_blank" rel="noopener">接口文档<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a></div>
+    </aside>
+    <div class="work-area">
+      <header class="topbar"><div class="thread-heading"><button id="sidebar-toggle" class="quiet icon-button" type="button" aria-label="切换会话侧栏" aria-controls="workspace-navigation" aria-expanded="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></button><span id="breadcrumb">新建分析</span></div><div class="topbar-actions"><span id="health" class="connection" role="status">正在检查服务…</span><button id="guide-open" class="quiet" type="button" aria-controls="guide-panel" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-3-2-7-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-2-1-6-1-9 1zM12 5v15"/></svg>使用指南</button></div></header>
+      <main id="main" tabindex="-1" data-active-view="chat">
+        <div class="page-heading"><div><h1 id="page-title">分析工作台</h1><p id="page-description">先选一个示例，或直接描述你的业务问题。</p></div><div class="heading-actions"><button id="vision-open" class="secondary" type="button" hidden>图片 / 扫描件</button><button id="upload-open" class="primary" hidden>上传表格</button></div></div>
+        <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+        <section id="vision-section" class="vision-section" aria-labelledby="vision-title" hidden>
+          <div class="section-heading"><h2 id="vision-title" tabindex="-1">从图片核对数据</h2><button id="vision-close" type="button" class="quiet">收起图片处理</button></div>
+          <p id="vision-config-note" class="field-hint"></p>
+          <form id="vision-upload-form" class="vision-upload"><label>选择图片或扫描 PDF<input id="vision-file" type="file" accept=".png,.jpg,.jpeg,.webp,.pdf" required></label><button id="vision-upload" type="submit" class="secondary">上传到本地预览</button></form>
+          <p id="vision-file-limit" class="field-hint"></p>
+          <div class="form-row"><label>已有图片草稿<select id="vision-drafts" aria-label="已有图片草稿"><option value="">选择草稿</option></select></label><button id="vision-refresh" type="button" class="quiet">刷新草稿</button></div>
+          <p id="vision-status" class="field-hint" role="status" aria-live="polite"></p>
+          <div id="vision-content" hidden>
+            <div id="vision-source-info"></div>
+            <div class="form-row"><label>本次识别页码（逗号分隔）<input id="vision-pages" inputmode="numeric" maxlength="60" placeholder="例如：1,2"></label><button id="vision-recognize" type="button" class="primary">识别所选页</button></div>
+            <label class="consent-line"><input id="vision-consent" type="checkbox">同意将所选页图片发送至我配置的图片识别服务，并承担相关 API 费用。</label>
+            <p class="field-hint">仅发送所选页，已完成页会复用。失败不会自动重试，手动重试可能再次产生费用。上传和预览不外发内容。</p>
+            <div class="form-row"><label>当前核对页<select id="vision-page" aria-label="当前核对页"></select></label><a id="vision-image-link" target="_blank" rel="noopener">单独查看本页原图</a></div>
+            <div class="vision-review-grid">
+              <div class="vision-original"><img id="vision-image" alt="当前页来源，用于逐项核对转录" loading="lazy"><p class="field-hint">预览已校正方向并移除图片元数据，最长边不超过 2048 像素；核对小字可单独打开。</p></div>
+              <div class="vision-editor"><h3>本页核对稿</h3><p id="vision-page-note" class="field-hint"></p><label>文字转录<textarea id="vision-text" rows="9" maxlength="50000" placeholder="逐项核对原图；未配置 API 时也可手动输入。"></textarea></label><div id="vision-tables"></div><button id="vision-add-table" type="button" class="quiet">添加人工转录表格</button><details><summary>查看首次转录与识别用量</summary><pre id="vision-raw"></pre></details><div class="actions"><button id="vision-save" type="button" class="secondary">保存核对稿</button><button id="vision-discard" type="button" class="quiet">放弃未保存修改</button></div></div>
+            </div>
+            <div class="vision-publish"><p class="field-hint">识别可能错字、漏行或误读数字。图表曲线中未标注的数值不能当精确数据；保存修改后再确认转录。</p><label class="consent-line"><input id="vision-reviewed" type="checkbox">已核对当前页的数字、单位、表头和缺失值，确认转录内容。</label><div class="form-row"><label>当前页结果表<select id="vision-table-choice" aria-label="当前页结果表"></select></label><button id="vision-to-table" type="button" class="primary">转为表格预览</button><button id="vision-to-document" type="button" class="secondary">当前页转为参考资料</button></div><label class="consent-line"><input id="vision-index" type="checkbox">转参考资料时，同时将本页核对文字发送到已配置的 Embedding 服务建立向量索引，可能产生费用。</label><p class="field-hint">表格仍需确认字段后入库。参考资料默认仅本地关键词检索；转录确认不代表业务事实或因果已核验。</p></div>
+          </div>
+        </section>
+        <section id="upload-section" class="upload-section" aria-labelledby="upload-title" hidden>
+          <div class="section-heading"><h2 id="upload-title">上传表格</h2><button id="upload-close" class="quiet">收起上传</button></div>
+          <form id="upload-form">
+            <label class="file-picker" for="source-file"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M4 16v5h16v-5"/></svg><strong id="file-label">选择文件，先预览再确认</strong><span id="file-hint">CSV、XLSX · 单文件不超过 20 MiB</span><input id="source-file" type="file" accept=".csv,.xlsx" required></label>
+            <div id="csv-options" class="form-row"><label>CSV 编码<select id="csv-encoding"><option value="utf-8-sig">UTF-8（推荐）</option><option value="gb18030">GB18030</option></select></label><label>分隔符<select id="csv-delimiter"><option value=",">逗号 ,</option><option value=";">分号 ;</option><option value="tab">制表符 Tab</option><option value="|">竖线 |</option></select></label><label>Excel 工作表<input id="sheet-name" placeholder="留空使用首个可见表" maxlength="128" list="sheet-options"><datalist id="sheet-options"></datalist></label></div>
+            <div id="doc-options" class="form-row" hidden><label>业务文档日期<input id="document-date" type="date"></label><label>文档类型<select id="document-type"><option value="reference">参考资料</option><option value="weekly_report">运营周报</option><option value="review">活动复盘</option><option value="campaign">活动方案</option><option value="support">客服汇总</option></select></label><p class="field-hint">日期用于筛选业务资料；不清楚时留空。</p></div>
+            <div class="form-actions"><span id="upload-explanation" class="muted">预览不会建表。确认字段后，才开始导入。</span><button class="primary" id="preview-submit" type="submit">生成预览</button></div>
+          </form>
+        </section>
+        <section id="datasets-view" class="view" aria-label="表格数据列表" hidden>
+          <div class="list-toolbar"><label class="search-field"><span class="sr-only">筛选表格</span><input id="dataset-filter" type="search" placeholder="按名称或文件名筛选"></label><span id="dataset-count" class="muted">正在加载…</span><button class="quiet refresh" type="button">刷新</button></div>
+          <div class="table-scroll"><table class="resource-table"><thead><tr><th>数据源</th><th>行数</th><th>状态</th><th>上传时间</th><th><span class="sr-only">操作</span></th></tr></thead><tbody id="dataset-rows"></tbody></table></div>
+          <div id="dataset-empty" class="empty-state" hidden><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="9" width="32" height="30" rx="3"/><path d="M8 19h32M20 19v20M26 26h8M26 32h8"/></svg><h2>从一份表格开始</h2><p>上传活动名单、预算表或业务报表。<br>先核对字段，再让助手查询和关联分析。</p><button id="empty-upload" class="secondary">选择第一份表格</button></div>
+          <p class="list-footnote">显示最近 50 份数据源。金额和标识符保留源文件含义，不自动换算单位。</p>
+        </section>
+        <section id="documents-view" class="view" aria-label="业务文档列表" hidden>
+          <div class="list-toolbar"><span id="document-count" class="muted">正在加载…</span><button class="quiet refresh" type="button">刷新</button></div>
+          <div class="table-scroll"><table class="resource-table"><thead><tr><th>文档</th><th>业务日期</th><th>类型</th><th>检索状态</th><th><span class="sr-only">操作</span></th></tr></thead><tbody id="document-rows"></tbody></table></div>
+          <div id="document-empty" class="empty-state" hidden><h2>让分析有资料可查</h2><p>上传运营周报、活动复盘和业务说明。<br>检索时可按业务日期和类型筛选。</p><button id="empty-doc-upload" class="secondary">上传第一份文档</button></div>
+          <p class="list-footnote">Word 按章节定位；文本 PDF 保留页码。图片和扫描件请使用“图片 / 扫描件”，先核对转录再加入资料。</p>
+        </section>
+        <section id="search-view" class="view reading-width" hidden>
+          <form id="search-form"><label class="large-label" for="search-query">想查找什么资料？</label><div class="query-row"><input id="search-query" type="search" placeholder="例如：十二月家电补贴何时结束" maxlength="2000" required><button class="primary" type="submit">检索</button></div><div class="form-row"><label>文档日期起<input id="date-from" type="date"></label><label>文档日期止<input id="date-to" type="date"></label><label>文档类型<select id="search-type"><option value="">全部类型</option><option value="reference">参考资料</option><option value="weekly_report">运营周报</option><option value="review">活动复盘</option><option value="campaign">活动方案</option><option value="support">客服汇总</option></select></label><label>检索方式<select id="search-mode"><option value="keyword">关键词（本地）</option><option value="hybrid">混合检索（需启用 API）</option><option value="vector">向量检索（需启用 API）</option></select></label></div><p class="field-hint">日期范围包含起止日。日期未知的文档不会出现在范围筛选中。</p></form>
+          <div id="search-results" class="search-results" aria-live="polite"><p class="muted">搜索结果会显示原文片段和可查看的来源。</p></div>
+        </section>
+        <section id="chat-view" class="view analysis-layout" aria-label="分析工作台">
+          <div class="analysis-canvas">
+          <div id="thread-scroll" class="thread-scroll">
+          <section id="analysis-welcome" class="analysis-welcome" aria-label="使用入门">
+            <svg class="welcome-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 24V17m9 7V8m9 16V12M7 10l9-5 9 3"/></svg><h1>今天，想分析什么？</h1><p>从一个问题开始，一起找出数据背后的答案。</p>
+          </section>
+          <div id="conversation" class="conversation" aria-live="polite" aria-relevant="additions text"></div>
+          </div>
+          <button id="jump-latest" class="quiet jump-latest" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14m-6-6 6 6 6-6"/></svg>回到最新</button>
+          <div class="composer-dock">
+          <div id="model-setup-hint" class="model-setup-hint" hidden><span>先连接你自己的模型 API，即可开始分析。</span><button id="model-settings-start" class="quiet" type="button">配置 API<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button></div>
+          <form id="chat-form" class="question-composer"><label class="sr-only" for="question">你的分析问题</label><textarea id="question" rows="3" placeholder="描述你的问题，或从下面的示例开始…" maxlength="2000" aria-describedby="chat-api-note" required></textarea><div class="form-actions"><div class="composer-attachment"><button id="source-menu-toggle" class="quiet composer-sources" type="button" aria-expanded="false" aria-controls="source-menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>添加数据</button><div id="source-menu" class="source-menu" hidden><p>为分析准备数据</p><button type="button" class="quiet" data-source-action="datasets"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></svg>上传表格<span>CSV / XLSX</span></button><button type="button" class="quiet" data-source-action="documents"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H5v18h14V8zM14 3v6h5M8 13h8M8 17h5"/></svg>上传文档<span>PDF / Word / 文本</span></button><button type="button" class="quiet" data-source-action="vision"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8" cy="8" r="1"/><path d="m3 17 6-6 4 4 3-3 5 5"/></svg>图片 / 扫描件<span>先预览，再核对</span></button></div></div><div class="composer-send"><span class="composer-mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 4v6c0 4-8 8-8 8s-8-4-8-8V7zM9 12l2 2 4-4"/></svg>只读分析</span><button id="chat-submit" class="primary" type="submit" aria-label="发送分析问题">发送<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></button></div></div></form>
+          <div class="composer-context"><button class="quiet" type="button" data-target-view="datasets"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h6l2 3h8v10H4zM4 7V4h6l2 3"/></svg>数据来源<span>业务库与已导入资料</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button><span class="keyboard-hint">Ctrl / ⌘ + Enter 发送</span></div>
+          <div id="business-context" class="business-context" hidden><label for="business-profile-select">业务口径</label><select id="business-profile-select" aria-label="此会话的业务口径"></select></div>
+          <div class="analysis-toolbar"><span id="archive-state" class="muted" role="status">正在确认历史存储…</span><details class="api-disclosure"><summary>数据与费用说明</summary><p id="chat-api-note">主动提交后才调用聊天模型；问题、相关字段与查询结果会发送至模型服务，可能产生费用。请核对结论及证据。</p><label class="planning-option"><input id="plan-analysis" type="checkbox">复杂问题先制定计划（增加模型调用）</label></details></div>
+          </div>
+          <section id="prompt-suggestions" class="prompt-suggestions" aria-labelledby="suggestions-title"><div class="suggestion-heading"><h2 id="suggestions-title">也可以从一个示例开始</h2><span>点击填入，不会自动提交</span></div>
+            <button type="button" class="suggestion" data-question="2025 年 12 月的净销售额和退款率分别是多少？"><span class="suggestion-kind">经营概览</span><span>2025 年 12 月的净销售额和退款率是多少？</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button>
+            <button type="button" class="suggestion" data-question="2025 年 12 月相比 11 月，哪个品类销售额下降最多？"><span class="suggestion-kind">变化分析</span><span>12 月相比 11 月，哪个品类销售额下降最多？</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button>
+            <button type="button" class="suggestion" data-question="列出已导入的数据集，并说明有哪些字段可以分析。"><span class="suggestion-kind">数据探索</span><span>我导入了哪些数据？有哪些字段可以分析？</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button>
+          </section>
+          <div id="guide-invite" class="guide-invite" hidden><span>初次使用？</span><button id="guide-start" class="quiet" type="button">5 步了解分析助手<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></button><button id="guide-dismiss" class="quiet icon-button" type="button" aria-label="暂时跳过新手指南"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg></button></div>
+          </div>
+        </section>
+        <noscript>请启用 JavaScript 使用工作台，也可以通过 /docs 调用接口。</noscript>
+      </main>
+    </div>
+    <aside id="inspector" class="inspector" aria-label="分析与来源详情" hidden><div class="inspector-top"><h2 id="inspector-title" tabindex="-1">分析详情</h2><button id="inspector-close" class="quiet">关闭详情</button></div><button id="inspector-back" class="quiet inspector-back" type="button" hidden>返回分析详情</button><details id="analysis-context" class="analysis-context" aria-label="当前会话条件" hidden><summary>当前会话条件</summary><div id="context-values"></div><p class="field-hint">新问题中的条件优先；继续分析会重新查询数据。</p></details><p id="history-note" class="field-hint" hidden>这是已保存的历史快照，不代表当前最新数据。来源资料可能已发生变更。</p><div id="inspector-body"></div></aside>
+  </div>
+  <button id="nav-backdrop" class="nav-backdrop" type="button" aria-label="关闭会话侧栏" tabindex="-1" hidden></button>
+  <dialog id="business-dialog" class="model-settings-dialog" aria-labelledby="business-title">
+    <header class="model-settings-header"><div><h2 id="business-title">业务口径</h2><p>确认字段、单位和指标，让分析使用同一套规则。</p></div><button id="business-close" class="quiet icon-button" type="button" aria-label="关闭业务口径"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg></button></header>
+    <div class="business-body"><label for="business-existing">已有口径</label><select id="business-existing"></select><div class="business-actions"><button id="business-load" class="quiet" type="button">读取所选口径</button><button id="business-new" class="quiet" type="button">新建草稿</button><button id="business-import" class="quiet" type="button">导入 JSON</button><button id="business-export" class="quiet" type="button">导出草稿</button><input id="business-file" type="file" accept=".json,application/json" aria-label="导入业务口径 JSON" hidden></div><p id="business-revision" class="field-hint"></p><label for="business-json">口径定义（JSON）</label><textarea id="business-json" rows="12" spellcheck="false" aria-describedby="business-help business-status"></textarea><p id="business-help" class="field-hint">在“表格数据”详情查看实际表名和字段名。模板需要替换映射，并确认金额单位、日期列和唯一键；保存不会调用模型。</p><div id="business-preview"></div><p id="business-status" class="field-hint" role="status" aria-live="polite"></p><button id="business-save" class="primary" type="button">保存新版本</button></div>
+  </dialog>
+  <dialog id="model-settings-dialog" class="model-settings-dialog" aria-labelledby="model-settings-title">
+    <header class="model-settings-header"><div><h2 id="model-settings-title">模型设置</h2><p>连接自己的服务，为每种用途选择合适的模型。</p></div><button id="model-settings-close" class="quiet icon-button" type="button" aria-label="关闭模型设置"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg></button></header>
+    <div class="model-purposes" role="group" aria-label="模型用途"><button id="model-purpose-chat" type="button" aria-pressed="true">聊天分析</button><button id="model-purpose-vision" type="button" aria-pressed="false">图片 / OCR</button><button id="model-purpose-embedding" type="button" aria-pressed="false">向量检索</button></div>
+    <p id="model-purpose-note" class="model-purpose-note">用于理解问题、调用分析工具和回答。请选择支持工具调用的聊天模型。</p>
+    <form id="model-settings-form" autocomplete="off">
+      <fieldset id="model-panel-chat" class="model-purpose-panel" aria-label="聊天分析配置">
+        <label for="model-provider">供应商</label><select id="model-provider"><option value="custom">自定义 / OpenAI 兼容</option><option value="deepseek">DeepSeek</option><option value="siliconflow">硅基流动</option><option value="openai">OpenAI</option></select>
+        <label for="model-base-url">API 接入地址</label><input id="model-base-url" type="url" placeholder="选择供应商可自动填写，也可输入兼容地址" maxlength="2048" required><p class="field-hint">填写 API 基础地址，不是供应商官网或完整的聊天请求地址。</p>
+        <label for="model-api-key">API Key <span id="model-key-state"></span></label><div class="model-key-field"><input id="model-api-key" type="password" autocomplete="new-password" maxlength="8192"><button id="model-key-toggle" class="quiet" type="button" aria-pressed="false">显示</button></div>
+        <div class="model-choice-heading"><label for="model-name">模型</label><button id="model-fetch" class="secondary" type="button">获取模型</button></div><select id="model-name"><option value="">先获取模型，再从列表选择</option></select>
+        <label class="model-inline-option"><input id="model-manual-toggle" type="checkbox">手动填写模型名称</label><div id="model-manual-wrap" hidden><label for="model-manual">完整模型 ID</label><input id="model-manual" type="text" maxlength="256" placeholder="供应商未提供列表时使用"></div><input id="model-enabled" type="checkbox" hidden checked>
+      </fieldset>
+      <fieldset id="model-panel-vision" class="model-purpose-panel" aria-label="图片与 OCR 配置" hidden disabled>
+        <label for="vision-model-provider">供应商</label><select id="vision-model-provider"><option value="custom">自定义 / OpenAI 兼容</option><option value="deepseek">DeepSeek</option><option value="siliconflow">硅基流动</option><option value="openai">OpenAI</option></select>
+        <label for="vision-model-base-url">API 接入地址</label><input id="vision-model-base-url" type="url" placeholder="支持图片输入的兼容 API 基础地址" maxlength="2048" required><p class="field-hint">此用途使用独立的地址与 Key；模型需要支持图片输入。</p>
+        <label for="vision-model-api-key">API Key <span id="vision-model-key-state"></span></label><div class="model-key-field"><input id="vision-model-api-key" type="password" autocomplete="new-password" maxlength="8192"><button id="vision-model-key-toggle" class="quiet" type="button" aria-pressed="false">显示</button></div>
+        <div class="model-choice-heading"><label for="vision-model-name">模型</label><button id="vision-model-fetch" class="secondary" type="button">获取模型</button></div><select id="vision-model-name"><option value="">先获取模型，再从列表选择</option></select>
+        <label class="model-inline-option"><input id="vision-model-manual-toggle" type="checkbox">手动填写模型名称</label><div id="vision-model-manual-wrap" hidden><label for="vision-model-manual">完整模型 ID</label><input id="vision-model-manual" type="text" maxlength="256" placeholder="供应商未提供列表时使用"></div>
+        <label class="model-inline-option"><input id="vision-model-enabled" type="checkbox" checked>启用图片识别；每次识别仍需确认外发</label>
+      </fieldset>
+      <fieldset id="model-panel-embedding" class="model-purpose-panel" aria-label="向量检索配置" hidden disabled>
+        <label for="embedding-model-provider">供应商</label><select id="embedding-model-provider"><option value="custom">自定义 / OpenAI 兼容</option><option value="siliconflow">硅基流动</option><option value="openai">OpenAI</option></select>
+        <label for="embedding-model-base-url">API 接入地址</label><input id="embedding-model-base-url" type="url" placeholder="文本向量服务的兼容 API 基础地址" maxlength="2048" required><p class="field-hint">此用途使用独立的地址与 Key；模型需要支持文本向量化。</p>
+        <label for="embedding-model-api-key">API Key <span id="embedding-model-key-state"></span></label><div class="model-key-field"><input id="embedding-model-api-key" type="password" autocomplete="new-password" maxlength="8192"><button id="embedding-model-key-toggle" class="quiet" type="button" aria-pressed="false">显示</button></div>
+        <div class="model-choice-heading"><label for="embedding-model-name">模型</label><button id="embedding-model-fetch" class="secondary" type="button">获取模型</button></div><select id="embedding-model-name"><option value="">先获取模型，再从列表选择</option></select>
+        <label class="model-inline-option"><input id="embedding-model-manual-toggle" type="checkbox">手动填写模型名称</label><div id="embedding-model-manual-wrap" hidden><label for="embedding-model-manual">完整模型 ID</label><input id="embedding-model-manual" type="text" maxlength="256" placeholder="供应商未提供列表时使用"></div>
+        <label for="embedding-model-dimensions">向量维度</label><input id="embedding-model-dimensions" type="number" min="1" max="16384" step="1" placeholder="测试连接后自动填写，也可按供应商说明填写">
+        <label class="model-inline-option"><input id="embedding-model-enabled" type="checkbox">启用向量检索；新上传文档会外发并可能计费</label>
+      </fieldset>
+      <p id="model-key-hint" class="field-hint">三种用途分别保存配置，不会自动共用 Key。Key 仅存于本机，不会返回网页。</p>
+      <p id="model-settings-status" class="field-hint" role="status" aria-live="polite"></p>
+      <p id="model-cost-note" class="model-check-note">获取模型只请求列表；保存不调用模型。测试会发送一次不含业务数据的请求，可能计费。</p><div class="model-settings-actions"><button id="model-settings-check" class="secondary" type="button">测试聊天分析</button><button id="model-settings-save" class="primary" type="submit">保存此用途</button></div>
+    </form>
+    <footer class="model-settings-footer"><button id="model-settings-clear" class="quiet danger" type="button">清除此用途配置</button></footer>
+  </dialog>
+  <aside id="guide-panel" class="guide-panel" role="region" aria-labelledby="guide-title" hidden>
+    <header class="guide-header"><h2 id="guide-title">新手指南</h2><button id="guide-close" class="quiet" type="button">收起指南</button></header>
+    <nav aria-label="新手指南步骤"><ol class="guide-steps"><li><button type="button" data-guide-step="0"><span>1</span>先试用</button></li><li><button type="button" data-guide-step="1"><span>2</span>传表格</button></li><li><button type="button" data-guide-step="2"><span>3</span>加资料</button></li><li><button type="button" data-guide-step="3"><span>4</span>写问题</button></li><li><button type="button" data-guide-step="4"><span>5</span>看结果</button></li></ol></nav>
+    <div id="guide-content" class="guide-content"><p id="guide-progress" class="muted" role="status"></p><h3 id="guide-step-title" tabindex="-1"></h3><p id="guide-description"></p><ul id="guide-points"></ul><blockquote id="guide-example" hidden></blockquote><button id="guide-action" class="secondary" type="button"></button><p id="guide-action-note" class="field-hint"></p></div>
+    <footer class="guide-footer"><button id="guide-back" class="quiet" type="button">上一步</button><button id="guide-next" class="primary" type="button">下一步</button></footer>
+  </aside>
+</body>
+</html>

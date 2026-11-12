@@ -1,0 +1,391 @@
+{
+  "id": "sql_top_product",
+  "category": "sql",
+  "split": "holdout",
+  "variant": "baseline",
+  "question": "2025全年按明细成交额计算，销售额最高的商品名称和金额分别是什么？",
+  "response": {
+    "answer": "**结论：2025 全年按明细成交额计算，销售额最高的商品是「旗舰手机」，金额 2,669,965.90 元。**\n\n关键数字：\n- 旗舰手机：2,669,965.90 元，涉及 432 个有效订单，占全年明细成交额（9,626,358.20 元）的 27.7%\n- 第二名平板电脑：1,708,980.15 元；第三名扫地机器人：1,016,891.30 元\n\n核对情况：\n- 按商品名称分组共 30 个商品，分组金额合计 9,626,358.20 元，与独立查询的整体明细成交额 9,626,358.20 元完全一致，无重复或遗漏（明细行 13,073 行，item_id 唯一 13,073 个）。\n- 说明：明细成交额未分摊订单级优惠，因此该合计会略大于净销售额，属预期差异。\n\n口径：明细成交额 = SUM(order_items.item_amount)，仅统计有效订单（status IN paid/completed）、排除测试账号，按下单时间 2025-01-01 至 2025-12-31 统计，金额单位由分换算为元。",
+    "success": true,
+    "trace_id": "8df99fbd-e437-4c7d-85fe-ab8632c73520",
+    "session_id": "bfd1d107-c8f5-4b5e-ab00-0f8b1df60a2a",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_glossary",
+        "arguments": {
+          "query": "明细成交额"
+        },
+        "ok": true,
+        "output": "## 毛利与毛利率\n- 毛利 = SUM(order_items.item_amount) - SUM(order_items.quantity * products.cost_price)，只统计有效订单，排除测试账号。\n- 毛利率 = 毛利 / SUM(order_items.item_amount)。\n注意：毛利计算基于明细成交价，未扣减订单级优惠。\n\n## 品类销售额\n品类销售额按订单明细的成交金额统计：`SUM(order_items.item_amount)`，关联 products、categories，只统计有效订单（status IN ('paid', 'completed')）并排除测试账号。\n注意：item_amount 未分摊订单级优惠，因此各品类销售额之和会略大于净销售额，这是预期内的差异。\n\n## GMV（成交总额）\nGMV = 已支付订单的实付金额之和，包含之后发生退款的订单。\nSQL 口径：`SUM(pay_amount)`，条件 `status IN ('paid', 'completed', 'refunded')`，并排除测试账号。\n注意：GMV 不包含 cancelled 订单；也不是 total_amount（未扣优惠的原价）之和。",
+        "duration_ms": 0,
+        "thought": "我先确认口径和表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_tables",
+        "arguments": {
+          "question": "商品明细成交额"
+        },
+        "ok": true,
+        "output": "{\"dialect\": \"sqlite\", \"tables\": [{\"table\": \"categories\", \"columns\": [\"category_id\", \"category_name\", \"parent_id\"]}, {\"table\": \"order_items\", \"columns\": [\"item_id\", \"order_id\", \"product_id\", \"quantity\", \"unit_price\", \"item_amount\"]}, {\"table\": \"orders\", \"columns\": [\"order_id\", \"user_id\", \"order_time\", \"status\", \"channel\", \"total_amount\", \"discount_amount\", \"pay_amount\", \"pay_time\"]}, {\"table\": \"payments\", \"columns\": [\"payment_id\", \"order_id\", \"pay_method\", \"amount\", \"paid_at\"]}, {\"table\": \"products\", \"columns\": [\"product_id\", \"product_name\", \"category_id\", \"list_price\", \"cost_price\", \"is_active\"]}, {\"table\": \"refund_requests\", \"columns\": [\"request_id\", \"order_id\", \"request_time\", \"status\", \"reason\"]}, {\"table\": \"refunds\", \"columns\": [\"refund_id\", \"order_id\", \"refund_amount\", \"refund_time\", \"reason\"]}, {\"table\": \"regions\", \"columns\": [\"region_code\", \"region_name\"]}, {\"table\": \"uploaded_budget\", \"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\"]}, {\"table\": \"user_events\", \"columns\": [\"event_id\", \"user_id\", \"event_date\", \"event_type\"]}, {\"table\": \"users\", \"columns\": [\"user_id\", \"register_date\", \"region_code\", \"gender\", \"birth_year\", \"member_level\", \"acquire_channel\", \"is_test\"]}]}",
+        "duration_ms": 7,
+        "thought": "我先确认口径和表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "order_items",
+            "orders",
+            "products",
+            "users"
+          ]
+        },
+        "ok": true,
+        "output": "表 order_items\n  item_id INTEGER\n  order_id INTEGER NOT NULL\n  product_id INTEGER NOT NULL\n  quantity INTEGER NOT NULL\n  unit_price INTEGER NOT NULL  -- 成交单价（未分摊优惠），单位：分\n  item_amount INTEGER NOT NULL  -- quantity * unit_price，单位：分\n  外键: product_id -> products(product_id)\n  外键: order_id -> orders(order_id)\n  样例 (item_id | order_id | product_id | quantity | unit_price | item_amount):\n  1 | 1 | 1 | 1 | 499900 | 499900\n  2 | 1 | 18 | 1 | 11900 | 11900\n  3 | 1 | 27 | 1 | 26910 | 26910\n\n表 orders\n  order_id INTEGER\n  user_id INTEGER NOT NULL\n  order_time TEXT NOT NULL  -- 下单时间 YYYY-MM-DD HH:MM:SS\n  status TEXT NOT NULL  -- paid 已支付 / completed 已完成 / cancelled 已取消（未支付） / refunded 已全额退款\n  channel TEXT NOT NULL  -- 下单端：app / web / mini_program\n  total_amount INTEGER NOT NULL  -- 商品原价合计，单位：分\n  discount_amount INTEGER NOT NULL  -- 优惠金额，单位：分\n  pay_amount INTEGER NOT NULL  -- 实付金额 = total_amount - discount_amount，单位：分；cancelled 订单为 0\n  pay_time TEXT  -- 支付时间；cancelled 为 NULL\n  外键: user_id -> users(user_id)\n  样例 (order_id | user_id | order_time | status | channel | total_amount | discount_amount | pay_amount | pay_time):\n  1 | 350 | 2025-01-26 14:43:02 | completed | web | 538710 | 0 | 538710 | 2025-01-26 15:10:02\n  2 | 930 | 2025-01-26 20:03:44 | completed | app | 15930 | 343 | 15587 | 2025-01-26 20:28:44\n  3 | 390 | 2025-01-01 17:46:50 | refunded | web | 12900 | 0 | 12900 | 2025-01-01 18:12:50\n\n表 products\n  product_id INTEGER\n  product_name TEXT NOT NULL\n  category_id INTEGER NOT NULL\n  list_price INTEGER NOT NULL  -- 标价，单位：分\n  cost_price INTEGER NOT NULL  -- 成本价，单位：分\n  is_active INTEGER NOT NULL  -- 1 在售，0 下架\n  外键: category_id -> categories(category_id)\n  样例 (product_id | product_name | category_id | list_price | cost_price | is_active):\n  1 | 旗舰手机 | 1 | 499900 | 368492 | 1\n  2 | 降噪耳机 | 1 | 89900 | 45969 | 1\n  3 | 智能手表 | 1 | 129900 | 78627 | 1\n\n表 users\n  user_id INTEGER\n  register_date TEXT NOT NULL  -- 注册日期 YYYY-MM-DD\n  region_code TEXT NOT NULL\n  gender TEXT  -- M / F / NULL（未填写）\n  birth_year INTEGER\n  member_level TEXT NOT NULL  -- normal / silver / gold\n  acquire_channel TEXT NOT NULL  -- 拉新渠道：organic / ads / referral\n  is_test INTEGER NOT NULL  -- 1 表示内部测试账号，统计时必须排除\n  外键: region_code -> regions(region_code)\n  样例 (user_id | register_date | region_code | gender | birth_year | member_level | acquire_channel | is_test):\n  1 | 2024-04-17 | NORTH | F | 1975 | normal | ads | 0\n  2 | 2024-11-26 | NORTH | None | 1983 | silver | ads | 0\n  3 | 2025-12-03 | EAST | F | 1989 | silver | organic | 0",
+        "duration_ms": 2,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT p.product_name, SUM(oi.item_amount)/100.0 AS amount_yuan, COUNT(DISTINCT o.order_id) AS orders\nFROM order_items oi\nJOIN orders o ON o.order_id = oi.order_id\nJOIN products p ON p.product_id = oi.product_id\nJOIN users u ON u.user_id = o.user_id\nWHERE o.status IN ('paid','completed')\n  AND u.is_test = 0\n  AND o.order_time >= '2025-01-01' AND o.order_time < '2026-01-01'\nGROUP BY p.product_name\nORDER BY SUM(oi.item_amount) DESC\nLIMIT 10",
+          "purpose": "2025全年按商品名称汇总明细成交额排名"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"product_name\", \"amount_yuan\", \"orders\"], \"rows\": [[\"旗舰手机\", 2669965.9, 432], [\"平板电脑\", 1708980.15, 461], [\"扫地机器人\", 1016891.3, 408], [\"智能手表\", 679636.8, 418], [\"空气净化器\", 679052.25, 437], [\"降噪耳机\", 445274.7, 400], [\"羽绒服\", 381688.95, 443], [\"运动鞋\", 243683.1, 431], [\"精华液\", 237807.9, 416], [\"电饭煲\", 196866.6, 407]], \"row_count\": 10}",
+        "duration_ms": 28,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT SUM(oi.item_amount)/100.0 AS total_yuan, COUNT(*) AS item_rows, COUNT(DISTINCT oi.item_id) AS distinct_items\nFROM order_items oi\nJOIN orders o ON o.order_id = oi.order_id\nJOIN users u ON u.user_id = o.user_id\nWHERE o.status IN ('paid','completed')\n  AND u.is_test = 0\n  AND o.order_time >= '2025-01-01' AND o.order_time < '2026-01-01'",
+          "purpose": "核对2025全年整体明细成交额总量"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"total_yuan\", \"item_rows\", \"distinct_items\"], \"rows\": [[9626358.2, 13073, 13073]], \"row_count\": 1}",
+        "duration_ms": 25,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 4,
+        "tool": "run_sql",
+        "arguments": {
+          "purpose": "核对分组汇总之和是否等于整体总量",
+          "sql": "SELECT SUM(s.amt)/100.0 AS grouped_total_yuan, COUNT(*) AS product_count\nFROM (\n  SELECT p.product_name, SUM(oi.item_amount) AS amt\n  FROM order_items oi\n  JOIN orders o ON o.order_id = oi.order_id\n  JOIN products p ON p.product_id = oi.product_id\n  JOIN users u ON u.user_id = o.user_id\n  WHERE o.status IN ('paid','completed') AND u.is_test = 0\n    AND o.order_time >= '2025-01-01' AND o.order_time < '2026-01-01'\n  GROUP BY p.product_name\n) s"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"grouped_total_yuan\", \"product_count\"], \"rows\": [[9626358.2, 30]], \"row_count\": 1}",
+        "duration_ms": 10,
+        "thought": ""
+      }
+    ],
+    "plan": [
+      "确认指标口径为“明细成交额”、时间范围为2025全年、统计单位为商品名称，并明确金额单位",
+      "按商品名称汇总2025全年明细成交额，降序排列取第一名，输出商品名称与金额",
+      "核对汇总结果与整体明细成交额是否一致，确认无重复或遗漏"
+    ],
+    "reflection": {
+      "passed": true,
+      "quality_score": 95,
+      "issues": [],
+      "summary": "回答中的关键数字均可由本轮查询结果直接支持，口径符合明细成交额定义，结论正确。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "旗舰手机 2025 全年明细成交额为 2,669,965.90 元，排名第一",
+          "status": "supported",
+          "evidence_ids": [
+            "E4"
+          ],
+          "reason": "E4 按商品名称汇总并按金额降序排列，首行为旗舰手机 2669965.9 元，与回答一致。"
+        },
+        {
+          "claim": "旗舰手机涉及 432 个有效订单",
+          "status": "supported",
+          "evidence_ids": [
+            "E4"
+          ],
+          "reason": "E4 输出旗舰手机 orders=432。"
+        },
+        {
+          "claim": "第二名平板电脑 1,708,980.15 元，第三名扫地机器人 1,016,891.30 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E4"
+          ],
+          "reason": "E4 第二、三行分别为平板电脑 1708980.15、扫地机器人 1016891.3。"
+        },
+        {
+          "claim": "全年明细成交额合计 9,626,358.20 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "E5 整体汇总 total_yuan=9626358.2。"
+        },
+        {
+          "claim": "旗舰手机占全年明细成交额 27.7%",
+          "status": "supported",
+          "evidence_ids": [
+            "E4",
+            "E5"
+          ],
+          "reason": "2669965.9 / 9626358.2 ≈ 27.74%，由 E4 与 E5 直接算出。"
+        },
+        {
+          "claim": "按商品名称分组共 30 个商品，分组金额合计与整体一致，无重复或遗漏",
+          "status": "supported",
+          "evidence_ids": [
+            "E6",
+            "E5"
+          ],
+          "reason": "E6 分组汇总 grouped_total_yuan=9626358.2、product_count=30，与 E5 整体总量一致；E5 明细行 13073 与 item_id 唯一数 13073 相同。"
+        },
+        {
+          "claim": "口径为 SUM(order_items.item_amount)，仅统计 paid/completed、排除测试账号、下单时间 2025 全年、分换算为元",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E3",
+            "E4",
+            "E5"
+          ],
+          "reason": "E1 定义明细成交额口径为 SUM(item_amount)、有效订单 paid/completed、排除测试账号；E3 说明 item_amount 单位为分；E4/E5 的 SQL 条件与之一致，且除以 100 换算为元。"
+        },
+        {
+          "claim": "明细成交额未分摊订单级优惠，合计略大于净销售额属预期差异",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E3"
+          ],
+          "reason": "E1 明确 item_amount 未分摊订单级优惠、各品类之和略大于净销售额为预期差异；E3 说明 item_amount=quantity*unit_price 未分摊优惠。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 7,
+    "usage": {
+      "prompt_tokens": 32807,
+      "completion_tokens": 1721,
+      "total_tokens": 34528,
+      "prompt_cache_hit_tokens": 24320,
+      "prompt_cache_miss_tokens": 8487
+    },
+    "duration_ms": 11178,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1036,
+          "usage": {
+            "prompt_tokens": 201,
+            "completion_tokens": 72,
+            "total_tokens": 273,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 201
+          }
+        },
+        "analysis": {
+          "logical_calls": 5,
+          "http_requests": 5,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 6754,
+          "usage": {
+            "prompt_tokens": 29213,
+            "completion_tokens": 974,
+            "total_tokens": 30187,
+            "prompt_cache_hit_tokens": 23936,
+            "prompt_cache_miss_tokens": 5277
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 3330,
+          "usage": {
+            "prompt_tokens": 3393,
+            "completion_tokens": 675,
+            "total_tokens": 4068,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 3009
+          }
+        }
+      },
+      "llm_calls": 7,
+      "chat_usage": {
+        "prompt_tokens": 32807,
+        "completion_tokens": 1721,
+        "total_tokens": 34528,
+        "prompt_cache_hit_tokens": 24320,
+        "prompt_cache_miss_tokens": 8487
+      },
+      "http_requests": 7,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 5,
+    "question": "2025全年按明细成交额计算，销售额最高的商品名称和金额分别是什么？",
+    "tables": [
+      {
+        "id": "result-4",
+        "title": "查询结果 · E4",
+        "columns": [
+          "product_name",
+          "amount_yuan",
+          "orders"
+        ],
+        "rows": [
+          [
+            "旗舰手机",
+            2669965.9,
+            432
+          ],
+          [
+            "平板电脑",
+            1708980.15,
+            461
+          ],
+          [
+            "扫地机器人",
+            1016891.3,
+            408
+          ],
+          [
+            "智能手表",
+            679636.8,
+            418
+          ],
+          [
+            "空气净化器",
+            679052.25,
+            437
+          ],
+          [
+            "降噪耳机",
+            445274.7,
+            400
+          ],
+          [
+            "羽绒服",
+            381688.95,
+            443
+          ],
+          [
+            "运动鞋",
+            243683.1,
+            431
+          ],
+          [
+            "精华液",
+            237807.9,
+            416
+          ],
+          [
+            "电饭煲",
+            196866.6,
+            407
+          ]
+        ],
+        "evidence_ids": [
+          "E4"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-5",
+        "title": "查询结果 · E5",
+        "columns": [
+          "total_yuan",
+          "item_rows",
+          "distinct_items"
+        ],
+        "rows": [
+          [
+            9626358.2,
+            13073,
+            13073
+          ]
+        ],
+        "evidence_ids": [
+          "E5"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-6",
+        "title": "查询结果 · E6",
+        "columns": [
+          "grouped_total_yuan",
+          "product_count"
+        ],
+        "rows": [
+          [
+            9626358.2,
+            30
+          ]
+        ],
+        "evidence_ids": [
+          "E6"
+        ],
+        "scope": {},
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true,
+      "fact_0_1": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

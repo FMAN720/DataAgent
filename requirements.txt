@@ -1,0 +1,11 @@
+# 核心依赖：运行数据分析 Agent（SQLite 演示库）所需
+fastapi==0.143.3
+uvicorn==0.54.0
+openai==3.35.1
+pydantic==2.14.1
+pydantic-settings==2.16.0
+SQLAlchemy[asyncio]==2.1.5
+loguru==0.7.3
+httpx==0.28.1
+tiktoken==0.14.0
+python-multipart==0.0.32

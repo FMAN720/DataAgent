@@ -1,0 +1,288 @@
+{
+  "id": "sql_dec_net",
+  "category": "sql",
+  "split": "development",
+  "variant": "baseline",
+  "question": "2025年12月净销售额是多少？请给精确到分的元数。",
+  "response": {
+    "answer": "你说得对，我原回答把「质量检查通过」表述成了数据完整，这是超出证据的断言。修正如下。\n\n**2025 年 12 月净销售额为 734,981.67 元。**\n\n数据质量检查结果（仅限工具实际校验的项目）：订单无重复主键、无缺失订单、无非法状态、无非法日期、无非法金额，用户表无重复 user_id、无孤儿订单。\n\n但需明确限制：工具同时给出警告「检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位」。也就是说，12 月数据是否已全部入库、是否存在尚未落库的订单，本轮无法验证；上述金额是当前库内已入库数据的计算结果，不能据此断言 12 月数据完整无缺。若需确认完整性，需补充业务入库完成水位或对账数据。\n\n口径：净销售额 = 有效订单（paid、completed）的 pay_amount 求和，已排除测试账号，按下单时间（orders.order_time）统计，区间 2025-12-01 至 2025-12-31（左闭右开）。",
+    "success": true,
+    "trace_id": "330aff4a-c65a-4a76-95c8-8f73665183de",
+    "session_id": "6a1bb779-03e7-4588-b119-fb56dc1baeac",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "get_metric_definition",
+        "arguments": {
+          "metric_id": "net_sales"
+        },
+        "ok": true,
+        "output": "{\"definitions\": [{\"id\": \"net_sales\", \"name\": \"净销售额\", \"unit\": \"元\", \"formula\": \"有效订单 pay_amount（分）求和 / 100；paid、completed\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}]}",
+        "duration_ms": 0,
+        "thought": "我会先查看指标定义，然后查询 2025 年 12 月的净销售额。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "query_metric",
+        "arguments": {
+          "metric_id": "net_sales",
+          "source": "ecommerce_v1",
+          "start": "2025-12-01",
+          "end": "2026-01-01",
+          "unit": "元"
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"metric\": {\"id\": \"net_sales\", \"name\": \"净销售额\", \"unit\": \"元\", \"formula\": \"有效订单 pay_amount（分）求和 / 100；paid、completed\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}, \"quality\": {\"order_rows\": 9143, \"duplicate_orders\": 0, \"missing_orders\": 0, \"invalid_status\": 0, \"invalid_dates\": 0, \"invalid_money\": 0, \"first_date\": \"2025-01-01 05:25:36\", \"last_date\": \"2025-12-31 23:21:57\", \"duplicate_users\": 0, \"invalid_users\": 0, \"orphan_orders\": 0}, \"period\": {\"start\": \"2025-12-01\", \"end\": \"2026-01-01\"}, \"summary\": {\"value\": \"734981.67\"}, \"groups\": [{\"segment\": \"整体\", \"value\": \"734981.67\"}], \"group_count\": 1, \"warnings\": [\"检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。\"], \"queries\": [\"SELECT '整体' AS segment, SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS value FROM \\\"orders\\\" o JOIN \\\"users\\\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') GROUP BY 1 ORDER BY segment\", \"SELECT SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS value FROM \\\"orders\\\" o JOIN \\\"users\\\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01')\"]}",
+        "duration_ms": 58,
+        "thought": ""
+      }
+    ],
+    "plan": [],
+    "reflection": {
+      "passed": true,
+      "quality_score": 95,
+      "issues": [],
+      "summary": "净销售额 734,981.67 元与 query_metric 输出一致，口径符合定义，数据完整性限制已如实说明。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "2025 年 12 月净销售额为 734,981.67 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E2"
+          ],
+          "reason": "query_metric 返回 summary.value=734981.67，单位为元，与回答一致，无需二次换算。"
+        },
+        {
+          "claim": "净销售额口径为有效订单（paid、completed）的 pay_amount 求和，排除测试账号，按下单时间统计，区间 2025-12-01 至 2025-12-31（左闭右开）",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E2"
+          ],
+          "reason": "get_metric_definition 定义公式为有效订单 pay_amount（分）求和/100、状态 paid/completed、exclude_test_users=true、time_field=orders.order_time；query_metric 的 SQL 使用 order_time >= '2025-12-01' AND < '2026-01-01'、status IN ('paid','completed')、u.is_test=0，与口径一致。"
+        },
+        {
+          "claim": "订单无重复主键、无缺失订单、无非法状态、无非法日期、无非法金额，用户表无重复 user_id、无孤儿订单",
+          "status": "supported",
+          "evidence_ids": [
+            "E2"
+          ],
+          "reason": "quality 字段显示 duplicate_orders=0、missing_orders=0、invalid_status=0、invalid_dates=0、invalid_money=0、duplicate_users=0、orphan_orders=0。"
+        },
+        {
+          "claim": "日期边界覆盖不证明数据完整，当前未接入业务入库完成水位，12 月数据是否全部入库无法验证",
+          "status": "supported",
+          "evidence_ids": [
+            "E2"
+          ],
+          "reason": "warnings 明确写明检查范围覆盖全业务表、日期边界覆盖不证明数据完整、当前未接入业务入库完成水位，回答如实转述并限定结论。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": true,
+    "llm_calls": 7,
+    "usage": {
+      "prompt_tokens": 23082,
+      "completion_tokens": 1534,
+      "total_tokens": 24616,
+      "prompt_cache_hit_tokens": 19072,
+      "prompt_cache_miss_tokens": 4010
+    },
+    "duration_ms": 11183,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [
+        "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+      ],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": [
+        {
+          "status": "ready",
+          "metric": {
+            "id": "net_sales",
+            "name": "净销售额",
+            "unit": "元",
+            "formula": "有效订单 pay_amount（分）求和 / 100；paid、completed",
+            "kind": "additive",
+            "version": "1",
+            "source": "ecommerce_v1",
+            "time_field": "orders.order_time",
+            "exclude_test_users": true,
+            "allowed_join": "orders.user_id = users.user_id（users.user_id 必须唯一）",
+            "dimensions": [
+              "overall",
+              "region",
+              "order_channel"
+            ],
+            "scope": "项目电商模型；不自动套用于上传表或其他数据库业务口径"
+          },
+          "quality": {
+            "order_rows": 9143,
+            "duplicate_orders": 0,
+            "missing_orders": 0,
+            "invalid_status": 0,
+            "invalid_dates": 0,
+            "invalid_money": 0,
+            "first_date": "2025-01-01 05:25:36",
+            "last_date": "2025-12-31 23:21:57",
+            "duplicate_users": 0,
+            "invalid_users": 0,
+            "orphan_orders": 0
+          },
+          "period": {
+            "start": "2025-12-01",
+            "end": "2026-01-01"
+          },
+          "summary": {
+            "value": "734981.67"
+          },
+          "groups": [
+            {
+              "segment": "整体",
+              "value": "734981.67"
+            }
+          ],
+          "group_count": 1,
+          "warnings": [
+            "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+          ],
+          "queries": [
+            "SELECT '整体' AS segment, SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS value FROM \"orders\" o JOIN \"users\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') GROUP BY 1 ORDER BY segment",
+            "SELECT SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS value FROM \"orders\" o JOIN \"users\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01')"
+          ]
+        }
+      ]
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 804,
+          "usage": {
+            "prompt_tokens": 200,
+            "completion_tokens": 5,
+            "total_tokens": 205,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 200
+          }
+        },
+        "analysis": {
+          "logical_calls": 3,
+          "http_requests": 3,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 3366,
+          "usage": {
+            "prompt_tokens": 14152,
+            "completion_tokens": 283,
+            "total_tokens": 14435,
+            "prompt_cache_hit_tokens": 13056,
+            "prompt_cache_miss_tokens": 1096
+          }
+        },
+        "reflection": {
+          "logical_calls": 2,
+          "http_requests": 2,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 5033,
+          "usage": {
+            "prompt_tokens": 3275,
+            "completion_tokens": 1002,
+            "total_tokens": 4277,
+            "prompt_cache_hit_tokens": 768,
+            "prompt_cache_miss_tokens": 2507
+          }
+        },
+        "revision": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1903,
+          "usage": {
+            "prompt_tokens": 5455,
+            "completion_tokens": 244,
+            "total_tokens": 5699,
+            "prompt_cache_hit_tokens": 5248,
+            "prompt_cache_miss_tokens": 207
+          }
+        }
+      },
+      "llm_calls": 7,
+      "chat_usage": {
+        "prompt_tokens": 23082,
+        "completion_tokens": 1534,
+        "total_tokens": 24616,
+        "prompt_cache_hit_tokens": 19072,
+        "prompt_cache_miss_tokens": 4010
+      },
+      "http_requests": 7,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 4,
+    "question": "2025年12月净销售额是多少？请给精确到分的元数。",
+    "tables": [
+      {
+        "id": "result-2",
+        "title": "净销售额",
+        "columns": [
+          "分组",
+          "净销售额（元）"
+        ],
+        "rows": [
+          [
+            "整体",
+            "734981.67"
+          ]
+        ],
+        "evidence_ids": [
+          "E2"
+        ],
+        "scope": {
+          "metric": "净销售额",
+          "unit": "元",
+          "source": "ecommerce_v1",
+          "start": "2025-12-01",
+          "end": "2026-01-01"
+        },
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

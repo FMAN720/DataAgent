@@ -1,0 +1,433 @@
+{
+  "id": "cmp_gold_members",
+  "category": "comparison",
+  "split": "holdout",
+  "variant": "baseline",
+  "question": "只看gold会员，比较2025年11月与12月净销售额，给出两个金额及筛选口径，使用整体维度。",
+  "response": {
+    "answer": "**结论：gold 会员净销售额 12 月较 11 月大幅下降 54.2%，减少 83,876.81 元。**\n\n| 周期 | 净销售额（元） |\n|---|---|\n| 2025 年 11 月 | 154,736.45 |\n| 2025 年 12 月 | 70,859.64 |\n| 差额 | -83,876.81（-54.2%） |\n\n**筛选口径**\n- 指标：净销售额 = 有效订单（status 为 paid、completed）的实付金额 pay_amount 求和，单位由分换算为元\n- 会员范围：users.member_level = 'gold'（黄金会员）\n- 排除内部测试账号（users.is_test = 0）\n- 时间：按下单时间 orders.order_time 归属月份，11 月为 2025-11-01 至 2025-11-30，12 月为 2025-12-01 至 2025-12-31（左闭右开）\n- 维度：整体（未按区域或渠道拆分）\n\n**说明**\n- 分组结果与独立总量查询核对一致（差额为 0），数据可加性通过。\n- 两个月天数不同（30 天 vs 31 天），上述为总额直接比较，未做日均调整；若按日均看，降幅会更大。\n- 本次只给出变化幅度，下降原因尚未验证，需结合活动、价格、会员结构等数据进一步分析。\n\n口径：净销售额（有效订单实付金额，已排除测试账号），仅 gold 会员，按下单时间统计。",
+    "success": true,
+    "trace_id": "a2f6096c-a8ba-4602-bbd3-6051307348f0",
+    "session_id": "c2a74ac9-e847-4475-b45d-752692875908",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "get_metric_definition",
+        "arguments": {
+          "metric_id": "net_sales"
+        },
+        "ok": true,
+        "output": "{\"definitions\": [{\"id\": \"net_sales\", \"name\": \"净销售额\", \"unit\": \"元\", \"formula\": \"有效订单 pay_amount（分）求和 / 100；paid、completed\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}]}",
+        "duration_ms": 0,
+        "thought": "我先确认净销售额的固定口径和 gold 会员的筛选方式。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_glossary",
+        "arguments": {
+          "query": "gold会员 净销售额 筛选口径"
+        },
+        "ok": true,
+        "output": "## 净销售额（营收 / 销售额）\n净销售额 = 有效订单的实付金额之和，即 GMV 扣除已退款订单。\nSQL 口径：`SUM(pay_amount)`，条件 `status IN ('paid', 'completed')`，并排除测试账号。\n用户说「销售额」「营收」「收入」时，默认指净销售额。\n\n## 会员等级\nusers.member_level 取值：normal（普通）、silver（白银）、gold（黄金）。\n\n## 客单价（AOV）\n客单价 = 净销售额 / 有效订单数，单位换算成元。\nSQL 口径：`SUM(pay_amount) / COUNT(*) / 100.0`，条件 `status IN ('paid', 'completed')`，排除测试账号。",
+        "duration_ms": 0,
+        "thought": "我先确认净销售额的固定口径和 gold 会员的筛选方式。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "orders",
+            "users"
+          ]
+        },
+        "ok": true,
+        "output": "表 orders\n  order_id INTEGER\n  user_id INTEGER NOT NULL\n  order_time TEXT NOT NULL  -- 下单时间 YYYY-MM-DD HH:MM:SS\n  status TEXT NOT NULL  -- paid 已支付 / completed 已完成 / cancelled 已取消（未支付） / refunded 已全额退款\n  channel TEXT NOT NULL  -- 下单端：app / web / mini_program\n  total_amount INTEGER NOT NULL  -- 商品原价合计，单位：分\n  discount_amount INTEGER NOT NULL  -- 优惠金额，单位：分\n  pay_amount INTEGER NOT NULL  -- 实付金额 = total_amount - discount_amount，单位：分；cancelled 订单为 0\n  pay_time TEXT  -- 支付时间；cancelled 为 NULL\n  外键: user_id -> users(user_id)\n  样例 (order_id | user_id | order_time | status | channel | total_amount | discount_amount | pay_amount | pay_time):\n  1 | 350 | 2025-01-26 14:43:02 | completed | web | 538710 | 0 | 538710 | 2025-01-26 15:10:02\n  2 | 930 | 2025-01-26 20:03:44 | completed | app | 15930 | 343 | 15587 | 2025-01-26 20:28:44\n  3 | 390 | 2025-01-01 17:46:50 | refunded | web | 12900 | 0 | 12900 | 2025-01-01 18:12:50\n\n表 users\n  user_id INTEGER\n  register_date TEXT NOT NULL  -- 注册日期 YYYY-MM-DD\n  region_code TEXT NOT NULL\n  gender TEXT  -- M / F / NULL（未填写）\n  birth_year INTEGER\n  member_level TEXT NOT NULL  -- normal / silver / gold\n  acquire_channel TEXT NOT NULL  -- 拉新渠道：organic / ads / referral\n  is_test INTEGER NOT NULL  -- 1 表示内部测试账号，统计时必须排除\n  外键: region_code -> regions(region_code)\n  样例 (user_id | register_date | region_code | gender | birth_year | member_level | acquire_channel | is_test):\n  1 | 2024-04-17 | NORTH | F | 1975 | normal | ads | 0\n  2 | 2024-11-26 | NORTH | None | 1983 | silver | ads | 0\n  3 | 2025-12-03 | EAST | F | 1989 | silver | organic | 0",
+        "duration_ms": 7,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "prepare_analysis",
+        "arguments": {
+          "scope": {
+            "metric": "净销售额",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1",
+            "unit": "元",
+            "dimension": "整体",
+            "base_start": "2025-11-01",
+            "base_end": "2025-12-01",
+            "current_start": "2025-12-01",
+            "current_end": "2026-01-01",
+            "filters": [
+              "users.member_level = 'gold'",
+              "orders.status IN ('paid','completed')",
+              "排除测试账号 users.is_test = 0"
+            ],
+            "assumptions": [
+              "按下单时间 orders.order_time 归属月份",
+              "gold 会员按用户当前 member_level 判定"
+            ]
+          },
+          "detail_sql": "SELECT 'base' AS period, SUM(o.pay_amount)/100.0 AS net_sales FROM orders o JOIN users u ON o.user_id = u.user_id WHERE u.member_level = 'gold' AND u.is_test = 0 AND o.status IN ('paid','completed') AND o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01' UNION ALL SELECT 'current', SUM(o.pay_amount)/100.0 FROM orders o JOIN users u ON o.user_id = u.user_id WHERE u.member_level = 'gold' AND u.is_test = 0 AND o.status IN ('paid','completed') AND o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01'",
+          "total_sql": "SELECT SUM(CASE WHEN o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01' THEN o.pay_amount ELSE 0 END)/100.0 AS base_value, SUM(CASE WHEN o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01' THEN o.pay_amount ELSE 0 END)/100.0 AS current_value FROM orders o JOIN users u ON o.user_id = u.user_id WHERE u.member_level = 'gold' AND u.is_test = 0 AND o.status IN ('paid','completed') AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'"
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"scope\": {\"metric\": \"净销售额\", \"metric_kind\": \"additive\", \"source\": \"ecommerce_v1\", \"unit\": \"元\", \"dimension\": \"整体\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [\"按下单时间 orders.order_time 归属月份\", \"gold 会员按用户当前 member_level 判定\"], \"filters\": [\"users.member_level = 'gold'\", \"orders.status IN ('paid','completed')\", \"排除测试账号 users.is_test = 0\"]}, \"questions\": [], \"period_convention\": \"start_inclusive_end_exclusive\"}",
+        "duration_ms": 0,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 4,
+        "tool": "compare_periods",
+        "arguments": {
+          "scope": {
+            "assumptions": [
+              "按下单时间 orders.order_time 归属月份",
+              "gold 会员按用户当前 member_level 判定"
+            ],
+            "base_end": "2025-12-01",
+            "base_start": "2025-11-01",
+            "current_end": "2026-01-01",
+            "current_start": "2025-12-01",
+            "dimension": "整体",
+            "filters": [
+              "users.member_level = 'gold'",
+              "orders.status IN ('paid','completed')",
+              "排除测试账号 users.is_test = 0"
+            ],
+            "metric": "净销售额",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1",
+            "unit": "元"
+          },
+          "detail_sql": "SELECT 'gold' AS segment, SUM(CASE WHEN o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01' THEN o.pay_amount ELSE 0 END)/100.0 AS base_value, SUM(CASE WHEN o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01' THEN o.pay_amount ELSE 0 END)/100.0 AS current_value FROM orders o JOIN users u ON o.user_id = u.user_id WHERE u.member_level = 'gold' AND u.is_test = 0 AND o.status IN ('paid','completed') AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'",
+          "total_sql": "SELECT SUM(CASE WHEN o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01' THEN o.pay_amount ELSE 0 END)/100.0 AS base_value, SUM(CASE WHEN o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01' THEN o.pay_amount ELSE 0 END)/100.0 AS current_value FROM orders o JOIN users u ON o.user_id = u.user_id WHERE u.member_level = 'gold' AND u.is_test = 0 AND o.status IN ('paid','completed') AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'"
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"scope\": {\"metric\": \"净销售额\", \"metric_kind\": \"additive\", \"source\": \"ecommerce_v1\", \"unit\": \"元\", \"dimension\": \"整体\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [\"按下单时间 orders.order_time 归属月份\", \"gold 会员按用户当前 member_level 判定\"], \"filters\": [\"users.member_level = 'gold'\", \"orders.status IN ('paid','completed')\", \"排除测试账号 users.is_test = 0\"]}, \"summary\": {\"base\": \"154736.45\", \"current\": \"70859.64\", \"delta\": \"-83876.81\", \"change_pct\": \"-54.20623906\"}, \"groups\": [{\"segment\": \"gold\", \"base_value\": \"154736.45\", \"current_value\": \"70859.64\", \"delta\": \"-83876.81\", \"contribution_pct\": \"100\"}], \"group_count\": 1, \"reconciliation\": {\"matched\": true, \"group_totals\": {\"base_value\": \"154736.45\", \"current_value\": \"70859.64\"}, \"differences\": {\"base_value\": \"0\", \"current_value\": \"0\"}}, \"warnings\": [\"贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。\", \"不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。\", \"两个周期天数不同，当前比较未自动做日均调整。\"], \"causal_claim_supported\": false}",
+        "duration_ms": 4,
+        "thought": ""
+      }
+    ],
+    "plan": [
+      "确认净销售额指标定义、金额单位与gold会员筛选口径，并明确比较周期为2025年11月与2025年12月",
+      "按gold会员口径分别查询两个月的整体净销售额，核对汇总值与数据完整性",
+      "对比两个月整体金额，计算差额与变化幅度，输出两个金额及所用筛选口径"
+    ],
+    "reflection": {
+      "passed": true,
+      "quality_score": 95,
+      "issues": [],
+      "summary": "回答中的金额、差额、降幅与筛选口径均与工具结果一致，且明确区分了统计变化与未验证的因果解释。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "2025年11月 gold 会员净销售额为 154,736.45 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E5",
+            "E1"
+          ],
+          "reason": "compare_periods 的 summary.base 与 groups[0].base_value 均为 154736.45，单位为元；E1 确认净销售额单位为元且公式为 pay_amount（分）求和/100，未二次换算。"
+        },
+        {
+          "claim": "2025年12月 gold 会员净销售额为 70,859.64 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "compare_periods 的 summary.current 与 groups[0].current_value 均为 70859.64。"
+        },
+        {
+          "claim": "差额 -83,876.81 元，降幅 54.2%",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "summary.delta 为 -83876.81，change_pct 为 -54.20623906，四舍五入即 -54.2%。"
+        },
+        {
+          "claim": "筛选口径：gold 会员、有效订单 paid/completed、排除测试账号、按下单时间归属月份、整体维度",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E2",
+            "E3",
+            "E4",
+            "E5"
+          ],
+          "reason": "E1 定义净销售额为 paid/completed 的 pay_amount 求和并排除测试账号；E2 确认 member_level 含 gold；E3 确认 is_test 与 order_time 字段；E4/E5 的 SQL 与 scope 均按 users.member_level='gold'、is_test=0、status IN ('paid','completed')、order_time 左闭右开区间及整体维度执行。"
+        },
+        {
+          "claim": "时间范围 11 月为 2025-11-01 至 2025-11-30，12 月为 2025-12-01 至 2025-12-31（左闭右开）",
+          "status": "supported",
+          "evidence_ids": [
+            "E4",
+            "E5"
+          ],
+          "reason": "SQL 使用 >= '2025-11-01' AND < '2025-12-01' 与 >= '2025-12-01' AND < '2026-01-01'，period_convention 为 start_inclusive_end_exclusive，与描述一致。"
+        },
+        {
+          "claim": "分组结果与独立总量查询核对一致（差额为 0），数据可加性通过",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "reconciliation.matched 为 true，group_totals 与 summary 一致，differences 的 base_value 与 current_value 均为 0。"
+        },
+        {
+          "claim": "两个月天数不同（30 天 vs 31 天），未做日均调整；按日均看降幅会更大",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "warnings 明确提示两个周期天数不同且未自动做日均调整；11 月 30 天、12 月 31 天属实，日均降幅更大可由金额直接推算，属合理说明。"
+        },
+        {
+          "claim": "下降原因尚未验证，需结合活动、价格、会员结构等数据进一步分析",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "compare_periods 的 causal_claim_supported 为 false，warnings 指出贡献是统计拆解、不能证明活动或价格等因素造成变化；回答未将下降归因于具体原因，符合要求。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 7,
+    "usage": {
+      "prompt_tokens": 31967,
+      "completion_tokens": 2498,
+      "total_tokens": 34465,
+      "prompt_cache_hit_tokens": 23680,
+      "prompt_cache_miss_tokens": 8287
+    },
+    "duration_ms": 14209,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": {
+        "metric": "净销售额",
+        "metric_kind": "additive",
+        "source": "ecommerce_v1",
+        "unit": "元",
+        "dimension": "整体",
+        "base_start": "2025-11-01",
+        "base_end": "2025-12-01",
+        "current_start": "2025-12-01",
+        "current_end": "2026-01-01",
+        "assumptions": [
+          "按下单时间 orders.order_time 归属月份",
+          "gold 会员按用户当前 member_level 判定"
+        ],
+        "filters": [
+          "users.member_level = 'gold'",
+          "orders.status IN ('paid','completed')",
+          "排除测试账号 users.is_test = 0"
+        ]
+      },
+      "clarification_questions": [],
+      "comparisons": [
+        {
+          "status": "ready",
+          "scope": {
+            "metric": "净销售额",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1",
+            "unit": "元",
+            "dimension": "整体",
+            "base_start": "2025-11-01",
+            "base_end": "2025-12-01",
+            "current_start": "2025-12-01",
+            "current_end": "2026-01-01",
+            "assumptions": [
+              "按下单时间 orders.order_time 归属月份",
+              "gold 会员按用户当前 member_level 判定"
+            ],
+            "filters": [
+              "users.member_level = 'gold'",
+              "orders.status IN ('paid','completed')",
+              "排除测试账号 users.is_test = 0"
+            ]
+          },
+          "summary": {
+            "base": "154736.45",
+            "current": "70859.64",
+            "delta": "-83876.81",
+            "change_pct": "-54.20623906"
+          },
+          "groups": [
+            {
+              "segment": "gold",
+              "base_value": "154736.45",
+              "current_value": "70859.64",
+              "delta": "-83876.81",
+              "contribution_pct": "100"
+            }
+          ],
+          "group_count": 1,
+          "reconciliation": {
+            "matched": true,
+            "group_totals": {
+              "base_value": "154736.45",
+              "current_value": "70859.64"
+            },
+            "differences": {
+              "base_value": "0",
+              "current_value": "0"
+            }
+          },
+          "warnings": [
+            "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+            "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+            "两个周期天数不同，当前比较未自动做日均调整。"
+          ],
+          "causal_claim_supported": false
+        }
+      ],
+      "warnings": [
+        "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+        "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+        "两个周期天数不同，当前比较未自动做日均调整。"
+      ],
+      "comparison_count": 1,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1259,
+          "usage": {
+            "prompt_tokens": 210,
+            "completion_tokens": 75,
+            "total_tokens": 285,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 210
+          }
+        },
+        "analysis": {
+          "logical_calls": 5,
+          "http_requests": 5,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 8445,
+          "usage": {
+            "prompt_tokens": 28135,
+            "completion_tokens": 1575,
+            "total_tokens": 29710,
+            "prompt_cache_hit_tokens": 23296,
+            "prompt_cache_miss_tokens": 4839
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 4486,
+          "usage": {
+            "prompt_tokens": 3622,
+            "completion_tokens": 848,
+            "total_tokens": 4470,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 3238
+          }
+        }
+      },
+      "llm_calls": 7,
+      "chat_usage": {
+        "prompt_tokens": 31967,
+        "completion_tokens": 2498,
+        "total_tokens": 34465,
+        "prompt_cache_hit_tokens": 23680,
+        "prompt_cache_miss_tokens": 8287
+      },
+      "http_requests": 7,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 5,
+    "question": "只看gold会员，比较2025年11月与12月净销售额，给出两个金额及筛选口径，使用整体维度。",
+    "tables": [
+      {
+        "id": "result-5",
+        "title": "净销售额 · 整体",
+        "columns": [
+          "整体",
+          "基期（元）",
+          "当期（元）",
+          "变化（元）"
+        ],
+        "rows": [
+          [
+            "gold",
+            "154736.45",
+            "70859.64",
+            "-83876.81"
+          ]
+        ],
+        "evidence_ids": [
+          "E5"
+        ],
+        "scope": {
+          "metric": "净销售额",
+          "metric_kind": "additive",
+          "source": "ecommerce_v1",
+          "unit": "元",
+          "dimension": "整体",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "current_start": "2025-12-01",
+          "current_end": "2026-01-01",
+          "assumptions": [
+            "按下单时间 orders.order_time 归属月份",
+            "gold 会员按用户当前 member_level 判定"
+          ],
+          "filters": [
+            "users.member_level = 'gold'",
+            "orders.status IN ('paid','completed')",
+            "排除测试账号 users.is_test = 0"
+          ]
+        },
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true,
+      "fact_0_1": true,
+      "reconciled_comparison": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

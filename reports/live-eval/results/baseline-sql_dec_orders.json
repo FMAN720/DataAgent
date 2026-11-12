@@ -1,0 +1,371 @@
+{
+  "id": "sql_dec_orders",
+  "category": "sql",
+  "split": "holdout",
+  "variant": "baseline",
+  "question": "2025年12月有效订单数是多少？排除测试账号。",
+  "response": {
+    "answer": "**结论：2025年12月有效订单数为 733 单（已排除测试账号）。**\n\n核对过程：\n- 不排除测试账号：745 单\n- 其中测试账号（users.is_test = 1）的有效订单：12 单\n- 排除后：745 − 12 = **733 单**，与固定口径查询结果一致，差异完全由测试账号订单解释。\n\n补充：该月全部订单（含所有状态）共 871 单，其中 126 单为其他状态（如待支付、已取消、已退款等），不计入有效订单。\n\n口径：有效订单数 = status 为 paid、completed 的订单数，一行一单，按下单时间（orders.order_time）归属月份，已排除测试账号（users.is_test = 1）。",
+    "success": true,
+    "trace_id": "304fe786-1b7e-4e8e-a577-8bfec6254de4",
+    "session_id": "ae8dd46a-a372-4f11-b31a-2ba953ff2e6a",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "get_metric_definition",
+        "arguments": {
+          "metric_id": "order_count"
+        },
+        "ok": true,
+        "output": "{\"definitions\": [{\"id\": \"order_count\", \"name\": \"有效订单数\", \"unit\": \"单\", \"formula\": \"paid、completed 的订单数；一行一单\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}]}",
+        "duration_ms": 0,
+        "thought": "我先确认指标口径和测试账号规则。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_glossary",
+        "arguments": {
+          "query": "有效订单数 测试账号 排除"
+        },
+        "ok": true,
+        "output": "## 客单价（AOV）\n客单价 = 净销售额 / 有效订单数，单位换算成元。\nSQL 口径：`SUM(pay_amount) / COUNT(*) / 100.0`，条件 `status IN ('paid', 'completed')`，排除测试账号。\n\n## 下单用户数与复购率\n- 下单用户数：统计周期内有至少一笔有效订单的去重用户数。\n- 复购率：统计周期内有效订单数 ≥ 2 的用户数 / 下单用户数。\n均排除测试账号。\n\n## 退款率\n退款率 = 退款订单数 / 已支付订单数。\n- 分子：`status = 'refunded'` 的订单数（等价于 refunds 表中的订单数）。\n- 分母：`status IN ('paid', 'completed', 'refunded')` 的订单数。\n- 均排除测试账号，按下单时间归属月份。\n注意：refund_requests 是「退款申请」表，其中 status = 'rejected' 的申请被驳回、没有产生真实退款，不能用 refund_requests 计算退款率。",
+        "duration_ms": 1,
+        "thought": "我先确认指标口径和测试账号规则。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "query_metric",
+        "arguments": {
+          "metric_id": "order_count",
+          "source": "ecommerce_v1",
+          "start": "2025-12-01",
+          "end": "2026-01-01",
+          "unit": "单"
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"metric\": {\"id\": \"order_count\", \"name\": \"有效订单数\", \"unit\": \"单\", \"formula\": \"paid、completed 的订单数；一行一单\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}, \"quality\": {\"order_rows\": 9143, \"duplicate_orders\": 0, \"missing_orders\": 0, \"invalid_status\": 0, \"invalid_dates\": 0, \"invalid_money\": 0, \"first_date\": \"2025-01-01 05:25:36\", \"last_date\": \"2025-12-31 23:21:57\", \"duplicate_users\": 0, \"invalid_users\": 0, \"orphan_orders\": 0}, \"period\": {\"start\": \"2025-12-01\", \"end\": \"2026-01-01\"}, \"summary\": {\"value\": 733}, \"groups\": [{\"segment\": \"整体\", \"value\": 733}], \"group_count\": 1, \"warnings\": [\"检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。\"], \"queries\": [\"SELECT '整体' AS segment, SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed') THEN 1 ELSE 0 END) AS value FROM \\\"orders\\\" o JOIN \\\"users\\\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') GROUP BY 1 ORDER BY segment\", \"SELECT SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed') THEN 1 ELSE 0 END) AS value FROM \\\"orders\\\" o JOIN \\\"users\\\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01')\"]}",
+        "duration_ms": 37,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "list_tables",
+        "arguments": {
+          "question": "订单 用户 测试账号"
+        },
+        "ok": true,
+        "output": "{\"dialect\": \"sqlite\", \"tables\": [{\"table\": \"categories\", \"columns\": [\"category_id\", \"category_name\", \"parent_id\"]}, {\"table\": \"order_items\", \"columns\": [\"item_id\", \"order_id\", \"product_id\", \"quantity\", \"unit_price\", \"item_amount\"]}, {\"table\": \"orders\", \"columns\": [\"order_id\", \"user_id\", \"order_time\", \"status\", \"channel\", \"total_amount\", \"discount_amount\", \"pay_amount\", \"pay_time\"]}, {\"table\": \"payments\", \"columns\": [\"payment_id\", \"order_id\", \"pay_method\", \"amount\", \"paid_at\"]}, {\"table\": \"products\", \"columns\": [\"product_id\", \"product_name\", \"category_id\", \"list_price\", \"cost_price\", \"is_active\"]}, {\"table\": \"refund_requests\", \"columns\": [\"request_id\", \"order_id\", \"request_time\", \"status\", \"reason\"]}, {\"table\": \"refunds\", \"columns\": [\"refund_id\", \"order_id\", \"refund_amount\", \"refund_time\", \"reason\"]}, {\"table\": \"regions\", \"columns\": [\"region_code\", \"region_name\"]}, {\"table\": \"uploaded_budget\", \"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\"]}, {\"table\": \"user_events\", \"columns\": [\"event_id\", \"user_id\", \"event_date\", \"event_type\"]}, {\"table\": \"users\", \"columns\": [\"user_id\", \"register_date\", \"region_code\", \"gender\", \"birth_year\", \"member_level\", \"acquire_channel\", \"is_test\"]}]}",
+        "duration_ms": 0,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT SUM(CASE WHEN o.status IN ('paid','completed') THEN 1 ELSE 0 END) AS all_valid_orders, SUM(CASE WHEN o.status IN ('paid','completed') AND u.is_test=1 THEN 1 ELSE 0 END) AS test_valid_orders, SUM(CASE WHEN o.status IN ('paid','completed') AND u.is_test=0 THEN 1 ELSE 0 END) AS non_test_valid_orders, COUNT(*) AS all_orders FROM orders o JOIN users u ON u.user_id=o.user_id WHERE o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01'",
+          "purpose": "核对2025年12月有效订单数在排除/不排除测试账号下的差异"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"all_valid_orders\", \"test_valid_orders\", \"non_test_valid_orders\", \"all_orders\"], \"rows\": [[745, 12, 733, 871]], \"row_count\": 1}",
+        "duration_ms": 1,
+        "thought": "现在核对未排除测试账号的订单数，验证差异。"
+      }
+    ],
+    "plan": [
+      "确认“有效订单”的业务定义、统计口径与单位，以及“测试账号”的识别规则（如账号标记、内部域名、白名单等）",
+      "按定义查询2025年12月有效订单数，并同时输出未排除测试账号的订单数用于核对",
+      "应用测试账号排除规则，计算排除后的有效订单数，并核对排除前后差异是否与测试账号订单量一致"
+    ],
+    "reflection": {
+      "passed": true,
+      "quality_score": 96,
+      "issues": [],
+      "summary": "回答中的关键数字均可由本轮查询结果直接支持，口径与指标定义一致，且完整回应了问题。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "2025年12月有效订单数为733单（已排除测试账号）",
+          "status": "supported",
+          "evidence_ids": [
+            "E3",
+            "E5"
+          ],
+          "reason": "query_metric 返回 summary.value=733，且 run_sql 的 non_test_valid_orders=733，两者一致。"
+        },
+        {
+          "claim": "不排除测试账号为745单",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "run_sql 返回 all_valid_orders=745。"
+        },
+        {
+          "claim": "测试账号有效订单为12单",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "run_sql 返回 test_valid_orders=12。"
+        },
+        {
+          "claim": "745 − 12 = 733，差异完全由测试账号订单解释",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "745、12、733 三个数均来自同一查询，算术关系成立。"
+        },
+        {
+          "claim": "该月全部订单共871单，其中126单为其他状态",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "run_sql 返回 all_orders=871；871−745=126，可由查询结果直接算出。"
+        },
+        {
+          "claim": "有效订单口径为 status 为 paid、completed，按下单时间归属月份，排除测试账号",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E3"
+          ],
+          "reason": "指标定义明确 formula 为 paid、completed 的订单数，time_field 为 orders.order_time，exclude_test_users=true；query_metric 的 SQL 也按此执行。"
+        },
+        {
+          "claim": "查询时间范围为2025年12月",
+          "status": "supported",
+          "evidence_ids": [
+            "E3"
+          ],
+          "reason": "period 为 2025-12-01 至 2026-01-01，SQL 使用左闭右开区间，覆盖整个12月。"
+        },
+        {
+          "claim": "数据质量前置检查无异常",
+          "status": "supported",
+          "evidence_ids": [
+            "E3"
+          ],
+          "reason": "quality 显示 duplicate_orders=0、missing_orders=0、invalid_status=0、invalid_dates=0、duplicate_users=0、orphan_orders=0；同时 warnings 已提示日期边界覆盖不证明数据完整，回答未夸大完整性。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 6,
+    "usage": {
+      "prompt_tokens": 24483,
+      "completion_tokens": 1289,
+      "total_tokens": 25772,
+      "prompt_cache_hit_tokens": 17280,
+      "prompt_cache_miss_tokens": 7203
+    },
+    "duration_ms": 8847,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [
+        "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+      ],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": [
+        {
+          "status": "ready",
+          "metric": {
+            "id": "order_count",
+            "name": "有效订单数",
+            "unit": "单",
+            "formula": "paid、completed 的订单数；一行一单",
+            "kind": "additive",
+            "version": "1",
+            "source": "ecommerce_v1",
+            "time_field": "orders.order_time",
+            "exclude_test_users": true,
+            "allowed_join": "orders.user_id = users.user_id（users.user_id 必须唯一）",
+            "dimensions": [
+              "overall",
+              "region",
+              "order_channel"
+            ],
+            "scope": "项目电商模型；不自动套用于上传表或其他数据库业务口径"
+          },
+          "quality": {
+            "order_rows": 9143,
+            "duplicate_orders": 0,
+            "missing_orders": 0,
+            "invalid_status": 0,
+            "invalid_dates": 0,
+            "invalid_money": 0,
+            "first_date": "2025-01-01 05:25:36",
+            "last_date": "2025-12-31 23:21:57",
+            "duplicate_users": 0,
+            "invalid_users": 0,
+            "orphan_orders": 0
+          },
+          "period": {
+            "start": "2025-12-01",
+            "end": "2026-01-01"
+          },
+          "summary": {
+            "value": 733
+          },
+          "groups": [
+            {
+              "segment": "整体",
+              "value": 733
+            }
+          ],
+          "group_count": 1,
+          "warnings": [
+            "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+          ],
+          "queries": [
+            "SELECT '整体' AS segment, SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed') THEN 1 ELSE 0 END) AS value FROM \"orders\" o JOIN \"users\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') GROUP BY 1 ORDER BY segment",
+            "SELECT SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed') THEN 1 ELSE 0 END) AS value FROM \"orders\" o JOIN \"users\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01')"
+          ]
+        }
+      ]
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1356,
+          "usage": {
+            "prompt_tokens": 197,
+            "completion_tokens": 92,
+            "total_tokens": 289,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 197
+          }
+        },
+        "analysis": {
+          "logical_calls": 4,
+          "http_requests": 4,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 4847,
+          "usage": {
+            "prompt_tokens": 21678,
+            "completion_tokens": 632,
+            "total_tokens": 22310,
+            "prompt_cache_hit_tokens": 16896,
+            "prompt_cache_miss_tokens": 4782
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 2595,
+          "usage": {
+            "prompt_tokens": 2608,
+            "completion_tokens": 565,
+            "total_tokens": 3173,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2224
+          }
+        }
+      },
+      "llm_calls": 6,
+      "chat_usage": {
+        "prompt_tokens": 24483,
+        "completion_tokens": 1289,
+        "total_tokens": 25772,
+        "prompt_cache_hit_tokens": 17280,
+        "prompt_cache_miss_tokens": 7203
+      },
+      "http_requests": 6,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 4,
+    "question": "2025年12月有效订单数是多少？排除测试账号。",
+    "tables": [
+      {
+        "id": "result-3",
+        "title": "有效订单数",
+        "columns": [
+          "分组",
+          "有效订单数（单）"
+        ],
+        "rows": [
+          [
+            "整体",
+            733
+          ]
+        ],
+        "evidence_ids": [
+          "E3"
+        ],
+        "scope": {
+          "metric": "有效订单数",
+          "unit": "单",
+          "source": "ecommerce_v1",
+          "start": "2025-12-01",
+          "end": "2026-01-01"
+        },
+        "truncated": false
+      },
+      {
+        "id": "result-5",
+        "title": "查询结果 · E5",
+        "columns": [
+          "all_valid_orders",
+          "test_valid_orders",
+          "non_test_valid_orders",
+          "all_orders"
+        ],
+        "rows": [
+          [
+            745,
+            12,
+            733,
+            871
+          ]
+        ],
+        "evidence_ids": [
+          "E5"
+        ],
+        "scope": {},
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

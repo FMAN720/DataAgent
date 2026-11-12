@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-25",
+  "scope": "后续第1轮：数据可靠性",
+  "python": {
+    "passed": 429,
+    "skipped": 0,
+    "failed": 0,
+    "new_reliability_tests": 66,
+    "new_postgres_tests": 7,
+    "command": "RUN_POSTGRES_TESTS=1 RUN_REDIS_TESTS=1 python -m pytest -q --basetemp=.pytest_tmp_reliability_final --junitxml=reports/reliability-round1/pytest.xml"
+  },
+  "node": {
+    "passed": 6,
+    "failed": 0
+  },
+  "installed_dependencies": [],
+  "downloaded_models": [],
+  "pulled_images": [],
+  "external_model_api_calls": 0,
+  "postgres_redis_tests": "real_local_services",
+  "runtime": {
+    "url": "http://127.0.0.1:18080/",
+    "status": "ready",
+    "session_backend": "redis",
+    "embedding_configuration_preserved": true,
+    "documents_before_start": 0,
+    "index_jobs_before_start": 0,
+    "datasets_before_start": 0
+  },
+  "checks": {
+    "syntax": "passed",
+    "whitespace": "passed",
+    "new_artifact_credential_scan": "passed"
+  },
+  "modules_sha256": {
+    "app/analytics/quality.py": "aef41ad5a03a851d70b3540935ff2480fa5073f0715553bf29dc79d2d1effcc8",
+    "app/analytics/metrics.py": "859f059cee133c36f6816ffb97e23a14d637a9f5456a3dd3d12f47ecc9c06884",
+    "tests/test_analysis_reliability.py": "edb9f7e28d3e406924d19e478367799eb4708793dd393be1751004235417038c",
+    "tests/test_analysis_reliability_postgres.py": "663475f0e66e059ab464d85af3258fe60eee9d34076e05051882ba0d7e11e019"
+  }
+}

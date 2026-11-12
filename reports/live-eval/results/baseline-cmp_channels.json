@@ -1,0 +1,943 @@
+{
+  "id": "cmp_channels",
+  "category": "comparison",
+  "split": "development",
+  "variant": "baseline",
+  "question": "比较2025年11月和12月净销售额，按下单渠道拆解，找绝对下降额最大的渠道。",
+  "response": {
+    "answer": "## 结论\n\n**app（下单端）是绝对下降额最大的渠道**：净销售额从 11 月的 628,635.07 元降至 12 月的 412,735.64 元，减少 **215,899.43 元**（-34.3%），占整体下降额的 69.1%。\n\n### 整体与渠道拆解（单位：元）\n\n| 下单渠道 | 2025-11 | 2025-12 | 差额 | 降幅 | 占总下降额 |\n|---|---|---|---|---|---|\n| app | 628,635.07 | 412,735.64 | **-215,899.43** | -34.3% | 69.1% |\n| mini_program | 275,276.84 | 200,881.75 | -74,395.09 | -27.0% | 23.8% |\n| web | 143,346.32 | 121,364.28 | -21,982.04 | -15.3% | 7.0% |\n| **合计** | **1,047,258.23** | **734,981.67** | **-312,276.56** | -29.8% | 100% |\n\n三个渠道的合计与独立总量核对一致（差额为 0），因此可以按渠道拆解。\n\n### app 渠道下钻\n\n| 指标 | 2025-11 | 2025-12 | 变化 |\n|---|---|---|---|\n| 有效订单数 | 649 | 447 | -202（-31.1%） |\n| 客单价 | 968.62 元 | 923.35 元 | -45.27 元（-4.7%） |\n| 全额退款订单数 | 64 | 35 | -29 |\n| 已退款金额 | 56,424.70 元 | 32,318.89 元 | -24,105.81 元 |\n| 取消（未支付）订单数 | 53 | 40 | -13 |\n\n**量价分解（已用未舍入客单价重算，完全闭合）**：\n\n- 订单量效应 = (447 − 649) × 968.6211 = **-195,661.45 元**\n- 客单价效应 = 447 × (923.3460 − 968.6211) = **-20,237.98 元**\n- 两项合计 = **-215,899.43 元**，与实测差额 -215,899.43 元完全一致（差 0.00 元）\n\n因此，**下降主要来自订单量**（占 -90.6%），客单价下降影响较小（占 -9.4%）。上一版回答中「约 -19.6 万元 / 约 -2.0 万元」是舍入后的近似值，相加出现约 100 元舍入差；此处已改为精确值并核对闭合。\n\n退款金额本身也在下降，说明下降并非退款率上升所致；退款订单减少对有效订单口径的净销售额是正向影响，但未单独量化，仅作方向性说明。\n\n### 同期资料（解释性，非因果证据）\n\n- 11 月有年度集中促销（双十一复盘），文档明确说明「演示库整体订单生成系数 1.8 高于 10 月的 1.1，该系数只控制种子数据生成，不是实际订单增长百分比」，并把「优惠刺激、提前采购」列为**待验证的需求变化解释**，不能仅凭时间先后认定因果 [D:f81d9064-fd32-4071-b702-672fb2491b1d]（《第七阶段合成评测-2025-11-双十一复盘.md》）。\n- 12 月家电运营周报提到「种子规则规定十二月家用电器的商品选择系数为 0.55，制造大促后回落场景；这不是实际销量降幅，也不能直接解释为因果效应」[D:ee2c4dd1-a1de-46ae-a597-9bd4ec0ebf24]（《第七阶段合成评测-2025-12-家电运营周报.md》）。\n- 该周报同时要求「先查询十一月和十二月明细销售额，再按区域、下单端及会员等级拆解贡献」，并强调以数据库数值为准 [D:3cebc3e6-1dea-4124-8f6e-d5dca2142854]。\n\n**待验证假设**：11 月大促可能提前透支了 12 月需求（尤其 app 端），但当前数据只能证明「11 月高、12 月低」的时点差异，无法证明因果。要验证还需：app 端分品类/分会员等级的环比、12 月年货节活动的实际投放与曝光数据、以及 app 端流量（user_events）变化。\n\n**注意**：11 月 30 天、12 月 31 天，未做日均调整；若按日均，app 端日均净销售额从 20,954.50 元降至 13,314.05 元，降幅 -36.5%，结论方向不变。\n\n口径：净销售额 = 有效订单（paid、completed）实付金额之和，已排除测试账号，按下单时间统计，单位为元。",
+    "success": true,
+    "trace_id": "b52d25ba-66c4-4024-9ddb-886f9291ac0b",
+    "session_id": "c3938a1d-caca-4cb3-9f24-457e9b875db0",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "get_metric_definition",
+        "arguments": {
+          "metric_id": "net_sales"
+        },
+        "ok": true,
+        "output": "{\"definitions\": [{\"id\": \"net_sales\", \"name\": \"净销售额\", \"unit\": \"元\", \"formula\": \"有效订单 pay_amount（分）求和 / 100；paid、completed\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}]}",
+        "duration_ms": 0,
+        "thought": "我会先确认指标定义，并查看表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_tables",
+        "arguments": {
+          "question": "净销售额 订单 下单渠道"
+        },
+        "ok": true,
+        "output": "{\"dialect\": \"sqlite\", \"tables\": [{\"table\": \"categories\", \"columns\": [\"category_id\", \"category_name\", \"parent_id\"]}, {\"table\": \"order_items\", \"columns\": [\"item_id\", \"order_id\", \"product_id\", \"quantity\", \"unit_price\", \"item_amount\"]}, {\"table\": \"orders\", \"columns\": [\"order_id\", \"user_id\", \"order_time\", \"status\", \"channel\", \"total_amount\", \"discount_amount\", \"pay_amount\", \"pay_time\"]}, {\"table\": \"payments\", \"columns\": [\"payment_id\", \"order_id\", \"pay_method\", \"amount\", \"paid_at\"]}, {\"table\": \"products\", \"columns\": [\"product_id\", \"product_name\", \"category_id\", \"list_price\", \"cost_price\", \"is_active\"]}, {\"table\": \"refund_requests\", \"columns\": [\"request_id\", \"order_id\", \"request_time\", \"status\", \"reason\"]}, {\"table\": \"refunds\", \"columns\": [\"refund_id\", \"order_id\", \"refund_amount\", \"refund_time\", \"reason\"]}, {\"table\": \"regions\", \"columns\": [\"region_code\", \"region_name\"]}, {\"table\": \"uploaded_budget\", \"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\"]}, {\"table\": \"user_events\", \"columns\": [\"event_id\", \"user_id\", \"event_date\", \"event_type\"]}, {\"table\": \"users\", \"columns\": [\"user_id\", \"register_date\", \"region_code\", \"gender\", \"birth_year\", \"member_level\", \"acquire_channel\", \"is_test\"]}]}",
+        "duration_ms": 7,
+        "thought": "我会先确认指标定义，并查看表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "orders",
+            "users"
+          ]
+        },
+        "ok": true,
+        "output": "表 orders\n  order_id INTEGER\n  user_id INTEGER NOT NULL\n  order_time TEXT NOT NULL  -- 下单时间 YYYY-MM-DD HH:MM:SS\n  status TEXT NOT NULL  -- paid 已支付 / completed 已完成 / cancelled 已取消（未支付） / refunded 已全额退款\n  channel TEXT NOT NULL  -- 下单端：app / web / mini_program\n  total_amount INTEGER NOT NULL  -- 商品原价合计，单位：分\n  discount_amount INTEGER NOT NULL  -- 优惠金额，单位：分\n  pay_amount INTEGER NOT NULL  -- 实付金额 = total_amount - discount_amount，单位：分；cancelled 订单为 0\n  pay_time TEXT  -- 支付时间；cancelled 为 NULL\n  外键: user_id -> users(user_id)\n  样例 (order_id | user_id | order_time | status | channel | total_amount | discount_amount | pay_amount | pay_time):\n  1 | 350 | 2025-01-26 14:43:02 | completed | web | 538710 | 0 | 538710 | 2025-01-26 15:10:02\n  2 | 930 | 2025-01-26 20:03:44 | completed | app | 15930 | 343 | 15587 | 2025-01-26 20:28:44\n  3 | 390 | 2025-01-01 17:46:50 | refunded | web | 12900 | 0 | 12900 | 2025-01-01 18:12:50\n\n表 users\n  user_id INTEGER\n  register_date TEXT NOT NULL  -- 注册日期 YYYY-MM-DD\n  region_code TEXT NOT NULL\n  gender TEXT  -- M / F / NULL（未填写）\n  birth_year INTEGER\n  member_level TEXT NOT NULL  -- normal / silver / gold\n  acquire_channel TEXT NOT NULL  -- 拉新渠道：organic / ads / referral\n  is_test INTEGER NOT NULL  -- 1 表示内部测试账号，统计时必须排除\n  外键: region_code -> regions(region_code)\n  样例 (user_id | register_date | region_code | gender | birth_year | member_level | acquire_channel | is_test):\n  1 | 2024-04-17 | NORTH | F | 1975 | normal | ads | 0\n  2 | 2024-11-26 | NORTH | None | 1983 | silver | ads | 0\n  3 | 2025-12-03 | EAST | F | 1989 | silver | organic | 0",
+        "duration_ms": 3,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "search_glossary",
+        "arguments": {
+          "query": "下单渠道 order_channel 净销售额"
+        },
+        "ok": true,
+        "output": "## 净销售额（营收 / 销售额）\n净销售额 = 有效订单的实付金额之和，即 GMV 扣除已退款订单。\nSQL 口径：`SUM(pay_amount)`，条件 `status IN ('paid', 'completed')`，并排除测试账号。\n用户说「销售额」「营收」「收入」时，默认指净销售额。\n\n## 品类销售额\n品类销售额按订单明细的成交金额统计：`SUM(order_items.item_amount)`，关联 products、categories，只统计有效订单（status IN ('paid', 'completed')）并排除测试账号。\n注意：item_amount 未分摊订单级优惠，因此各品类销售额之和会略大于净销售额，这是预期内的差异。\n\n## 渠道\n- orders.channel 是下单端：app、web、mini_program（小程序）。\n- users.acquire_channel 是拉新渠道：organic（自然流量）、ads（广告投放）、referral（老带新）。\n两者含义不同。「哪个渠道的订单多」指 orders.channel；「哪个渠道拉来的用户」指 users.acquire_channel。",
+        "duration_ms": 0,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "prepare_analysis",
+        "arguments": {
+          "scope": {
+            "metric": "净销售额",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1",
+            "unit": "元",
+            "dimension": "order_channel",
+            "base_start": "2025-11-01",
+            "base_end": "2025-12-01",
+            "current_start": "2025-12-01",
+            "current_end": "2026-01-01",
+            "filters": [
+              "status IN ('paid','completed')",
+              "排除 users.is_test=1",
+              "按下单时间 orders.order_time"
+            ],
+            "assumptions": [
+              "11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31"
+            ]
+          }
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"scope\": {\"metric\": \"净销售额\", \"metric_kind\": \"additive\", \"source\": \"ecommerce_v1\", \"unit\": \"元\", \"dimension\": \"order_channel\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [\"11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31\"], \"filters\": [\"status IN ('paid','completed')\", \"排除 users.is_test=1\", \"按下单时间 orders.order_time\"]}, \"questions\": [], \"period_convention\": \"start_inclusive_end_exclusive\"}",
+        "duration_ms": 0,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 4,
+        "tool": "compare_periods",
+        "arguments": {
+          "scope": {
+            "assumptions": [
+              "11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31"
+            ],
+            "base_end": "2025-12-01",
+            "base_start": "2025-11-01",
+            "current_end": "2026-01-01",
+            "current_start": "2025-12-01",
+            "dimension": "order_channel",
+            "filters": [
+              "status IN ('paid','completed')",
+              "排除 users.is_test=1",
+              "按下单时间 orders.order_time"
+            ],
+            "metric": "净销售额",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1",
+            "unit": "元"
+          },
+          "detail_sql": "SELECT o.channel AS segment,\n       SUM(CASE WHEN o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01' THEN o.pay_amount ELSE 0 END)/100.0 AS base_value,\n       SUM(CASE WHEN o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01' THEN o.pay_amount ELSE 0 END)/100.0 AS current_value\nFROM orders o JOIN users u ON o.user_id = u.user_id\nWHERE o.status IN ('paid','completed') AND u.is_test = 0\n  AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'\nGROUP BY o.channel",
+          "total_sql": "SELECT SUM(CASE WHEN o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01' THEN o.pay_amount ELSE 0 END)/100.0 AS base_value,\n       SUM(CASE WHEN o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01' THEN o.pay_amount ELSE 0 END)/100.0 AS current_value\nFROM orders o JOIN users u ON o.user_id = u.user_id\nWHERE o.status IN ('paid','completed') AND u.is_test = 0\n  AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'"
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"scope\": {\"metric\": \"净销售额\", \"metric_kind\": \"additive\", \"source\": \"ecommerce_v1\", \"unit\": \"元\", \"dimension\": \"order_channel\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [\"11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31\"], \"filters\": [\"status IN ('paid','completed')\", \"排除 users.is_test=1\", \"按下单时间 orders.order_time\"]}, \"summary\": {\"base\": \"1047258.23\", \"current\": \"734981.67\", \"delta\": \"-312276.56\", \"change_pct\": \"-29.81848708\"}, \"groups\": [{\"segment\": \"app\", \"base_value\": \"628635.07\", \"current_value\": \"412735.64\", \"delta\": \"-215899.43\", \"contribution_pct\": \"69.13725129\"}, {\"segment\": \"mini_program\", \"base_value\": \"275276.84\", \"current_value\": \"200881.75\", \"delta\": \"-74395.09\", \"contribution_pct\": \"23.82346277\"}, {\"segment\": \"web\", \"base_value\": \"143346.32\", \"current_value\": \"121364.28\", \"delta\": \"-21982.04\", \"contribution_pct\": \"7.03928595\"}], \"group_count\": 3, \"reconciliation\": {\"matched\": true, \"group_totals\": {\"base_value\": \"1047258.23\", \"current_value\": \"734981.67\"}, \"differences\": {\"base_value\": \"0\", \"current_value\": \"0\"}}, \"warnings\": [\"贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。\", \"不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。\", \"两个周期天数不同，当前比较未自动做日均调整。\"], \"causal_claim_supported\": false}",
+        "duration_ms": 5,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 5,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT CASE WHEN o.order_time < '2025-12-01' THEN '2025-11' ELSE '2025-12' END AS period,\n       COUNT(*) AS valid_orders,\n       SUM(o.pay_amount)/100.0 AS net_sales,\n       ROUND(SUM(o.pay_amount)/100.0/COUNT(*), 2) AS aov\nFROM orders o JOIN users u ON o.user_id = u.user_id\nWHERE o.status IN ('paid','completed') AND u.is_test = 0 AND o.channel = 'app'\n  AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'\nGROUP BY period",
+          "purpose": "app渠道两月有效订单数、净销售额、客单价"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"period\", \"valid_orders\", \"net_sales\", \"aov\"], \"rows\": [[\"2025-11\", 649, 628635.07, 968.62], [\"2025-12\", 447, 412735.64, 923.35]], \"row_count\": 2}",
+        "duration_ms": 2,
+        "thought": "app 渠道的绝对下降额最大。接下来我会下钻 app 渠道，查看订单量、客单价和退款情况。"
+      },
+      {
+        "type": "tool",
+        "step": 5,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT CASE WHEN o.order_time < '2025-12-01' THEN '2025-11' ELSE '2025-12' END AS period,\n       COUNT(*) AS all_orders,\n       SUM(CASE WHEN o.status = 'refunded' THEN 1 ELSE 0 END) AS refunded_orders,\n       SUM(CASE WHEN o.status = 'cancelled' THEN 1 ELSE 0 END) AS cancelled_orders,\n       SUM(CASE WHEN o.status = 'refunded' THEN o.pay_amount ELSE 0 END)/100.0 AS refunded_amount\nFROM orders o JOIN users u ON o.user_id = u.user_id\nWHERE u.is_test = 0 AND o.channel = 'app'\n  AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'\nGROUP BY period",
+          "purpose": "app渠道两月订单状态分布与退款金额"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"period\", \"all_orders\", \"refunded_orders\", \"cancelled_orders\", \"refunded_amount\"], \"rows\": [[\"2025-11\", 766, 64, 53, 56424.7], [\"2025-12\", 522, 35, 40, 32318.89]], \"row_count\": 2}",
+        "duration_ms": 3,
+        "thought": "app 渠道的绝对下降额最大。接下来我会下钻 app 渠道，查看订单量、客单价和退款情况。"
+      },
+      {
+        "type": "tool",
+        "step": 6,
+        "tool": "search_documents",
+        "arguments": {
+          "query": "app 渠道 12月 销售下降 促销活动 渠道政策",
+          "date_from": "2025-11-01",
+          "date_to": "2025-12-31"
+        },
+        "ok": true,
+        "output": "{\"mode\": \"hybrid\", \"hits\": [{\"reference\": \"D:3cebc3e6-1dea-4124-8f6e-d5dca2142854\", \"document_id\": \"93e86629-9d67-5fee-b10d-e0df558e643c\", \"chunk_id\": \"3cebc3e6-1dea-4124-8f6e-d5dca2142854\", \"chunk_index\": 2, \"filename\": \"第七阶段合成评测-2025-12-家电运营周报.md\", \"content\": \"## 建议核对的证据\\n\\n先查询十一月和十二月家电明细销售额，再按区域、下单端及会员等级拆解贡献。各区域是否普遍回落、是否由某个渠道减少导致，应从查询结果判断。文档不提供现成的实际销售数字，避免把宣传材料当成数据库。\\n\\n对比过去年份时，应明确筛选 2025 年资料。2024 年周报适用另一套活动政策，不能直接套用。市场简报中关于增长的描述尚未核实，如与有效订单统计冲突，应指出冲突并以数据库数值为准。\", \"score\": 0.03252247488101534, \"source\": \"hybrid\", \"document_date\": \"2025-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"建议核对的证据\"}, {\"reference\": \"D:f81d9064-fd32-4071-b702-672fb2491b1d\", \"document_id\": \"576c51bf-64c7-5115-80fe-60778f5cd4a5\", \"chunk_id\": \"f81d9064-fd32-4071-b702-672fb2491b1d\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2025-11-双十一复盘.md\", \"content\": \"## 活动机制与观察范围\\n\\n十一月开展年度集中促销，演示库的整体订单生成系数为 1.8，高于十月的 1.1。该系数只控制种子数据生成，不是实际订单增长百分比。活动订单优惠金额按商品合计的 8% 至 20% 生成。实际订单量、支付金额和折扣分布必须查询数据库，不应直接拿系数作为统计结果。\\n\\n家电和日常消费品参与活动，页面资源集中在活动期。复盘将优惠刺激、提前采购列为需要验证的需求变化解释，不能仅凭时间上的先后关系认定因果。家电是否透支十二月需求，还需要结合十二月周报、品类环比及区域分布分析。\", \"score\": 0.031024531024531024, \"source\": \"hybrid\", \"document_date\": \"2025-11-30\", \"document_type\": \"review\", \"page_number\": null, \"section\": \"活动机制与观察范围\"}, {\"reference\": \"D:9a623ea3-83f4-4934-95cf-e807a87c1cbd\", \"document_id\": \"bce9889b-b095-5a2e-9b5b-e94b93ed34de\", \"chunk_id\": \"9a623ea3-83f4-4934-95cf-e807a87c1cbd\", \"chunk_index\": 0, \"filename\": \"第七阶段合成评测-2025-12-年货节方案.md\", \"content\": \"# 2025 年十二月年货节活动方案\\n\\n合成演示资料，与种子数据中的食品生鲜季节场景对应，不是实际营销项目承诺。\", \"score\": 0.0293236301369863, \"source\": \"hybrid\", \"document_date\": \"2025-12-01\", \"document_type\": \"campaign\", \"page_number\": null, \"section\": \"2025 年十二月年货节活动方案\"}, {\"reference\": \"D:ee2c4dd1-a1de-46ae-a597-9bd4ec0ebf24\", \"document_id\": \"93e86629-9d67-5fee-b10d-e0df558e643c\", \"chunk_id\": \"ee2c4dd1-a1de-46ae-a597-9bd4ec0ebf24\", \"chunk_index\": 0, \"filename\": \"第七阶段合成评测-2025-12-家电运营周报.md\", \"content\": \"# 2025 年十二月家电运营周报\\n\\n合成演示资料。种子规则规定十二月家用电器的商品选择系数为 0.55，制造大促后回落场景；这不是实际销量降幅，也不能直接解释为因果效应。\", \"score\": 0.01639344262295082, \"source\": \"hybrid\", \"document_date\": \"2025-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"2025 年十二月家电运营周报\"}, {\"reference\": \"D:aed4bed3-bd43-46a4-b9f8-46470cfa050c\", \"document_id\": \"db829c07-3e53-56da-9e81-76f293f4fe89\", \"chunk_id\": \"aed4bed3-bd43-46a4-b9f8-46470cfa050c\", \"chunk_index\": 2, \"filename\": \"第七阶段合成评测-2025-11-秋冬服饰计划.md\", \"content\": \"## 内容和渠道协作\\n\\n商品图和尺码说明由内容组维护，客服组归集退换咨询。渠道比较首先区分下单端与获客来源。用户会员等级可用于观察不同购买群体，但不能仅凭群体差异推断某个用户的偏好或作出个体决策。\", \"score\": 0.016129032258064516, \"source\": \"hybrid\", \"document_date\": \"2025-11-01\", \"document_type\": \"campaign\", \"page_number\": null, \"section\": \"内容和渠道协作\"}], \"warnings\": [], \"elapsed_ms\": 451, \"evidence_only\": true}",
+        "duration_ms": 452,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "calculator",
+        "arguments": {
+          "expression": "(447-649)*968.62"
+        },
+        "ok": true,
+        "output": "-195661.24",
+        "duration_ms": 0,
+        "thought": "我来核实量价分解的计算。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "calculator",
+        "arguments": {
+          "expression": "447*(923.35-968.62)"
+        },
+        "ok": true,
+        "output": "-20235.68999999999",
+        "duration_ms": 0,
+        "thought": "我来核实量价分解的计算。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "calculator",
+        "arguments": {
+          "expression": "-195661.24 + -20235.69"
+        },
+        "ok": true,
+        "output": "-215896.93",
+        "duration_ms": 0,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "calculator",
+        "arguments": {
+          "expression": "412735.64 - 628635.07"
+        },
+        "ok": true,
+        "output": "-215899.42999999993",
+        "duration_ms": 0,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "purpose": "用未舍入的精确客单价重算量价分解，核对是否闭合",
+          "sql": "WITH p AS (\n  SELECT CASE WHEN o.order_time < '2025-12-01' THEN 'base' ELSE 'cur' END AS period,\n         COUNT(*) AS n, SUM(o.pay_amount)/100.0 AS amt\n  FROM orders o JOIN users u ON o.user_id = u.user_id\n  WHERE o.status IN ('paid','completed') AND u.is_test = 0 AND o.channel = 'app'\n    AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'\n  GROUP BY period\n)\nSELECT b.n AS base_n, c.n AS cur_n, b.amt AS base_amt, c.amt AS cur_amt,\n       b.amt/b.n AS base_aov, c.amt/c.n AS cur_aov,\n       (c.n - b.n) * (b.amt/b.n) AS volume_effect,\n       c.n * (c.amt/c.n - b.amt/b.n) AS price_effect,\n       (c.n - b.n) * (b.amt/b.n) + c.n * (c.amt/c.n - b.amt/b.n) AS total_effect,\n       c.amt - b.amt AS actual_delta\nFROM p b CROSS JOIN p c WHERE b.period='base' AND c.period='cur'"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"base_n\", \"cur_n\", \"base_amt\", \"cur_amt\", \"base_aov\", \"cur_aov\", \"volume_effect\", \"price_effect\", \"total_effect\", \"actual_delta\"], \"rows\": [[649, 447, 628635.07, 412735.64, 968.6210631741139, 923.3459507829978, -195661.45476117101, -20237.975238828934, -215899.42999999993, -215899.42999999993]], \"row_count\": 1}",
+        "duration_ms": 4,
+        "thought": ""
+      }
+    ],
+    "plan": [
+      "确认净销售额的指标定义、数据来源、单位与统计口径，并明确2025年11月和12月两个比较周期",
+      "查询并核对两个月的整体净销售额，以及按下单渠道拆分的各渠道净销售额，检查合计与整体是否一致",
+      "计算各渠道两个月的净销售额差额，找出绝对下降额最大的渠道",
+      "沿该渠道进一步下钻（如订单量、客单价、退款等分项），定位下降主要来自哪个分项",
+      "查找同期业务资料（促销活动、渠道政策、市场变化等），区分事实、资料解释与待验证假设"
+    ],
+    "reflection": {
+      "passed": true,
+      "quality_score": 92,
+      "issues": [],
+      "summary": "核心渠道拆解数字与 compare_periods 完全一致，app 为绝对下降额最大渠道的结论成立；量价分解用未舍入客单价闭合，文档引用与因果措辞处理得当，仅日均调整属补充说明。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "app 净销售额 11 月 628,635.07 元、12 月 412,735.64 元，减少 215,899.43 元（-34.3%），占整体下降 69.1%",
+          "status": "supported",
+          "evidence_ids": [
+            "E6",
+            "E13"
+          ],
+          "reason": "E6 groups 中 app base_value=628635.07、current_value=412735.64、delta=-215899.43、contribution_pct=69.13725129；E13 计算 412735.64-628635.07=-215899.43，一致。"
+        },
+        {
+          "claim": "mini_program 275,276.84→200,881.75（-74,395.09，-27.0%，占 23.8%）；web 143,346.32→121,364.28（-21,982.04，-15.3%，占 7.0%）",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "E6 groups 给出两渠道的 base/current/delta/contribution_pct，与回答表格数值一致。"
+        },
+        {
+          "claim": "合计 1,047,258.23→734,981.67，差额 -312,276.56（-29.8%），三渠道合计与独立总量核对一致（差额为 0）",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "E6 summary 给出 base/current/delta/change_pct，reconciliation.matched=true 且 differences 均为 0。"
+        },
+        {
+          "claim": "app 有效订单数 649→447（-202，-31.1%），客单价 968.62→923.35 元（-45.27 元，-4.7%）",
+          "status": "supported",
+          "evidence_ids": [
+            "E7"
+          ],
+          "reason": "E7 返回 2025-11 valid_orders=649、aov=968.62；2025-12 valid_orders=447、aov=923.35，与回答一致。"
+        },
+        {
+          "claim": "app 全额退款订单 64→35，已退款金额 56,424.70→32,318.89 元，取消（未支付）订单 53→40",
+          "status": "supported",
+          "evidence_ids": [
+            "E8"
+          ],
+          "reason": "E8 返回 11 月 refunded_orders=64、cancelled_orders=53、refunded_amount=56424.7；12 月 35、40、32318.89，一致。"
+        },
+        {
+          "claim": "量价分解：订单量效应 -195,661.45 元、客单价效应 -20,237.98 元，合计 -215,899.43 元，与实测差额完全闭合",
+          "status": "supported",
+          "evidence_ids": [
+            "E14"
+          ],
+          "reason": "E14 用未舍入客单价计算 volume_effect=-195661.4548、price_effect=-20237.9752、total_effect=actual_delta=-215899.43，完全闭合；回答已说明上一版舍入近似差并修正。"
+        },
+        {
+          "claim": "下降主要来自订单量（占 -90.6%），客单价影响较小（占 -9.4%）",
+          "status": "supported",
+          "evidence_ids": [
+            "E14"
+          ],
+          "reason": "由 E14 的 volume_effect/price_effect 除以 total_effect 可直接算出约 90.6%/9.4%，属直接计算。"
+        },
+        {
+          "claim": "退款金额本身在下降，说明下降并非退款率上升所致；退款订单减少对有效订单口径净销售额是正向影响，未单独量化，仅作方向性说明",
+          "status": "supported",
+          "evidence_ids": [
+            "E8"
+          ],
+          "reason": "E8 显示退款金额与退款订单数均下降；回答明确标注未单独量化、仅方向性说明，措辞审慎。"
+        },
+        {
+          "claim": "11 月双十一复盘：订单生成系数 1.8 高于 10 月 1.1，仅控制种子数据生成，不是实际增长百分比；优惠刺激、提前采购为待验证解释，不能仅凭时间先后认定因果",
+          "status": "supported",
+          "evidence_ids": [
+            "E9"
+          ],
+          "reason": "E9 中 D:f81d9064 片段明确表述该系数只控制种子数据生成、不是实际订单增长百分比，并将优惠刺激、提前采购列为需验证解释、不能仅凭时间先后认定因果。"
+        },
+        {
+          "claim": "12 月家电周报：十二月家用电器商品选择系数 0.55，制造大促后回落场景，不是实际销量降幅，也不能直接解释为因果效应",
+          "status": "supported",
+          "evidence_ids": [
+            "E9"
+          ],
+          "reason": "E9 中 D:ee2c4dd1 片段原文如此表述。"
+        },
+        {
+          "claim": "周报要求先查询十一月和十二月明细销售额，再按区域、下单端及会员等级拆解贡献，以数据库数值为准",
+          "status": "supported",
+          "evidence_ids": [
+            "E9"
+          ],
+          "reason": "E9 中 D:3cebc3e6 片段明确要求先查明细再按下单端等拆解，并强调以数据库数值为准。"
+        },
+        {
+          "claim": "待验证假设：11 月大促可能提前透支 12 月需求（尤其 app 端），当前数据只能证明时点差异，无法证明因果",
+          "status": "supported",
+          "evidence_ids": [
+            "E9",
+            "E6"
+          ],
+          "reason": "回答明确将其标为待验证假设并列出所需补充数据；E6 warnings 与 causal_claim_supported=false 支持不作因果断言。"
+        },
+        {
+          "claim": "口径：净销售额=有效订单（paid、completed）实付金额之和，排除测试账号，按下单时间统计，单位元",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E5",
+            "E6"
+          ],
+          "reason": "E1 指标定义与 E5/E6 的 filters 一致（status IN paid/completed、排除 is_test=1、order_time、单位元），且 E6 SQL 已按此执行。"
+        },
+        {
+          "claim": "11 月 30 天、12 月 31 天，未做日均调整；按日均 app 从 20,954.50 降至 13,314.05 元（-36.5%），方向不变",
+          "status": "supported",
+          "evidence_ids": [
+            "E6",
+            "E7"
+          ],
+          "reason": "E6 warnings 提示两周期天数不同未做日均调整；日均值可由 E7 的 628635.07/30 与 412735.64/31 直接算出，属补充说明且已声明未调整。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": true,
+    "llm_calls": 14,
+    "usage": {
+      "prompt_tokens": 105412,
+      "completion_tokens": 7284,
+      "total_tokens": 112696,
+      "prompt_cache_hit_tokens": 84352,
+      "prompt_cache_miss_tokens": 21060
+    },
+    "duration_ms": 37643,
+    "error": null,
+    "citations": [
+      {
+        "reference": "D:f81d9064-fd32-4071-b702-672fb2491b1d",
+        "document_id": "576c51bf-64c7-5115-80fe-60778f5cd4a5",
+        "chunk_id": "f81d9064-fd32-4071-b702-672fb2491b1d",
+        "chunk_index": 1,
+        "filename": "第七阶段合成评测-2025-11-双十一复盘.md",
+        "snippet": "## 活动机制与观察范围\n\n十一月开展年度集中促销，演示库的整体订单生成系数为 1.8，高于十月的 1.1。该系数只控制种子数据生成，不是实际订单增长百分比。活动订单优惠金额按商品合计的 8% 至 20% 生成。实际订单量、支付金额和折扣分布必须查询数据库，不应直接拿系数作为统计结果。\n\n家电和日常消费品参与活动，页面资源集中在活动期。复盘将优惠刺激、提前采购列为需要验证的需求变化解释，不能仅凭时间上的先后关系认定因果。家电是否透支十二月需求，还需要结合十二月周报、品类环比及区域分布分析。",
+        "document_date": "2025-11-30",
+        "document_type": "review",
+        "page_number": null,
+        "section": "活动机制与观察范围"
+      },
+      {
+        "reference": "D:ee2c4dd1-a1de-46ae-a597-9bd4ec0ebf24",
+        "document_id": "93e86629-9d67-5fee-b10d-e0df558e643c",
+        "chunk_id": "ee2c4dd1-a1de-46ae-a597-9bd4ec0ebf24",
+        "chunk_index": 0,
+        "filename": "第七阶段合成评测-2025-12-家电运营周报.md",
+        "snippet": "# 2025 年十二月家电运营周报\n\n合成演示资料。种子规则规定十二月家用电器的商品选择系数为 0.55，制造大促后回落场景；这不是实际销量降幅，也不能直接解释为因果效应。",
+        "document_date": "2025-12-31",
+        "document_type": "weekly_report",
+        "page_number": null,
+        "section": "2025 年十二月家电运营周报"
+      },
+      {
+        "reference": "D:3cebc3e6-1dea-4124-8f6e-d5dca2142854",
+        "document_id": "93e86629-9d67-5fee-b10d-e0df558e643c",
+        "chunk_id": "3cebc3e6-1dea-4124-8f6e-d5dca2142854",
+        "chunk_index": 2,
+        "filename": "第七阶段合成评测-2025-12-家电运营周报.md",
+        "snippet": "## 建议核对的证据\n\n先查询十一月和十二月家电明细销售额，再按区域、下单端及会员等级拆解贡献。各区域是否普遍回落、是否由某个渠道减少导致，应从查询结果判断。文档不提供现成的实际销售数字，避免把宣传材料当成数据库。\n\n对比过去年份时，应明确筛选 2025 年资料。2024 年周报适用另一套活动政策，不能直接套用。市场简报中关于增长的描述尚未核实，如与有效订单统计冲突，应指出冲突并以数据库数值为准。",
+        "document_date": "2025-12-31",
+        "document_type": "weekly_report",
+        "page_number": null,
+        "section": "建议核对的证据"
+      }
+    ],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": {
+        "metric": "净销售额",
+        "metric_kind": "additive",
+        "source": "ecommerce_v1",
+        "unit": "元",
+        "dimension": "order_channel",
+        "base_start": "2025-11-01",
+        "base_end": "2025-12-01",
+        "current_start": "2025-12-01",
+        "current_end": "2026-01-01",
+        "assumptions": [
+          "11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31"
+        ],
+        "filters": [
+          "status IN ('paid','completed')",
+          "排除 users.is_test=1",
+          "按下单时间 orders.order_time"
+        ]
+      },
+      "clarification_questions": [],
+      "comparisons": [
+        {
+          "status": "ready",
+          "scope": {
+            "metric": "净销售额",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1",
+            "unit": "元",
+            "dimension": "order_channel",
+            "base_start": "2025-11-01",
+            "base_end": "2025-12-01",
+            "current_start": "2025-12-01",
+            "current_end": "2026-01-01",
+            "assumptions": [
+              "11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31"
+            ],
+            "filters": [
+              "status IN ('paid','completed')",
+              "排除 users.is_test=1",
+              "按下单时间 orders.order_time"
+            ]
+          },
+          "summary": {
+            "base": "1047258.23",
+            "current": "734981.67",
+            "delta": "-312276.56",
+            "change_pct": "-29.81848708"
+          },
+          "groups": [
+            {
+              "segment": "app",
+              "base_value": "628635.07",
+              "current_value": "412735.64",
+              "delta": "-215899.43",
+              "contribution_pct": "69.13725129"
+            },
+            {
+              "segment": "mini_program",
+              "base_value": "275276.84",
+              "current_value": "200881.75",
+              "delta": "-74395.09",
+              "contribution_pct": "23.82346277"
+            },
+            {
+              "segment": "web",
+              "base_value": "143346.32",
+              "current_value": "121364.28",
+              "delta": "-21982.04",
+              "contribution_pct": "7.03928595"
+            }
+          ],
+          "group_count": 3,
+          "reconciliation": {
+            "matched": true,
+            "group_totals": {
+              "base_value": "1047258.23",
+              "current_value": "734981.67"
+            },
+            "differences": {
+              "base_value": "0",
+              "current_value": "0"
+            }
+          },
+          "warnings": [
+            "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+            "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+            "两个周期天数不同，当前比较未自动做日均调整。"
+          ],
+          "causal_claim_supported": false
+        }
+      ],
+      "warnings": [
+        "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+        "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+        "两个周期天数不同，当前比较未自动做日均调整。"
+      ],
+      "comparison_count": 1,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1431,
+          "usage": {
+            "prompt_tokens": 207,
+            "completion_tokens": 132,
+            "total_tokens": 339,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 207
+          }
+        },
+        "analysis": {
+          "logical_calls": 7,
+          "http_requests": 7,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 13577,
+          "usage": {
+            "prompt_tokens": 47116,
+            "completion_tokens": 2497,
+            "total_tokens": 49613,
+            "prompt_cache_hit_tokens": 39936,
+            "prompt_cache_miss_tokens": 7180
+          }
+        },
+        "embedding": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 275,
+          "usage": {
+            "input_tokens": 17
+          }
+        },
+        "reflection": {
+          "logical_calls": 2,
+          "http_requests": 2,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 13303,
+          "usage": {
+            "prompt_tokens": 14041,
+            "completion_tokens": 2973,
+            "total_tokens": 17014,
+            "prompt_cache_hit_tokens": 1280,
+            "prompt_cache_miss_tokens": 12761
+          }
+        },
+        "revision": {
+          "logical_calls": 4,
+          "http_requests": 4,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 8835,
+          "usage": {
+            "prompt_tokens": 44048,
+            "completion_tokens": 1682,
+            "total_tokens": 45730,
+            "prompt_cache_hit_tokens": 43136,
+            "prompt_cache_miss_tokens": 912
+          }
+        }
+      },
+      "llm_calls": 14,
+      "chat_usage": {
+        "prompt_tokens": 105412,
+        "completion_tokens": 7284,
+        "total_tokens": 112696,
+        "prompt_cache_hit_tokens": 84352,
+        "prompt_cache_miss_tokens": 21060
+      },
+      "http_requests": 15,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 11,
+    "question": "比较2025年11月和12月净销售额，按下单渠道拆解，找绝对下降额最大的渠道。",
+    "tables": [
+      {
+        "id": "result-6",
+        "title": "净销售额 · order_channel",
+        "columns": [
+          "order_channel",
+          "基期（元）",
+          "当期（元）",
+          "变化（元）"
+        ],
+        "rows": [
+          [
+            "app",
+            "628635.07",
+            "412735.64",
+            "-215899.43"
+          ],
+          [
+            "mini_program",
+            "275276.84",
+            "200881.75",
+            "-74395.09"
+          ],
+          [
+            "web",
+            "143346.32",
+            "121364.28",
+            "-21982.04"
+          ]
+        ],
+        "evidence_ids": [
+          "E6"
+        ],
+        "scope": {
+          "metric": "净销售额",
+          "metric_kind": "additive",
+          "source": "ecommerce_v1",
+          "unit": "元",
+          "dimension": "order_channel",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "current_start": "2025-12-01",
+          "current_end": "2026-01-01",
+          "assumptions": [
+            "11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31"
+          ],
+          "filters": [
+            "status IN ('paid','completed')",
+            "排除 users.is_test=1",
+            "按下单时间 orders.order_time"
+          ]
+        },
+        "truncated": false
+      },
+      {
+        "id": "result-7",
+        "title": "查询结果 · E7",
+        "columns": [
+          "period",
+          "valid_orders",
+          "net_sales",
+          "aov"
+        ],
+        "rows": [
+          [
+            "2025-11",
+            649,
+            628635.07,
+            968.62
+          ],
+          [
+            "2025-12",
+            447,
+            412735.64,
+            923.35
+          ]
+        ],
+        "evidence_ids": [
+          "E7"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-8",
+        "title": "查询结果 · E8",
+        "columns": [
+          "period",
+          "all_orders",
+          "refunded_orders",
+          "cancelled_orders",
+          "refunded_amount"
+        ],
+        "rows": [
+          [
+            "2025-11",
+            766,
+            64,
+            53,
+            56424.7
+          ],
+          [
+            "2025-12",
+            522,
+            35,
+            40,
+            32318.89
+          ]
+        ],
+        "evidence_ids": [
+          "E8"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-14",
+        "title": "查询结果 · E14",
+        "columns": [
+          "base_n",
+          "cur_n",
+          "base_amt",
+          "cur_amt",
+          "base_aov",
+          "cur_aov",
+          "volume_effect",
+          "price_effect",
+          "total_effect",
+          "actual_delta"
+        ],
+        "rows": [
+          [
+            649,
+            447,
+            628635.07,
+            412735.64,
+            968.6210631741139,
+            923.3459507829978,
+            -195661.45476117101,
+            -20237.975238828934,
+            -215899.42999999993,
+            -215899.42999999993
+          ]
+        ],
+        "evidence_ids": [
+          "E14"
+        ],
+        "scope": {},
+        "truncated": false
+      }
+    ],
+    "charts": [
+      {
+        "id": "result-6-bar",
+        "table_id": "result-6",
+        "kind": "bar",
+        "title": "净销售额 · order_channel",
+        "unit": "元",
+        "labels": [
+          "app",
+          "mini_program",
+          "web"
+        ],
+        "series": [
+          {
+            "name": "基期",
+            "values": [
+              "628635.07",
+              "275276.84",
+              "143346.32"
+            ]
+          },
+          {
+            "name": "当期",
+            "values": [
+              "412735.64",
+              "200881.75",
+              "121364.28"
+            ]
+          }
+        ],
+        "evidence_ids": [
+          "E6"
+        ],
+        "scope": {
+          "metric": "净销售额",
+          "metric_kind": "additive",
+          "source": "ecommerce_v1",
+          "unit": "元",
+          "dimension": "order_channel",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "current_start": "2025-12-01",
+          "current_end": "2026-01-01",
+          "assumptions": [
+            "11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31"
+          ],
+          "filters": [
+            "status IN ('paid','completed')",
+            "排除 users.is_test=1",
+            "按下单时间 orders.order_time"
+          ]
+        }
+      },
+      {
+        "id": "result-6-contribution",
+        "table_id": "result-6",
+        "kind": "contribution",
+        "title": "净销售额 · order_channel",
+        "unit": "元",
+        "labels": [
+          "app",
+          "mini_program",
+          "web"
+        ],
+        "series": [
+          {
+            "name": "变化贡献",
+            "values": [
+              "-215899.43",
+              "-74395.09",
+              "-21982.04"
+            ]
+          }
+        ],
+        "evidence_ids": [
+          "E6"
+        ],
+        "scope": {
+          "metric": "净销售额",
+          "metric_kind": "additive",
+          "source": "ecommerce_v1",
+          "unit": "元",
+          "dimension": "order_channel",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "current_start": "2025-12-01",
+          "current_end": "2026-01-01",
+          "assumptions": [
+            "11月=2025-11-01至2025-11-30，12月=2025-12-01至2025-12-31"
+          ],
+          "filters": [
+            "status IN ('paid','completed')",
+            "排除 users.is_test=1",
+            "按下单时间 orders.order_time"
+          ]
+        }
+      },
+      {
+        "id": "result-7-line",
+        "table_id": "result-7",
+        "kind": "line",
+        "title": "查询结果 · E7",
+        "unit": "原始数值（单位未声明）",
+        "labels": [
+          "2025-11",
+          "2025-12"
+        ],
+        "series": [
+          {
+            "name": "valid_orders",
+            "values": [
+              "649",
+              "447"
+            ]
+          },
+          {
+            "name": "net_sales",
+            "values": [
+              "628635.07",
+              "412735.64"
+            ]
+          },
+          {
+            "name": "aov",
+            "values": [
+              "968.62",
+              "923.35"
+            ]
+          }
+        ],
+        "evidence_ids": [
+          "E7"
+        ],
+        "scope": {}
+      },
+      {
+        "id": "result-8-line",
+        "table_id": "result-8",
+        "kind": "line",
+        "title": "查询结果 · E8",
+        "unit": "原始数值（单位未声明）",
+        "labels": [
+          "2025-11",
+          "2025-12"
+        ],
+        "series": [
+          {
+            "name": "all_orders",
+            "values": [
+              "766",
+              "522"
+            ]
+          },
+          {
+            "name": "refunded_orders",
+            "values": [
+              "64",
+              "35"
+            ]
+          },
+          {
+            "name": "cancelled_orders",
+            "values": [
+              "53",
+              "40"
+            ]
+          }
+        ],
+        "evidence_ids": [
+          "E8"
+        ],
+        "scope": {}
+      }
+    ],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true,
+      "reconciled_comparison": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

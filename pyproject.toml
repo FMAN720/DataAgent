@@ -1,0 +1,83 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dataagent"
+version = "0.2.0"
+description = "电商数据分析 Agent：function calling + 只读 SQL + 口径与文档检索 + 表格/图片导入 + 证据审查"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Jiaqi Fan (FMAN720)" }]
+keywords = ["ai", "agent", "text-to-sql", "function-calling", "fastapi"]
+dependencies = [
+    "fastapi==0.143.3",
+    "uvicorn==0.54.0",
+    "openai==3.35.1",
+    "pydantic==2.14.1",
+    "pydantic-settings==2.16.0",
+    "SQLAlchemy[asyncio]==2.1.5",
+    "loguru==0.7.3",
+    "httpx==0.28.1",
+    "tiktoken==0.14.0",
+    "python-multipart==0.0.32",
+]
+
+[project.urls]
+Homepage = "https://github.com/FMAN720/DataAgent"
+Repository = "https://github.com/FMAN720/DataAgent"
+Issues = "https://github.com/FMAN720/DataAgent/issues"
+Documentation = "https://github.com/FMAN720/DataAgent/blob/main/docs/user-guide/README.md"
+
+[project.optional-dependencies]
+postgres = ["asyncpg>=0.30,<1", "psycopg2-binary>=2.9,<3", "pgvector>=0.4,<1", "alembic>=1.13,<2"]
+redis = ["redis>=5.2,<6"]
+pdf = ["pypdf>=6.21.2,<7"]
+imports = ["openpyxl>=3.1,<4"]
+vision = ["Pillow>=12,<14", "pypdfium2>=4.30,<6"]
+dev = [
+    "pytest==9.1.1",
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*", "eval*"]
+
+[tool.setuptools.package-data]
+app = ["web/*.html", "web/*.css", "web/*.js", "web/*.svg", "demo/glossary.md", "demo/documents/*.md", "demo/documents/*.json"]
+eval = ["questions.json", "core_cases.json"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.format]
+exclude = ["lab/*"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+# E501：ruff format 无法拆开的长字符串（提示词、SQL）保留原样
+# UP042：str + Enum 的写法在 JSON 序列化时行为明确，暂不改为 StrEnum
+ignore = ["E501", "UP042"]
+
+[tool.ruff.lint.per-file-ignores]
+# pytest fixture 以导入方式复用时，参数名与导入名相同
+"tests/*" = ["F811"]
+# 课程脚本需要先把 lab/ 加入 sys.path 再导入；保留课程中的紧凑写法
+"lab/*" = ["E402", "E701", "E702"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = false
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-p no:cacheprovider --basetemp=.pytest_tmp"
+markers = [
+    "postgres: requires the dedicated phase 2 PostgreSQL database (opt in with RUN_POSTGRES_TESTS=1)",
+    "redis: requires the dedicated local Redis (opt in with RUN_REDIS_TESTS=1)",
+]

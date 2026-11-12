@@ -1,0 +1,43 @@
+{
+  "created_at": "2026-10-22T11:17:06.460931+00:00",
+  "address": "http://127.0.0.1:18080/",
+  "readiness": {
+    "status": "ready",
+    "agent": "up",
+    "analysis_database": "up",
+    "document_database": "up",
+    "database": "up",
+    "app_env": "development",
+    "document_retrieval": "up",
+    "dataset_imports": "up",
+    "embedding": "disabled"
+  },
+  "workspace": {
+    "api_prefix": "/api/v1",
+    "embedding_enabled": false,
+    "pdf_available": true,
+    "xlsx_available": true,
+    "upload_max_bytes": 10485760,
+    "import_max_bytes": 20971520,
+    "datasets_available": true,
+    "documents_available": true
+  },
+  "migration": "0004_document_metadata",
+  "dataset_count": 0,
+  "document_count": 0,
+  "embedding_enabled": false,
+  "bge_m3_threshold": 0.6,
+  "hybrid_require_vector_match": true,
+  "model_calls": 0,
+  "browser_acceptance": {
+    "csv_preview_and_import": true,
+    "leading_zero_and_decimal_preserved": true,
+    "markdown_upload_date_type": true,
+    "filtered_keyword_search": true,
+    "exact_source_chunk": true,
+    "escape_restores_opener": true,
+    "deleted_record_inline_error": true,
+    "mobile_no_horizontal_overflow": true,
+    "browser_synthetic_records_cleaned_up": true
+  }
+}

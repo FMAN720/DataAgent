@@ -1,0 +1,508 @@
+{
+  "id": "doc_channel_meaning",
+  "category": "documents",
+  "split": "holdout",
+  "variant": "baseline",
+  "question": "检索区域与渠道字典，解释下单渠道和拉新渠道的字段及含义区别。",
+  "response": {
+    "answer": "开始分析前，请补充以下信息：\n1. 请求开始日 2024-01-01 早于已观察到的数据开始日 2025-01-01。",
+    "success": true,
+    "trace_id": "7b4dea34-6a76-411d-a68c-8d1569bff923",
+    "session_id": "6fdd4714-7d72-4e18-84fd-4c5fb03c0b1f",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_glossary",
+        "arguments": {
+          "query": "下单渠道 拉新渠道 区域 字典"
+        },
+        "ok": true,
+        "output": "## 渠道\n- orders.channel 是下单端：app、web、mini_program（小程序）。\n- users.acquire_channel 是拉新渠道：organic（自然流量）、ads（广告投放）、referral（老带新）。\n两者含义不同。「哪个渠道的订单多」指 orders.channel；「哪个渠道拉来的用户」指 users.acquire_channel。\n\n## 区域\nusers.region_code 存英文编码，regions 表提供中文名映射：\n- EAST = 华东，NORTH = 华北，SOUTH = 华南，CENTRAL = 华中，WEST = 西部。\n用户按中文提问时，先用 regions 表转换为编码再过滤；结果展示时用中文名。区域归属以用户的注册区域为准。\n\n## 下单用户数与复购率\n- 下单用户数：统计周期内有至少一笔有效订单的去重用户数。\n- 复购率：统计周期内有效订单数 ≥ 2 的用户数 / 下单用户数。\n均排除测试账号。",
+        "duration_ms": 0,
+        "thought": "我会先检索业务口径文档，并查看相关表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_tables",
+        "arguments": {
+          "question": "下单渠道 拉新渠道 区域 用户来源"
+        },
+        "ok": true,
+        "output": "{\"dialect\": \"sqlite\", \"tables\": [{\"table\": \"categories\", \"columns\": [\"category_id\", \"category_name\", \"parent_id\"]}, {\"table\": \"order_items\", \"columns\": [\"item_id\", \"order_id\", \"product_id\", \"quantity\", \"unit_price\", \"item_amount\"]}, {\"table\": \"orders\", \"columns\": [\"order_id\", \"user_id\", \"order_time\", \"status\", \"channel\", \"total_amount\", \"discount_amount\", \"pay_amount\", \"pay_time\"]}, {\"table\": \"payments\", \"columns\": [\"payment_id\", \"order_id\", \"pay_method\", \"amount\", \"paid_at\"]}, {\"table\": \"products\", \"columns\": [\"product_id\", \"product_name\", \"category_id\", \"list_price\", \"cost_price\", \"is_active\"]}, {\"table\": \"refund_requests\", \"columns\": [\"request_id\", \"order_id\", \"request_time\", \"status\", \"reason\"]}, {\"table\": \"refunds\", \"columns\": [\"refund_id\", \"order_id\", \"refund_amount\", \"refund_time\", \"reason\"]}, {\"table\": \"regions\", \"columns\": [\"region_code\", \"region_name\"]}, {\"table\": \"uploaded_budget\", \"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\"]}, {\"table\": \"user_events\", \"columns\": [\"event_id\", \"user_id\", \"event_date\", \"event_type\"]}, {\"table\": \"users\", \"columns\": [\"user_id\", \"register_date\", \"region_code\", \"gender\", \"birth_year\", \"member_level\", \"acquire_channel\", \"is_test\"]}]}",
+        "duration_ms": 6,
+        "thought": "我会先检索业务口径文档，并查看相关表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "orders",
+            "users",
+            "regions"
+          ]
+        },
+        "ok": true,
+        "output": "表 orders\n  order_id INTEGER\n  user_id INTEGER NOT NULL\n  order_time TEXT NOT NULL  -- 下单时间 YYYY-MM-DD HH:MM:SS\n  status TEXT NOT NULL  -- paid 已支付 / completed 已完成 / cancelled 已取消（未支付） / refunded 已全额退款\n  channel TEXT NOT NULL  -- 下单端：app / web / mini_program\n  total_amount INTEGER NOT NULL  -- 商品原价合计，单位：分\n  discount_amount INTEGER NOT NULL  -- 优惠金额，单位：分\n  pay_amount INTEGER NOT NULL  -- 实付金额 = total_amount - discount_amount，单位：分；cancelled 订单为 0\n  pay_time TEXT  -- 支付时间；cancelled 为 NULL\n  外键: user_id -> users(user_id)\n  样例 (order_id | user_id | order_time | status | channel | total_amount | discount_amount | pay_amount | pay_time):\n  1 | 350 | 2025-01-26 14:43:02 | completed | web | 538710 | 0 | 538710 | 2025-01-26 15:10:02\n  2 | 930 | 2025-01-26 20:03:44 | completed | app | 15930 | 343 | 15587 | 2025-01-26 20:28:44\n  3 | 390 | 2025-01-01 17:46:50 | refunded | web | 12900 | 0 | 12900 | 2025-01-01 18:12:50\n\n表 users\n  user_id INTEGER\n  register_date TEXT NOT NULL  -- 注册日期 YYYY-MM-DD\n  region_code TEXT NOT NULL\n  gender TEXT  -- M / F / NULL（未填写）\n  birth_year INTEGER\n  member_level TEXT NOT NULL  -- normal / silver / gold\n  acquire_channel TEXT NOT NULL  -- 拉新渠道：organic / ads / referral\n  is_test INTEGER NOT NULL  -- 1 表示内部测试账号，统计时必须排除\n  外键: region_code -> regions(region_code)\n  样例 (user_id | register_date | region_code | gender | birth_year | member_level | acquire_channel | is_test):\n  1 | 2024-04-17 | NORTH | F | 1975 | normal | ads | 0\n  2 | 2024-11-26 | NORTH | None | 1983 | silver | ads | 0\n  3 | 2025-12-03 | EAST | F | 1989 | silver | organic | 0\n\n表 regions\n  region_code TEXT  -- 区域编码：EAST / NORTH / SOUTH / CENTRAL / WEST\n  region_name TEXT NOT NULL  -- 中文名：华东 / 华北 / 华南 / 华中 / 西部\n  样例 (region_code | region_name):\n  EAST | 华东\n  NORTH | 华北\n  SOUTH | 华南",
+        "duration_ms": 4,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT 'orders.channel' AS field, channel AS value, COUNT(*) AS cnt FROM orders GROUP BY channel UNION ALL SELECT 'users.acquire_channel', acquire_channel, COUNT(*) FROM users GROUP BY acquire_channel UNION ALL SELECT 'users.region_code', region_code, COUNT(*) FROM users GROUP BY region_code",
+          "purpose": "核对渠道与区域字段的实际枚举值分布"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"field\", \"value\", \"cnt\"], \"rows\": [[\"orders.channel\", \"app\", 5550], [\"orders.channel\", \"mini_program\", 2272], [\"orders.channel\", \"web\", 1321], [\"users.acquire_channel\", \"ads\", 382], [\"users.acquire_channel\", \"organic\", 663], [\"users.acquire_channel\", \"referral\", 170], [\"users.region_code\", \"CENTRAL\", 167], [\"users.region_code\", \"EAST\", 382], [\"users.region_code\", \"NORTH\", 288], [\"users.region_code\", \"SOUTH\", 275], [\"users.region_code\", \"WEST\", 103]], \"row_count\": 11}",
+        "duration_ms": 5,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "purpose": "核对区域编码与中文名映射",
+          "sql": "SELECT region_code, region_name FROM regions ORDER BY region_code"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"region_code\", \"region_name\"], \"rows\": [[\"CENTRAL\", \"华中\"], [\"EAST\", \"华东\"], [\"NORTH\", \"华北\"], [\"SOUTH\", \"华南\"], [\"WEST\", \"西部\"]], \"row_count\": 5}",
+        "duration_ms": 2,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "run_sql",
+        "arguments": {
+          "purpose": "排除测试账号后的拉新渠道与区域用户数分布",
+          "sql": "SELECT 'acquire_channel' AS dim, acquire_channel AS value, COUNT(*) AS cnt FROM users WHERE is_test = 0 GROUP BY acquire_channel UNION ALL SELECT 'region_code', region_code, COUNT(*) FROM users WHERE is_test = 0 GROUP BY region_code"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"dim\", \"value\", \"cnt\"], \"rows\": [[\"acquire_channel\", \"ads\", 376], [\"acquire_channel\", \"organic\", 654], [\"acquire_channel\", \"referral\", 170], [\"region_code\", \"CENTRAL\", 163], [\"region_code\", \"EAST\", 378], [\"region_code\", \"NORTH\", 284], [\"region_code\", \"SOUTH\", 273], [\"region_code\", \"WEST\", 102]], \"row_count\": 8}",
+        "duration_ms": 2,
+        "thought": "我会重新查询，排除测试账号，并区分订单状态口径。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "run_sql",
+        "arguments": {
+          "purpose": "下单渠道分布：区分全部订单与有效订单（排除测试账号）",
+          "sql": "SELECT channel,\n       COUNT(*) AS all_orders,\n       SUM(CASE WHEN status IN ('paid','completed') THEN 1 ELSE 0 END) AS valid_orders,\n       SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) AS cancelled_orders,\n       SUM(CASE WHEN status = 'refunded' THEN 1 ELSE 0 END) AS refunded_orders\nFROM orders o\nWHERE NOT EXISTS (SELECT 1 FROM users u WHERE u.user_id = o.user_id AND u.is_test = 1)\nGROUP BY channel"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"channel\", \"all_orders\", \"valid_orders\", \"cancelled_orders\", \"refunded_orders\"], \"rows\": [[\"app\", 5470, 4757, 412, 301], [\"mini_program\", 2231, 1946, 140, 145], [\"web\", 1298, 1132, 90, 76]], \"row_count\": 3}",
+        "duration_ms": 10,
+        "thought": "我会重新查询，排除测试账号，并区分订单状态口径。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "get_metric_definition",
+        "arguments": {
+          "metric_id": "order_count"
+        },
+        "ok": true,
+        "output": "{\"definitions\": [{\"id\": \"order_count\", \"name\": \"有效订单数\", \"unit\": \"单\", \"formula\": \"paid、completed 的订单数；一行一单\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}]}",
+        "duration_ms": 0,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "query_metric",
+        "arguments": {
+          "metric_id": "order_count",
+          "source": "ecommerce_v1",
+          "dimension": "order_channel",
+          "start": "2024-01-01",
+          "end": "2026-01-01"
+        },
+        "ok": true,
+        "output": "{\"status\": \"needs_clarification\", \"metric\": {\"id\": \"order_count\", \"name\": \"有效订单数\", \"unit\": \"单\", \"formula\": \"paid、completed 的订单数；一行一单\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}, \"questions\": [\"请求开始日 2024-01-01 早于已观察到的数据开始日 2025-01-01。\"], \"quality\": {\"order_rows\": 9143, \"duplicate_orders\": 0, \"missing_orders\": 0, \"invalid_status\": 0, \"invalid_dates\": 0, \"invalid_money\": 0, \"first_date\": \"2025-01-01 05:25:36\", \"last_date\": \"2025-12-31 23:21:57\", \"duplicate_users\": 0, \"invalid_users\": 0, \"orphan_orders\": 0}, \"warnings\": [\"请求开始日 2024-01-01 早于已观察到的数据开始日 2025-01-01。\"], \"result\": null}",
+        "duration_ms": 34,
+        "thought": ""
+      }
+    ],
+    "plan": [],
+    "reflection": null,
+    "reflection_status": "skipped",
+    "revised": true,
+    "llm_calls": 9,
+    "usage": {
+      "prompt_tokens": 47400,
+      "completion_tokens": 2529,
+      "total_tokens": 49929,
+      "prompt_cache_hit_tokens": 41600,
+      "prompt_cache_miss_tokens": 5800
+    },
+    "duration_ms": 16515,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "needs_clarification",
+      "scope": null,
+      "clarification_questions": [
+        "请求开始日 2024-01-01 早于已观察到的数据开始日 2025-01-01。"
+      ],
+      "comparisons": [],
+      "warnings": [
+        "请求开始日 2024-01-01 早于已观察到的数据开始日 2025-01-01。"
+      ],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": [
+        {
+          "status": "needs_clarification",
+          "metric": {
+            "id": "order_count",
+            "name": "有效订单数",
+            "unit": "单",
+            "formula": "paid、completed 的订单数；一行一单",
+            "kind": "additive",
+            "version": "1",
+            "source": "ecommerce_v1",
+            "time_field": "orders.order_time",
+            "exclude_test_users": true,
+            "allowed_join": "orders.user_id = users.user_id（users.user_id 必须唯一）",
+            "dimensions": [
+              "overall",
+              "region",
+              "order_channel"
+            ],
+            "scope": "项目电商模型；不自动套用于上传表或其他数据库业务口径"
+          },
+          "questions": [
+            "请求开始日 2024-01-01 早于已观察到的数据开始日 2025-01-01。"
+          ],
+          "quality": {
+            "order_rows": 9143,
+            "duplicate_orders": 0,
+            "missing_orders": 0,
+            "invalid_status": 0,
+            "invalid_dates": 0,
+            "invalid_money": 0,
+            "first_date": "2025-01-01 05:25:36",
+            "last_date": "2025-12-31 23:21:57",
+            "duplicate_users": 0,
+            "invalid_users": 0,
+            "orphan_orders": 0
+          },
+          "warnings": [
+            "请求开始日 2024-01-01 早于已观察到的数据开始日 2025-01-01。"
+          ],
+          "result": null
+        }
+      ]
+    },
+    "needs_clarification": true,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 600,
+          "usage": {
+            "prompt_tokens": 202,
+            "completion_tokens": 5,
+            "total_tokens": 207,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 202
+          }
+        },
+        "analysis": {
+          "logical_calls": 4,
+          "http_requests": 4,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 7838,
+          "usage": {
+            "prompt_tokens": 21607,
+            "completion_tokens": 1042,
+            "total_tokens": 22649,
+            "prompt_cache_hit_tokens": 19584,
+            "prompt_cache_miss_tokens": 2023
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 4672,
+          "usage": {
+            "prompt_tokens": 3177,
+            "completion_tokens": 1006,
+            "total_tokens": 4183,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2793
+          }
+        },
+        "revision": {
+          "logical_calls": 3,
+          "http_requests": 3,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 3331,
+          "usage": {
+            "prompt_tokens": 22414,
+            "completion_tokens": 476,
+            "total_tokens": 22890,
+            "prompt_cache_hit_tokens": 21632,
+            "prompt_cache_miss_tokens": 782
+          }
+        }
+      },
+      "llm_calls": 9,
+      "chat_usage": {
+        "prompt_tokens": 47400,
+        "completion_tokens": 2529,
+        "total_tokens": 49929,
+        "prompt_cache_hit_tokens": 41600,
+        "prompt_cache_miss_tokens": 5800
+      },
+      "http_requests": 9,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 7,
+    "question": "检索区域与渠道字典，解释下单渠道和拉新渠道的字段及含义区别。",
+    "tables": [
+      {
+        "id": "result-4",
+        "title": "查询结果 · E4",
+        "columns": [
+          "field",
+          "value",
+          "cnt"
+        ],
+        "rows": [
+          [
+            "orders.channel",
+            "app",
+            5550
+          ],
+          [
+            "orders.channel",
+            "mini_program",
+            2272
+          ],
+          [
+            "orders.channel",
+            "web",
+            1321
+          ],
+          [
+            "users.acquire_channel",
+            "ads",
+            382
+          ],
+          [
+            "users.acquire_channel",
+            "organic",
+            663
+          ],
+          [
+            "users.acquire_channel",
+            "referral",
+            170
+          ],
+          [
+            "users.region_code",
+            "CENTRAL",
+            167
+          ],
+          [
+            "users.region_code",
+            "EAST",
+            382
+          ],
+          [
+            "users.region_code",
+            "NORTH",
+            288
+          ],
+          [
+            "users.region_code",
+            "SOUTH",
+            275
+          ],
+          [
+            "users.region_code",
+            "WEST",
+            103
+          ]
+        ],
+        "evidence_ids": [
+          "E4"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-5",
+        "title": "查询结果 · E5",
+        "columns": [
+          "region_code",
+          "region_name"
+        ],
+        "rows": [
+          [
+            "CENTRAL",
+            "华中"
+          ],
+          [
+            "EAST",
+            "华东"
+          ],
+          [
+            "NORTH",
+            "华北"
+          ],
+          [
+            "SOUTH",
+            "华南"
+          ],
+          [
+            "WEST",
+            "西部"
+          ]
+        ],
+        "evidence_ids": [
+          "E5"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-6",
+        "title": "查询结果 · E6",
+        "columns": [
+          "dim",
+          "value",
+          "cnt"
+        ],
+        "rows": [
+          [
+            "acquire_channel",
+            "ads",
+            376
+          ],
+          [
+            "acquire_channel",
+            "organic",
+            654
+          ],
+          [
+            "acquire_channel",
+            "referral",
+            170
+          ],
+          [
+            "region_code",
+            "CENTRAL",
+            163
+          ],
+          [
+            "region_code",
+            "EAST",
+            378
+          ],
+          [
+            "region_code",
+            "NORTH",
+            284
+          ],
+          [
+            "region_code",
+            "SOUTH",
+            273
+          ],
+          [
+            "region_code",
+            "WEST",
+            102
+          ]
+        ],
+        "evidence_ids": [
+          "E6"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-7",
+        "title": "查询结果 · E7",
+        "columns": [
+          "channel",
+          "all_orders",
+          "valid_orders",
+          "cancelled_orders",
+          "refunded_orders"
+        ],
+        "rows": [
+          [
+            "app",
+            5470,
+            4757,
+            412,
+            301
+          ],
+          [
+            "mini_program",
+            2231,
+            1946,
+            140,
+            145
+          ],
+          [
+            "web",
+            1298,
+            1132,
+            90,
+            76
+          ]
+        ],
+        "evidence_ids": [
+          "E7"
+        ],
+        "scope": {},
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": false,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "text_0": false,
+      "text_1": false,
+      "source_regions": false
+    },
+    "failed_checks": [
+      "text_0",
+      "text_1",
+      "source_regions"
+    ],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

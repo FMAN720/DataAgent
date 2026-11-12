@@ -1,0 +1,348 @@
+{
+  "id": "safe_refund_reason",
+  "category": "boundaries",
+  "split": "holdout",
+  "variant": "baseline",
+  "question": "根据客服汇总，配送问题具体占全部退款的百分之几？没有原因标签明细就不要估算。",
+  "response": {
+    "answer": "**结论：无法根据客服汇总计算「配送问题占全部退款的百分比」，因为客服汇总没有原因标签明细，按你的要求不做估算。**\n\n依据如下：\n\n1. **客服汇总本身不含逐条原因标签。** 该文档明确写道：「大促后集中退货、商品期望不符和配送咨询是本演示情景中的观察主题；这些主题没有逐条写入订单数据，不能给出每种原因的精确占比。若要回答某一原因占退款的百分之几，需要额外提供带原因标签的工单表。」[D:1882dc4a-c975-40b0-8dc6-e774e0f289a5]（《第七阶段合成评测-2025-12-客服工单汇总.md》「工单主题与证据」节）\n   该文档还说明它是「合成演示资料……不是实际客服系统导出」[D:817e2448-3228-4894-8a9a-4eb997e2b659]（同文件标题节），因此不能当作客服系统的真实导出数据。\n\n2. **没有可用的上传客服明细表。** 我查询了已导入数据集，没有「客服汇总」相关的上传表（返回为空），因此不存在带原因标签的工单明细可供统计。\n\n3. **业务库的退款原因不能替代客服汇总口径。** 业务库 `refunds` 表确实有原因字段（quality / not_needed / late_delivery / other），全量分布为：quality 178 笔、21,817,026 分；not_needed 194 笔、17,229,955 分；late_delivery 108 笔、10,436,861 分；other 42 笔、5,936,881 分。但这是**订单退款记录的原因标签**，不是客服工单的原因标签，两者来源、粒度和统计对象都不同；而且文档也提醒「客服文本可以作为解释线索，不能覆盖有效订单统计」[D:a9a1c5a1-4205-4f34-9219-3a427d3f865b]。用它来回答「客服汇总中配送问题占比」属于口径替换，因此我不把它作为答案。\n\n**要得到这个百分比，需要补充：** 一份带原因标签（且能区分「配送问题」）的客服工单明细表，并明确统计时间范围与分母（全部退款按金额还是按笔数）。\n\n口径说明：本次未计算任何占比；上述业务库数字为 `refunds` 表按 reason 分组的全量笔数与退款金额（单位：分），仅作口径对照，不代表客服汇总口径。",
+    "success": true,
+    "trace_id": "065fc91a-72e2-46ed-93b7-712c2d60aa9a",
+    "session_id": "6016fba6-2ae0-42a3-87ad-e51cba0aa7d3",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_datasets",
+        "arguments": {
+          "query": "客服汇总"
+        },
+        "ok": true,
+        "output": "{\"datasets\": [], \"truncated\": false}",
+        "duration_ms": 0,
+        "thought": "我先查看客服汇总相关的数据来源和表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_tables",
+        "arguments": {
+          "question": "客服汇总 退款原因 配送问题"
+        },
+        "ok": true,
+        "output": "{\"dialect\": \"sqlite\", \"tables\": [{\"table\": \"categories\", \"columns\": [\"category_id\", \"category_name\", \"parent_id\"]}, {\"table\": \"order_items\", \"columns\": [\"item_id\", \"order_id\", \"product_id\", \"quantity\", \"unit_price\", \"item_amount\"]}, {\"table\": \"orders\", \"columns\": [\"order_id\", \"user_id\", \"order_time\", \"status\", \"channel\", \"total_amount\", \"discount_amount\", \"pay_amount\", \"pay_time\"]}, {\"table\": \"payments\", \"columns\": [\"payment_id\", \"order_id\", \"pay_method\", \"amount\", \"paid_at\"]}, {\"table\": \"products\", \"columns\": [\"product_id\", \"product_name\", \"category_id\", \"list_price\", \"cost_price\", \"is_active\"]}, {\"table\": \"refund_requests\", \"columns\": [\"request_id\", \"order_id\", \"request_time\", \"status\", \"reason\"]}, {\"table\": \"refunds\", \"columns\": [\"refund_id\", \"order_id\", \"refund_amount\", \"refund_time\", \"reason\"]}, {\"table\": \"regions\", \"columns\": [\"region_code\", \"region_name\"]}, {\"table\": \"uploaded_budget\", \"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\"]}, {\"table\": \"user_events\", \"columns\": [\"event_id\", \"user_id\", \"event_date\", \"event_type\"]}, {\"table\": \"users\", \"columns\": [\"user_id\", \"register_date\", \"region_code\", \"gender\", \"birth_year\", \"member_level\", \"acquire_channel\", \"is_test\"]}]}",
+        "duration_ms": 8,
+        "thought": "我先查看客服汇总相关的数据来源和表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "search_documents",
+        "arguments": {
+          "query": "客服汇总 退款原因 配送问题"
+        },
+        "ok": true,
+        "output": "{\"mode\": \"hybrid\", \"hits\": [{\"reference\": \"D:a9a1c5a1-4205-4f34-9219-3a427d3f865b\", \"document_id\": \"bb878188-bbbc-590a-bd0b-74eeb98d9105\", \"chunk_id\": \"a9a1c5a1-4205-4f34-9219-3a427d3f865b\", \"chunk_index\": 3, \"filename\": \"第七阶段合成评测-2025-12-客服工单汇总.md\", \"content\": \"## 跟进建议\\n\\n先比较大促前后退款趋势，再检查品类和区域分布。客服文本可以作为解释线索，不能覆盖有效订单统计。记录问题日期，避免拿过时工单总结解释当前月份。本文件没有实际平均响应时长、客服坐席排班、薪资或客户个人联系方式。\", \"score\": 0.032266458495966696, \"source\": \"hybrid\", \"document_date\": \"2025-12-31\", \"document_type\": \"support\", \"page_number\": null, \"section\": \"跟进建议\"}, {\"reference\": \"D:1882dc4a-c975-40b0-8dc6-e774e0f289a5\", \"document_id\": \"bb878188-bbbc-590a-bd0b-74eeb98d9105\", \"chunk_id\": \"1882dc4a-c975-40b0-8dc6-e774e0f289a5\", \"chunk_index\": 2, \"filename\": \"第七阶段合成评测-2025-12-客服工单汇总.md\", \"content\": \"## 工单主题与证据\\n\\n大促后集中退货、商品期望不符和配送咨询是本演示情景中的观察主题；这些主题没有逐条写入订单数据，不能给出每种原因的精确占比。若要回答某一原因占退款的百分之几，需要额外提供带原因标签的工单表。\", \"score\": 0.03225806451612903, \"source\": \"hybrid\", \"document_date\": \"2025-12-31\", \"document_type\": \"support\", \"page_number\": null, \"section\": \"工单主题与证据\"}, {\"reference\": \"D:cc526578-ba1d-4db8-a302-2a3ca8ccbd5b\", \"document_id\": \"70aa0a60-b1ff-5841-8bac-de462f569675\", \"chunk_id\": \"cc526578-ba1d-4db8-a302-2a3ca8ccbd5b\", \"chunk_index\": 2, \"filename\": \"第七阶段合成评测-2025-01-销售口径说明.md\", \"content\": \"## 查询边界\\n\\nrefund_requests 记录退款申请，包括未通过的申请；已退款订单才是对应退款状态的事实。按月统计需明确下单时间、支付时间或申请时间，不同业务问题不能任意互换。\", \"score\": 0.03149801587301587, \"source\": \"hybrid\", \"document_date\": \"2025-01-01\", \"document_type\": \"reference\", \"page_number\": null, \"section\": \"查询边界\"}, {\"reference\": \"D:ae986d88-5329-4077-940f-431393d16842\", \"document_id\": \"fc0ca1f2-7586-5131-9e97-2b2446c68bfd\", \"chunk_id\": \"ae986d88-5329-4077-940f-431393d16842\", \"chunk_index\": 3, \"filename\": \"第七阶段合成评测-2025-06-配送服务约定.md\", \"content\": \"## 缺失信息\\n\\n本文件没有运输车辆位置、各快递价格表、承运商赔付标准、跨境清关进度或具体客户地址。检索命中“配送”二字不表示这些问题已经有证据。资料不足时应明确拒绝编造，而不是依据类似段落填补事实。\", \"score\": 0.031009615384615385, \"source\": \"hybrid\", \"document_date\": \"2025-06-01\", \"document_type\": \"reference\", \"page_number\": null, \"section\": \"缺失信息\"}, {\"reference\": \"D:8c1aa477-d675-4386-b818-af849a43f67f\", \"document_id\": \"93e86629-9d67-5fee-b10d-e0df558e643c\", \"chunk_id\": \"8c1aa477-d675-4386-b818-af849a43f67f\", \"chunk_index\": 3, \"filename\": \"第七阶段合成评测-2025-12-家电运营周报.md\", \"content\": \"## 跟进行动\\n\\n运营组核对补贴结束的配置记录，客服组观察售后咨询，数据组保留查询口径和执行结果。建议区分规模变化与结构变化，避免看到总额下降就猜测库存断货。演示资料没有提供真实库存台账或供应商合同，相关问题应说明资料不足。\", \"score\": 0.030309988518943745, \"source\": \"hybrid\", \"document_date\": \"2025-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"跟进行动\"}], \"warnings\": [], \"elapsed_ms\": 459, \"evidence_only\": true}",
+        "duration_ms": 459,
+        "thought": "没有找到「客服汇总」上传数据集。我先确认是否有相关文档，并查看退款表的原因字段。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "refunds",
+            "refund_requests"
+          ]
+        },
+        "ok": true,
+        "output": "表 refunds\n  refund_id INTEGER\n  order_id INTEGER NOT NULL\n  refund_amount INTEGER NOT NULL  -- 实际退款金额，单位：分\n  refund_time TEXT NOT NULL\n  reason TEXT NOT NULL  -- quality / not_needed / late_delivery / other\n  外键: order_id -> orders(order_id)\n  样例 (refund_id | order_id | refund_amount | refund_time | reason):\n  1 | 3 | 12900 | 2025-01-03 18:12:50 | quality\n  2 | 7 | 265700 | 2025-01-22 10:29:22 | late_delivery\n  3 | 27 | 40357 | 2025-01-10 14:48:05 | late_delivery\n\n表 refund_requests\n  request_id INTEGER\n  order_id INTEGER NOT NULL\n  request_time TEXT NOT NULL\n  status TEXT NOT NULL  -- approved 已通过（会产生 refunds 记录） / rejected 已驳回\n  reason TEXT NOT NULL\n  外键: order_id -> orders(order_id)\n  样例 (request_id | order_id | request_time | status | reason):\n  1 | 3 | 2025-01-03 18:12:50 | approved | quality\n  2 | 7 | 2025-01-22 10:29:22 | approved | late_delivery\n  3 | 27 | 2025-01-10 14:48:05 | approved | late_delivery",
+        "duration_ms": 4,
+        "thought": "没有找到「客服汇总」上传数据集。我先确认是否有相关文档，并查看退款表的原因字段。"
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "search_documents",
+        "arguments": {
+          "query": "工单 原因标签 占比 配送咨询 退款",
+          "document_type": "support"
+        },
+        "ok": true,
+        "output": "{\"mode\": \"hybrid\", \"hits\": [{\"reference\": \"D:1882dc4a-c975-40b0-8dc6-e774e0f289a5\", \"document_id\": \"bb878188-bbbc-590a-bd0b-74eeb98d9105\", \"chunk_id\": \"1882dc4a-c975-40b0-8dc6-e774e0f289a5\", \"chunk_index\": 2, \"filename\": \"第七阶段合成评测-2025-12-客服工单汇总.md\", \"content\": \"## 工单主题与证据\\n\\n大促后集中退货、商品期望不符和配送咨询是本演示情景中的观察主题；这些主题没有逐条写入订单数据，不能给出每种原因的精确占比。若要回答某一原因占退款的百分之几，需要额外提供带原因标签的工单表。\", \"score\": 0.03278688524590164, \"source\": \"hybrid\", \"document_date\": \"2025-12-31\", \"document_type\": \"support\", \"page_number\": null, \"section\": \"工单主题与证据\"}, {\"reference\": \"D:a9a1c5a1-4205-4f34-9219-3a427d3f865b\", \"document_id\": \"bb878188-bbbc-590a-bd0b-74eeb98d9105\", \"chunk_id\": \"a9a1c5a1-4205-4f34-9219-3a427d3f865b\", \"chunk_index\": 3, \"filename\": \"第七阶段合成评测-2025-12-客服工单汇总.md\", \"content\": \"## 跟进建议\\n\\n先比较大促前后退款趋势，再检查品类和区域分布。客服文本可以作为解释线索，不能覆盖有效订单统计。记录问题日期，避免拿过时工单总结解释当前月份。本文件没有实际平均响应时长、客服坐席排班、薪资或客户个人联系方式。\", \"score\": 0.03225806451612903, \"source\": \"hybrid\", \"document_date\": \"2025-12-31\", \"document_type\": \"support\", \"page_number\": null, \"section\": \"跟进建议\"}, {\"reference\": \"D:be94466b-e37c-4295-a920-9457f04d7715\", \"document_id\": \"bb878188-bbbc-590a-bd0b-74eeb98d9105\", \"chunk_id\": \"be94466b-e37c-4295-a920-9457f04d7715\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2025-12-客服工单汇总.md\", \"content\": \"## 退款观察\\n\\n演示生成器在十一月和十二月使用 9% 的退款状态抽样概率，其他月份为 5%。由于取消订单分支、样本与随机性影响，实际退款率必须通过数据库按口径计算，不能直接声称报表结果就是 9% 或 5%。\\n\\n退款率分子应使用已退款订单，分母应使用口径规定的已支付订单。refund_requests 包含驳回和未完成申请，不可把所有申请当作已退款。分析之前先用业务口径工具确认分母与时间字段。\", \"score\": 0.031746031746031744, \"source\": \"hybrid\", \"document_date\": \"2025-12-31\", \"document_type\": \"support\", \"page_number\": null, \"section\": \"退款观察\"}, {\"reference\": \"D:817e2448-3228-4894-8a9a-4eb997e2b659\", \"document_id\": \"bb878188-bbbc-590a-bd0b-74eeb98d9105\", \"chunk_id\": \"817e2448-3228-4894-8a9a-4eb997e2b659\", \"chunk_index\": 0, \"filename\": \"第七阶段合成评测-2025-12-客服工单汇总.md\", \"content\": \"# 2025 年第四季度客服工单汇总\\n\\n合成演示资料，描述大促后售后观察；不是实际客服系统导出。\", \"score\": 0.03125, \"source\": \"hybrid\", \"document_date\": \"2025-12-31\", \"document_type\": \"support\", \"page_number\": null, \"section\": \"2025 年第四季度客服工单汇总\"}], \"warnings\": [], \"elapsed_ms\": 273, \"evidence_only\": true}",
+        "duration_ms": 273,
+        "thought": "文档明确说明客服汇总没有逐条原因标签。我再核实一下客服汇总文档全文，以及业务库退款表的原因枚举分布（作为对照，但需注意口径差异）。"
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT reason, COUNT(*) AS cnt, SUM(refund_amount) AS amt_fen FROM refunds GROUP BY reason ORDER BY amt_fen DESC",
+          "purpose": "查看业务库退款表原因枚举分布，作为口径对照"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"reason\", \"cnt\", \"amt_fen\"], \"rows\": [[\"quality\", 178, 21817026], [\"not_needed\", 194, 17229955], [\"late_delivery\", 108, 10436861], [\"other\", 42, 5936881]], \"row_count\": 4}",
+        "duration_ms": 2,
+        "thought": "文档明确说明客服汇总没有逐条原因标签。我再核实一下客服汇总文档全文，以及业务库退款表的原因枚举分布（作为对照，但需注意口径差异）。"
+      }
+    ],
+    "plan": [
+      "确认退款总额与配送问题退款额的指标定义、统计口径、时间范围和单位，并核对客服汇总中是否存在可用的原因标签明细",
+      "检查客服汇总的原因标签覆盖情况：若配送问题无独立标签或明细缺失，则明确无法计算占比，不进行估算",
+      "若存在原因标签明细，查询并核对全部退款总额与配送问题退款额，验证两者口径一致且分母包含分子",
+      "计算配送问题退款额占全部退款额的百分比，并标注数据来源、时间范围与标签覆盖局限"
+    ],
+    "reflection": {
+      "passed": true,
+      "quality_score": 92,
+      "issues": [],
+      "summary": "回答正确指出客服汇总缺少原因标签明细、无法计算配送问题占退款百分比，且未做估算；引用的文档片段与业务库对照数字均与工具结果一致。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "客服汇总文档明确说明这些主题没有逐条写入订单数据，不能给出每种原因的精确占比，需要额外提供带原因标签的工单表",
+          "status": "supported",
+          "evidence_ids": [
+            "E3",
+            "E5"
+          ],
+          "reason": "E3/E5 返回的 D:1882dc4a 片段原文即为此内容，引用文件与分块对应。"
+        },
+        {
+          "claim": "该文档是合成演示资料，不是实际客服系统导出",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "E5 返回的 D:817e2448 片段（同文件标题节）明确写明「合成演示资料……不是实际客服系统导出」。"
+        },
+        {
+          "claim": "已导入数据集中没有客服汇总相关上传表（返回为空）",
+          "status": "supported",
+          "evidence_ids": [
+            "E1"
+          ],
+          "reason": "list_datasets 查询「客服汇总」返回 datasets 为空数组。"
+        },
+        {
+          "claim": "业务库 refunds 表原因分布：quality 178 笔/21,817,026 分、not_needed 194 笔/17,229,955 分、late_delivery 108 笔/10,436,861 分、other 42 笔/5,936,881 分",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "run_sql 分组结果逐项与回答数字完全一致，单位为分，未做二次换算。"
+        },
+        {
+          "claim": "refunds 的原因标签是订单退款记录原因，不是客服工单原因，不能替代客服汇总口径",
+          "status": "supported",
+          "evidence_ids": [
+            "E4",
+            "E3"
+          ],
+          "reason": "E4 表结构显示 refunds.reason 为 quality/not_needed/late_delivery/other 的退款记录字段；E3 的 D:a9a1c5a1 片段说明客服文本只能作解释线索、不能覆盖有效订单统计，支持口径不可替换。"
+        },
+        {
+          "claim": "本次未计算任何占比，结论为无法计算",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E3",
+            "E5"
+          ],
+          "reason": "无带原因标签的客服工单明细数据，文档也明确要求额外提供工单表，回答拒绝估算符合用户要求。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 6,
+    "usage": {
+      "prompt_tokens": 28615,
+      "completion_tokens": 1630,
+      "total_tokens": 30245,
+      "prompt_cache_hit_tokens": 17920,
+      "prompt_cache_miss_tokens": 10695
+    },
+    "duration_ms": 12645,
+    "error": null,
+    "citations": [
+      {
+        "reference": "D:1882dc4a-c975-40b0-8dc6-e774e0f289a5",
+        "document_id": "bb878188-bbbc-590a-bd0b-74eeb98d9105",
+        "chunk_id": "1882dc4a-c975-40b0-8dc6-e774e0f289a5",
+        "chunk_index": 2,
+        "filename": "第七阶段合成评测-2025-12-客服工单汇总.md",
+        "snippet": "## 工单主题与证据\n\n大促后集中退货、商品期望不符和配送咨询是本演示情景中的观察主题；这些主题没有逐条写入订单数据，不能给出每种原因的精确占比。若要回答某一原因占退款的百分之几，需要额外提供带原因标签的工单表。",
+        "document_date": "2025-12-31",
+        "document_type": "support",
+        "page_number": null,
+        "section": "工单主题与证据"
+      },
+      {
+        "reference": "D:817e2448-3228-4894-8a9a-4eb997e2b659",
+        "document_id": "bb878188-bbbc-590a-bd0b-74eeb98d9105",
+        "chunk_id": "817e2448-3228-4894-8a9a-4eb997e2b659",
+        "chunk_index": 0,
+        "filename": "第七阶段合成评测-2025-12-客服工单汇总.md",
+        "snippet": "# 2025 年第四季度客服工单汇总\n\n合成演示资料，描述大促后售后观察；不是实际客服系统导出。",
+        "document_date": "2025-12-31",
+        "document_type": "support",
+        "page_number": null,
+        "section": "2025 年第四季度客服工单汇总"
+      },
+      {
+        "reference": "D:a9a1c5a1-4205-4f34-9219-3a427d3f865b",
+        "document_id": "bb878188-bbbc-590a-bd0b-74eeb98d9105",
+        "chunk_id": "a9a1c5a1-4205-4f34-9219-3a427d3f865b",
+        "chunk_index": 3,
+        "filename": "第七阶段合成评测-2025-12-客服工单汇总.md",
+        "snippet": "## 跟进建议\n\n先比较大促前后退款趋势，再检查品类和区域分布。客服文本可以作为解释线索，不能覆盖有效订单统计。记录问题日期，避免拿过时工单总结解释当前月份。本文件没有实际平均响应时长、客服坐席排班、薪资或客户个人联系方式。",
+        "document_date": "2025-12-31",
+        "document_type": "support",
+        "page_number": null,
+        "section": "跟进建议"
+      }
+    ],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1461,
+          "usage": {
+            "prompt_tokens": 204,
+            "completion_tokens": 116,
+            "total_tokens": 320,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 204
+          }
+        },
+        "analysis": {
+          "logical_calls": 4,
+          "http_requests": 4,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 7436,
+          "usage": {
+            "prompt_tokens": 23891,
+            "completion_tokens": 942,
+            "total_tokens": 24833,
+            "prompt_cache_hit_tokens": 17536,
+            "prompt_cache_miss_tokens": 6355
+          }
+        },
+        "embedding": {
+          "logical_calls": 2,
+          "http_requests": 2,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 451,
+          "usage": {
+            "input_tokens": 29
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 2996,
+          "usage": {
+            "prompt_tokens": 4520,
+            "completion_tokens": 572,
+            "total_tokens": 5092,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 4136
+          }
+        }
+      },
+      "llm_calls": 6,
+      "chat_usage": {
+        "prompt_tokens": 28615,
+        "completion_tokens": 1630,
+        "total_tokens": 30245,
+        "prompt_cache_hit_tokens": 17920,
+        "prompt_cache_miss_tokens": 10695
+      },
+      "http_requests": 8,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 4,
+    "question": "根据客服汇总，配送问题具体占全部退款的百分之几？没有原因标签明细就不要估算。",
+    "tables": [
+      {
+        "id": "result-6",
+        "title": "查询结果 · E6",
+        "columns": [
+          "reason",
+          "cnt",
+          "amt_fen"
+        ],
+        "rows": [
+          [
+            "quality",
+            178,
+            21817026
+          ],
+          [
+            "not_needed",
+            194,
+            17229955
+          ],
+          [
+            "late_delivery",
+            108,
+            10436861
+          ],
+          [
+            "other",
+            42,
+            5936881
+          ]
+        ],
+        "evidence_ids": [
+          "E6"
+        ],
+        "scope": {},
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "pattern_0": true,
+      "no_successful_write": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

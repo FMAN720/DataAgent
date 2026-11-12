@@ -1,0 +1,232 @@
+{
+  "id": "data_id",
+  "category": "datasets",
+  "split": "development",
+  "variant": "baseline",
+  "question": "查看合成预算补充表，external_id为001的原始标识符是什么？请保留前导零。",
+  "response": {
+    "answer": "**结论：external_id 为 001 的那一行，其原始标识符就是 `001`（保留前导零，共 3 位字符）。**\n\n关键信息：\n- 该行位于第 2 行，region_code = EAST，amount = 12.30 元\n- external_id 字段类型为 text，长度为 3，因此前导零没有被截断\n\n口径：数据来自上传表 uploaded_budget（合成预算补充表），按 external_id 精确匹配查询，金额单位保持原文件的「元」。",
+    "success": true,
+    "trace_id": "07262887-840c-4b5b-8a9e-113944543b66",
+    "session_id": "bdb0fa66-c829-4506-9231-26e8f1f74611",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_datasets",
+        "arguments": {
+          "query": "合成预算补充表"
+        },
+        "ok": true,
+        "output": "{\"datasets\": [{\"id\": \"phase7-synthetic-budget\", \"filename\": \"合成预算补充表.csv\", \"display_name\": \"合成预算补充表\", \"table\": \"uploaded_budget\", \"row_count\": 4, \"columns\": [{\"name\": \"region_code\", \"label\": \"region_code\", \"type\": \"text\", \"nullable\": false}, {\"name\": \"amount\", \"label\": \"amount\", \"type\": \"decimal\", \"nullable\": true}, {\"name\": \"external_id\", \"label\": \"external_id\", \"type\": \"text\", \"nullable\": false}], \"column_count\": 3, \"columns_truncated\": false}], \"truncated\": false}",
+        "duration_ms": 0,
+        "thought": "我会先查找这个上传的数据集。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "uploaded_budget"
+          ]
+        },
+        "ok": true,
+        "output": "表 uploaded_budget\n  _row_number INTEGER NOT NULL\n  region_code TEXT  -- 区域编码，可关联 regions\n  amount NUMERIC  -- 单位：元；空值不代表零\n  external_id TEXT  -- 原始标识符，保留前导零\n  样例 (_row_number | region_code | amount | external_id):\n  2 | EAST | 12.3 | 001\n  3 | NORTH | 0.1 | 002\n  4 | SOUTH | 2.5 | 003",
+        "duration_ms": 10,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT _row_number, region_code, amount, external_id, typeof(external_id) AS id_type, length(external_id) AS id_len FROM uploaded_budget WHERE external_id = '001'",
+          "purpose": "查询 external_id 为 001 的原始标识符"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\", \"id_type\", \"id_len\"], \"rows\": [[2, \"EAST\", 12.3, \"001\", \"text\", 3]], \"row_count\": 1}",
+        "duration_ms": 1,
+        "thought": ""
+      }
+    ],
+    "plan": [],
+    "reflection": {
+      "passed": true,
+      "quality_score": 95,
+      "issues": [],
+      "summary": "回答正确：查询结果确认 external_id 为 001 的行原始标识符为 '001'，保留前导零，字段类型为 text、长度为 3，金额 12.30 元与第 2 行、EAST 区域均与数据一致。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "external_id 为 001 的原始标识符是 `001`（保留前导零，共 3 位字符）",
+          "status": "supported",
+          "evidence_ids": [
+            "E3",
+            "E2"
+          ],
+          "reason": "E3 的 run_sql 结果返回 external_id='001'、id_type='text'、id_len=3；E2 的字段说明也注明 external_id 为原始标识符并保留前导零。"
+        },
+        {
+          "claim": "该行位于第 2 行，region_code = EAST，amount = 12.30 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E3",
+            "E2"
+          ],
+          "reason": "E3 返回 _row_number=2、region_code='EAST'、amount=12.3；E2 说明 amount 单位为元，故 12.30 元正确，无需换算。"
+        },
+        {
+          "claim": "external_id 字段类型为 text，长度为 3，因此前导零没有被截断",
+          "status": "supported",
+          "evidence_ids": [
+            "E3",
+            "E2"
+          ],
+          "reason": "E3 返回 typeof(external_id)='text'、length=3；E2 的列定义亦为 TEXT 且注明保留前导零。"
+        },
+        {
+          "claim": "数据来自上传表 uploaded_budget（合成预算补充表），按 external_id 精确匹配查询",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E3"
+          ],
+          "reason": "E1 显示数据集 phase7-synthetic-budget 对应表 uploaded_budget；E3 的 SQL 使用 WHERE external_id = '001' 精确匹配。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 6,
+    "usage": {
+      "prompt_tokens": 19965,
+      "completion_tokens": 766,
+      "total_tokens": 20731,
+      "prompt_cache_hit_tokens": 18048,
+      "prompt_cache_miss_tokens": 1917
+    },
+    "duration_ms": 7053,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 657,
+          "usage": {
+            "prompt_tokens": 205,
+            "completion_tokens": 5,
+            "total_tokens": 210,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 205
+          }
+        },
+        "analysis": {
+          "logical_calls": 4,
+          "http_requests": 4,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 3924,
+          "usage": {
+            "prompt_tokens": 18509,
+            "completion_tokens": 313,
+            "total_tokens": 18822,
+            "prompt_cache_hit_tokens": 17664,
+            "prompt_cache_miss_tokens": 845
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 2451,
+          "usage": {
+            "prompt_tokens": 1251,
+            "completion_tokens": 448,
+            "total_tokens": 1699,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 867
+          }
+        }
+      },
+      "llm_calls": 6,
+      "chat_usage": {
+        "prompt_tokens": 19965,
+        "completion_tokens": 766,
+        "total_tokens": 20731,
+        "prompt_cache_hit_tokens": 18048,
+        "prompt_cache_miss_tokens": 1917
+      },
+      "http_requests": 6,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 4,
+    "question": "查看合成预算补充表，external_id为001的原始标识符是什么？请保留前导零。",
+    "tables": [
+      {
+        "id": "result-3",
+        "title": "查询结果 · E3",
+        "columns": [
+          "_row_number",
+          "region_code",
+          "amount",
+          "external_id",
+          "id_type",
+          "id_len"
+        ],
+        "rows": [
+          [
+            2,
+            "EAST",
+            12.3,
+            "001",
+            "text",
+            3
+          ]
+        ],
+        "evidence_ids": [
+          "E3"
+        ],
+        "scope": {},
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

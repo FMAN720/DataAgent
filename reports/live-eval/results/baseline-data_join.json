@@ -1,0 +1,402 @@
+{
+  "id": "data_join",
+  "category": "datasets",
+  "split": "development",
+  "variant": "baseline",
+  "question": "合成预算补充表关联业务区域字典，华东的预算合计多少元？",
+  "response": {
+    "answer": "**结论：华东预算合计 12.30 元**（但该数字不完整，见下方说明）。\n\n关键数字：\n- 华东（region_code = EAST）在合成预算补充表中共有 **2 行**明细：external_id 001 金额 12.30 元，external_id 004 金额为**空值**。\n- 有金额的行只有 1 行，SUM 结果 = **12.30 元**。\n- 关联核对：4 行预算全部能匹配到 regions 字典（EAST/NORTH/SOUTH 均存在），无重复关联、无未匹配区域；external_id 无重复（4 个唯一值）。\n\n需要注意的数据质量问题：\n- `amount` 字段有 1 个缺失值（占 25%），字段注释明确「空值不代表零」。因此 12.30 元只是**已填金额之和**，华东实际预算合计应 ≥ 12.30 元，缺失的那笔金额需要业务方补充后才能给出准确合计。\n- 金额单位按字段注释为「元」，未做任何换算。\n\n口径：合成预算补充表 `uploaded_budget.amount`（单位：元）按 `region_code` 关联业务区域字典 `regions`，筛选 region_name = 华东，对非空金额求和；空值未按 0 处理。",
+    "success": true,
+    "trace_id": "0c9fab1d-f2d3-4e6d-982f-3f0ef5723948",
+    "session_id": "53f5f82f-06e5-4631-8b6a-a7010ea0bd85",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_datasets",
+        "arguments": {
+          "query": "预算"
+        },
+        "ok": true,
+        "output": "{\"datasets\": [{\"id\": \"phase7-synthetic-budget\", \"filename\": \"合成预算补充表.csv\", \"display_name\": \"合成预算补充表\", \"table\": \"uploaded_budget\", \"row_count\": 4, \"columns\": [{\"name\": \"region_code\", \"label\": \"region_code\", \"type\": \"text\", \"nullable\": false}, {\"name\": \"amount\", \"label\": \"amount\", \"type\": \"decimal\", \"nullable\": true}, {\"name\": \"external_id\", \"label\": \"external_id\", \"type\": \"text\", \"nullable\": false}], \"column_count\": 3, \"columns_truncated\": false}], \"truncated\": false}",
+        "duration_ms": 0,
+        "thought": "我先查看已导入的数据集和业务区域字典表。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_tables",
+        "arguments": {
+          "question": "业务区域字典 区域"
+        },
+        "ok": true,
+        "output": "{\"dialect\": \"sqlite\", \"tables\": [{\"table\": \"categories\", \"columns\": [\"category_id\", \"category_name\", \"parent_id\"]}, {\"table\": \"order_items\", \"columns\": [\"item_id\", \"order_id\", \"product_id\", \"quantity\", \"unit_price\", \"item_amount\"]}, {\"table\": \"orders\", \"columns\": [\"order_id\", \"user_id\", \"order_time\", \"status\", \"channel\", \"total_amount\", \"discount_amount\", \"pay_amount\", \"pay_time\"]}, {\"table\": \"payments\", \"columns\": [\"payment_id\", \"order_id\", \"pay_method\", \"amount\", \"paid_at\"]}, {\"table\": \"products\", \"columns\": [\"product_id\", \"product_name\", \"category_id\", \"list_price\", \"cost_price\", \"is_active\"]}, {\"table\": \"refund_requests\", \"columns\": [\"request_id\", \"order_id\", \"request_time\", \"status\", \"reason\"]}, {\"table\": \"refunds\", \"columns\": [\"refund_id\", \"order_id\", \"refund_amount\", \"refund_time\", \"reason\"]}, {\"table\": \"regions\", \"columns\": [\"region_code\", \"region_name\"]}, {\"table\": \"uploaded_budget\", \"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\"]}, {\"table\": \"user_events\", \"columns\": [\"event_id\", \"user_id\", \"event_date\", \"event_type\"]}, {\"table\": \"users\", \"columns\": [\"user_id\", \"register_date\", \"region_code\", \"gender\", \"birth_year\", \"member_level\", \"acquire_channel\", \"is_test\"]}]}",
+        "duration_ms": 10,
+        "thought": "我先查看已导入的数据集和业务区域字典表。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "uploaded_budget",
+            "regions"
+          ]
+        },
+        "ok": true,
+        "output": "表 uploaded_budget\n  _row_number INTEGER NOT NULL\n  region_code TEXT  -- 区域编码，可关联 regions\n  amount NUMERIC  -- 单位：元；空值不代表零\n  external_id TEXT  -- 原始标识符，保留前导零\n  样例 (_row_number | region_code | amount | external_id):\n  2 | EAST | 12.3 | 001\n  3 | NORTH | 0.1 | 002\n  4 | SOUTH | 2.5 | 003\n\n表 regions\n  region_code TEXT  -- 区域编码：EAST / NORTH / SOUTH / CENTRAL / WEST\n  region_name TEXT NOT NULL  -- 中文名：华东 / 华北 / 华南 / 华中 / 西部\n  样例 (region_code | region_name):\n  EAST | 华东\n  NORTH | 华北\n  SOUTH | 华南",
+        "duration_ms": 2,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "profile_dataset",
+        "arguments": {
+          "table": "uploaded_budget",
+          "columns": [
+            "region_code",
+            "amount",
+            "external_id"
+          ],
+          "key_columns": [
+            "external_id"
+          ]
+        },
+        "ok": true,
+        "output": "{\"status\": \"warning\", \"table\": \"uploaded_budget\", \"row_count\": 4, \"columns\": [{\"column\": \"region_code\", \"type\": \"TEXT\", \"null_count\": 0, \"blank_count\": 0, \"missing_pct\": 0.0, \"distinct_count\": 3}, {\"column\": \"amount\", \"type\": \"NUMERIC\", \"null_count\": 1, \"blank_count\": 0, \"missing_pct\": 25.0, \"distinct_count\": 3, \"min\": 0.1, \"max\": 12.3, \"negative_count\": 0, \"invalid_numeric_count\": 0}, {\"column\": \"external_id\", \"type\": \"TEXT\", \"null_count\": 0, \"blank_count\": 0, \"missing_pct\": 0.0, \"distinct_count\": 4}], \"columns_truncated\": true, \"duplicate_excess_rows\": 0, \"key_columns\": [\"external_id\"], \"key_missing_rows\": 0, \"date_range\": null, \"warnings\": [\"字段 amount 存在 1 个缺失或空白值。\"], \"questions\": [], \"method\": \"full_table_aggregates_readonly_snapshot\"}",
+        "duration_ms": 2,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT b._row_number, b.region_code, r.region_name, b.amount, b.external_id FROM uploaded_budget b LEFT JOIN regions r ON b.region_code = r.region_code ORDER BY b._row_number",
+          "purpose": "查看预算表全部明细并关联区域字典"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"_row_number\", \"region_code\", \"region_name\", \"amount\", \"external_id\"], \"rows\": [[2, \"EAST\", \"华东\", 12.3, \"001\"], [3, \"NORTH\", \"华北\", 0.1, \"002\"], [4, \"SOUTH\", \"华南\", 2.5, \"003\"], [5, \"EAST\", \"华东\", null, \"004\"]], \"row_count\": 4}",
+        "duration_ms": 2,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 4,
+        "tool": "run_sql",
+        "arguments": {
+          "purpose": "汇总华东区域预算合计并核对明细行数",
+          "sql": "SELECT r.region_code, r.region_name, COUNT(*) AS row_cnt, COUNT(b.amount) AS non_null_cnt, SUM(b.amount) AS total_amount FROM uploaded_budget b JOIN regions r ON b.region_code = r.region_code WHERE r.region_name = '华东' GROUP BY r.region_code, r.region_name"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"region_code\", \"region_name\", \"row_cnt\", \"non_null_cnt\", \"total_amount\"], \"rows\": [[\"EAST\", \"华东\", 2, 1, 12.3]], \"row_count\": 1}",
+        "duration_ms": 1,
+        "thought": ""
+      }
+    ],
+    "plan": [
+      "确认预算合计的指标口径、金额单位，以及业务区域字典中华东的区域定义与关联键",
+      "按关联键将合成预算补充表与业务区域字典关联，筛选华东区域并汇总预算金额",
+      "核对汇总结果与华东分项明细，确认无重复关联或遗漏"
+    ],
+    "reflection": {
+      "passed": true,
+      "quality_score": 92,
+      "issues": [],
+      "summary": "华东已填金额合计12.30元，与查询结果一致；回答明确说明存在1个空值、合计不完整，未将空值按0处理，口径与数据质量披露均准确。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "华东（region_code = EAST）在合成预算补充表中共有2行明细",
+          "status": "supported",
+          "evidence_ids": [
+            "E5",
+            "E6"
+          ],
+          "reason": "E5明细显示EAST两行（001金额12.3、004金额null）；E6按华东分组返回row_cnt=2。"
+        },
+        {
+          "claim": "external_id 001 金额12.30元，external_id 004金额为空值",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "E5返回行[2, EAST, 华东, 12.3, 001]与[5, EAST, 华东, null, 004]。"
+        },
+        {
+          "claim": "有金额的行只有1行，SUM结果=12.30元",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "E6返回non_null_cnt=1、total_amount=12.3，单位为元（E3字段注释）。"
+        },
+        {
+          "claim": "amount字段有1个缺失值（占25%），空值不代表零",
+          "status": "supported",
+          "evidence_ids": [
+            "E3",
+            "E4"
+          ],
+          "reason": "E4显示amount null_count=1、missing_pct=25.0；E3注释明确“单位：元；空值不代表零”。"
+        },
+        {
+          "claim": "4行预算全部能匹配到regions字典，无重复关联、无未匹配区域",
+          "status": "supported",
+          "evidence_ids": [
+            "E5",
+            "E4"
+          ],
+          "reason": "E5 LEFT JOIN结果4行均有region_name，无NULL；E4显示external_id无重复（duplicate_excess_rows=0，distinct_count=4）。"
+        },
+        {
+          "claim": "华东实际预算合计应≥12.30元，缺失金额需业务方补充",
+          "status": "supported",
+          "evidence_ids": [
+            "E3",
+            "E4",
+            "E6"
+          ],
+          "reason": "E6仅对非空金额求和，E4确认存在1个缺失值，E3说明空值不代表零，因此只能给出下界，回答已明确标注不完整。"
+        },
+        {
+          "claim": "金额单位按字段注释为元，未做换算",
+          "status": "supported",
+          "evidence_ids": [
+            "E3"
+          ],
+          "reason": "E3字段注释为“单位：元”，回答未做二次换算。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 7,
+    "usage": {
+      "prompt_tokens": 29721,
+      "completion_tokens": 1396,
+      "total_tokens": 31117,
+      "prompt_cache_hit_tokens": 22784,
+      "prompt_cache_miss_tokens": 6937
+    },
+    "duration_ms": 11145,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [
+        "字段 amount 存在 1 个缺失或空白值。"
+      ],
+      "comparison_count": 0,
+      "quality_checks": [
+        {
+          "status": "warning",
+          "table": "uploaded_budget",
+          "row_count": 4,
+          "columns": [
+            {
+              "column": "region_code",
+              "type": "TEXT",
+              "null_count": 0,
+              "blank_count": 0,
+              "missing_pct": 0.0,
+              "distinct_count": 3
+            },
+            {
+              "column": "amount",
+              "type": "NUMERIC",
+              "null_count": 1,
+              "blank_count": 0,
+              "missing_pct": 25.0,
+              "distinct_count": 3,
+              "min": 0.1,
+              "max": 12.3,
+              "negative_count": 0,
+              "invalid_numeric_count": 0
+            },
+            {
+              "column": "external_id",
+              "type": "TEXT",
+              "null_count": 0,
+              "blank_count": 0,
+              "missing_pct": 0.0,
+              "distinct_count": 4
+            }
+          ],
+          "columns_truncated": true,
+          "duplicate_excess_rows": 0,
+          "key_columns": [
+            "external_id"
+          ],
+          "key_missing_rows": 0,
+          "date_range": null,
+          "warnings": [
+            "字段 amount 存在 1 个缺失或空白值。"
+          ],
+          "questions": [],
+          "method": "full_table_aggregates_readonly_snapshot"
+        }
+      ],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1329,
+          "usage": {
+            "prompt_tokens": 199,
+            "completion_tokens": 67,
+            "total_tokens": 266,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 199
+          }
+        },
+        "analysis": {
+          "logical_calls": 5,
+          "http_requests": 5,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 6300,
+          "usage": {
+            "prompt_tokens": 27013,
+            "completion_tokens": 748,
+            "total_tokens": 27761,
+            "prompt_cache_hit_tokens": 22400,
+            "prompt_cache_miss_tokens": 4613
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 3484,
+          "usage": {
+            "prompt_tokens": 2509,
+            "completion_tokens": 581,
+            "total_tokens": 3090,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2125
+          }
+        }
+      },
+      "llm_calls": 7,
+      "chat_usage": {
+        "prompt_tokens": 29721,
+        "completion_tokens": 1396,
+        "total_tokens": 31117,
+        "prompt_cache_hit_tokens": 22784,
+        "prompt_cache_miss_tokens": 6937
+      },
+      "http_requests": 7,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 5,
+    "question": "合成预算补充表关联业务区域字典，华东的预算合计多少元？",
+    "tables": [
+      {
+        "id": "result-5",
+        "title": "查询结果 · E5",
+        "columns": [
+          "_row_number",
+          "region_code",
+          "region_name",
+          "amount",
+          "external_id"
+        ],
+        "rows": [
+          [
+            2,
+            "EAST",
+            "华东",
+            12.3,
+            "001"
+          ],
+          [
+            3,
+            "NORTH",
+            "华北",
+            0.1,
+            "002"
+          ],
+          [
+            4,
+            "SOUTH",
+            "华南",
+            2.5,
+            "003"
+          ],
+          [
+            5,
+            "EAST",
+            "华东",
+            null,
+            "004"
+          ]
+        ],
+        "evidence_ids": [
+          "E5"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-6",
+        "title": "查询结果 · E6",
+        "columns": [
+          "region_code",
+          "region_name",
+          "row_cnt",
+          "non_null_cnt",
+          "total_amount"
+        ],
+        "rows": [
+          [
+            "EAST",
+            "华东",
+            2,
+            1,
+            12.3
+          ]
+        ],
+        "evidence_ids": [
+          "E6"
+        ],
+        "scope": {},
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true,
+      "fact_0_1": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "live_status": "partial",
+  "expected_runs": 80,
+  "completed_runs": 4,
+  "variants": {
+    "baseline": {
+      "completed": 4,
+      "rule_passed": 3,
+      "splits": {
+        "development": {
+          "completed": 4,
+          "rule_passed": 3
+        },
+        "holdout": {
+          "completed": 0,
+          "rule_passed": 0
+        }
+      },
+      "p50_ms": 6859.0,
+      "p95_ms": 8330,
+      "llm_calls": 20,
+      "chat_tokens": 68211,
+      "citation_error_cases": 0,
+      "reviewed_cases": 3,
+      "revised_cases": 0,
+      "complete_usage_cases": 3,
+      "failures": [
+        {
+          "id": "sql_dec_refund",
+          "checks": [
+            "execution_success",
+            "fact_0_0",
+            "pattern_0"
+          ]
+        }
+      ]
+    }
+  },
+  "paired_ablations": {
+    "keyword": {
+      "pairs": 0,
+      "baseline_passed": 0,
+      "variant_passed": 0
+    },
+    "no_planner": {
+      "pairs": 0,
+      "baseline_passed": 0,
+      "variant_passed": 0
+    },
+    "no_reflection": {
+      "pairs": 0,
+      "baseline_passed": 0,
+      "variant_passed": 0
+    }
+  },
+  "interpretation": "Rule-based acceptance only; a single synthetic run does not establish general accuracy or statistical significance."
+}

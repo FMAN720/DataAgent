@@ -1,0 +1,189 @@
+{
+  "fingerprint": "9d3f91549f049c8f52f5e40d35f601e74ff28537566544660367000b99c6233a",
+  "limits": {
+    "max_cny": 30,
+    "max_chat_requests": 600,
+    "max_embedding_requests": 250,
+    "max_characters": 8000000,
+    "input_ceiling_cny_per_million": 10,
+    "output_ceiling_cny_per_million": 30
+  },
+  "requests": [
+    {
+      "kind": "embedding",
+      "characters": 604,
+      "ceiling_cny": "0",
+      "status": "returned",
+      "usage": {
+        "prompt_tokens": 342,
+        "completion_tokens": 0,
+        "total_tokens": 342
+      },
+      "http_status": 200
+    },
+    {
+      "kind": "embedding",
+      "characters": 614,
+      "ceiling_cny": "0",
+      "status": "returned",
+      "usage": {
+        "prompt_tokens": 356,
+        "completion_tokens": 0,
+        "total_tokens": 356
+      },
+      "http_status": 200
+    },
+    {
+      "kind": "embedding",
+      "characters": 634,
+      "ceiling_cny": "0",
+      "status": "returned",
+      "usage": {
+        "prompt_tokens": 348,
+        "completion_tokens": 0,
+        "total_tokens": 348
+      },
+      "http_status": 200
+    },
+    {
+      "kind": "embedding",
+      "characters": 573,
+      "ceiling_cny": "0",
+      "status": "returned",
+      "usage": {
+        "prompt_tokens": 322,
+        "completion_tokens": 0,
+        "total_tokens": 322
+      },
+      "http_status": 200
+    },
+    {
+      "kind": "embedding",
+      "characters": 539,
+      "ceiling_cny": "0",
+      "status": "returned",
+      "usage": {
+        "prompt_tokens": 313,
+        "completion_tokens": 0,
+        "total_tokens": 313
+      },
+      "http_status": 200
+    },
+    {
+      "kind": "embedding",
+      "characters": 545,
+      "ceiling_cny": "0",
+      "status": "returned",
+      "usage": {
+        "prompt_tokens": 327,
+        "completion_tokens": 0,
+        "total_tokens": 327
+      },
+      "http_status": 200
+    },
+    {
+      "kind": "embedding",
+      "characters": 491,
+      "ceiling_cny": "0",
+      "status": "returned",
+      "usage": {
+        "prompt_tokens": 265,
+        "completion_tokens": 0,
+        "total_tokens": 265
+      },
+      "http_status": 200
+    },
+    {
+      "kind": "embedding",
+      "characters": 578,
+      "ceiling_cny": "0",
+      "status": "returned",
+      "usage": {
+        "prompt_tokens": 310,
+        "completion_tokens": 0,
+        "total_tokens": 310
+      },
+      "http_status": 200
+    },
+    {
+      "kind": "embedding",
+      "characters": 572,
+      "ceiling_cny": "0",
+      "status": "returned",
+      "usage": {
+        "prompt_tokens": 315,
+        "completion_tokens": 0,
+        "total_tokens": 315
+      },
+      "http_status": 200
+    },
+    {
+      "kind": "embedding",
+      "characters": 412,
+      "ceiling_cny": "0",
+      "status": "returned",
+      "usage": {
+        "prompt_tokens": 232,
+        "completion_tokens": 0,
+        "total_tokens": 232
+      },
+      "http_status": 200
+    },
+    {
+      "kind": "embedding",
+      "characters": 390,
+      "ceiling_cny": "0",
+      "status": "returned",
+      "usage": {
+        "prompt_tokens": 210,
+        "completion_tokens": 0,
+        "total_tokens": 210
+      },
+      "http_status": 200
+    },
+    {
+      "kind": "embedding",
+      "characters": 343,
+      "ceiling_cny": "0",
+      "status": "returned",
+      "usage": {
+        "prompt_tokens": 181,
+        "completion_tokens": 0,
+        "total_tokens": 181
+      },
+      "http_status": 200
+    },
+    {
+      "kind": "embedding",
+      "characters": 354,
+      "ceiling_cny": "0",
+      "status": "returned",
+      "usage": {
+        "prompt_tokens": 187,
+        "completion_tokens": 0,
+        "total_tokens": 187
+      },
+      "http_status": 200
+    },
+    {
+      "kind": "embedding",
+      "characters": 338,
+      "ceiling_cny": "0",
+      "status": "reserved",
+      "usage": null
+    },
+    {
+      "kind": "embedding",
+      "characters": 362,
+      "ceiling_cny": "0",
+      "status": "returned",
+      "usage": {
+        "prompt_tokens": 181,
+        "completion_tokens": 0,
+        "total_tokens": 181
+      },
+      "http_status": 200
+    }
+  ],
+  "created_at": "2026-11-01T09:27:54.065920+00:00"
+}

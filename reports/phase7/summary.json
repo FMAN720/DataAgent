@@ -1,0 +1,24 @@
+{
+  "live_status": "not_run",
+  "expected_runs": 80,
+  "completed_runs": 0,
+  "variants": {},
+  "paired_ablations": {
+    "keyword": {
+      "pairs": 0,
+      "baseline_passed": 0,
+      "variant_passed": 0
+    },
+    "no_planner": {
+      "pairs": 0,
+      "baseline_passed": 0,
+      "variant_passed": 0
+    },
+    "no_reflection": {
+      "pairs": 0,
+      "baseline_passed": 0,
+      "variant_passed": 0
+    }
+  },
+  "interpretation": "Rule-based acceptance only; a single synthetic run does not establish general accuracy or statistical significance."
+}

@@ -1,0 +1,376 @@
+{
+  "created_at": "2026-10-22T10:16:22.348656+00:00",
+  "documents": 15,
+  "questions": 60,
+  "scope": "Committed synthetic app/demo/documents and eval/phase5_cases only",
+  "model_calls_chat": 0,
+  "calibration_questions": 30,
+  "holdout_questions": 30,
+  "persistent_embedding_flag_changed": false,
+  "status": "offline_prepared",
+  "characters_in_unique_allowlist": 7163,
+  "chunks": 56,
+  "queries": [
+    {
+      "id": "calibration-00",
+      "split": "calibration",
+      "query": "双十一订单优惠区间是多少？",
+      "expected": "double11"
+    },
+    {
+      "id": "holdout-00",
+      "split": "holdout",
+      "query": "十一月大促折扣按商品合计的什么比例生成？",
+      "expected": "double11"
+    },
+    {
+      "id": "calibration-01",
+      "split": "calibration",
+      "query": "十一月整体订单生成系数是多少？",
+      "expected": "double11"
+    },
+    {
+      "id": "holdout-01",
+      "split": "holdout",
+      "query": "年度集中促销期间的订单抽样权重设成几？",
+      "expected": "double11"
+    },
+    {
+      "id": "calibration-02",
+      "split": "calibration",
+      "query": "2025 年家电补贴何时结束？",
+      "expected": "appliances"
+    },
+    {
+      "id": "holdout-02",
+      "split": "holdout",
+      "query": "演示情景里十二月还延续家电同等补贴吗？",
+      "expected": "appliances"
+    },
+    {
+      "id": "calibration-03",
+      "split": "calibration",
+      "query": "十二月家用电器的商品选择权重是多少？",
+      "expected": "appliances"
+    },
+    {
+      "id": "holdout-03",
+      "split": "holdout",
+      "query": "大促后家电回落场景采用什么选品系数？",
+      "expected": "appliances"
+    },
+    {
+      "id": "calibration-04",
+      "split": "calibration",
+      "query": "年货节主要经营哪个品类？",
+      "expected": "food"
+    },
+    {
+      "id": "holdout-04",
+      "split": "holdout",
+      "query": "十二月备年货方案的重点商品类别是什么？",
+      "expected": "food"
+    },
+    {
+      "id": "calibration-05",
+      "split": "calibration",
+      "query": "十二月食品生鲜生成权重是多少？",
+      "expected": "food"
+    },
+    {
+      "id": "holdout-05",
+      "split": "holdout",
+      "query": "1.4 对应哪个年货品类的演示选品设置？",
+      "expected": "food"
+    },
+    {
+      "id": "calibration-06",
+      "split": "calibration",
+      "query": "九月手机数码有什么运营主题？",
+      "expected": "phones"
+    },
+    {
+      "id": "holdout-06",
+      "split": "holdout",
+      "query": "换机需求和专题介绍出自哪次发布活动？",
+      "expected": "phones"
+    },
+    {
+      "id": "calibration-07",
+      "split": "calibration",
+      "query": "手机数码九月的商品选择权重是多少？",
+      "expected": "phones"
+    },
+    {
+      "id": "holdout-07",
+      "split": "holdout",
+      "query": "九月发布期数码品类用了几倍抽样系数？",
+      "expected": "phones"
+    },
+    {
+      "id": "calibration-08",
+      "split": "calibration",
+      "query": "服饰鞋包十一月和十二月系数分别是多少？",
+      "expected": "fashion"
+    },
+    {
+      "id": "holdout-08",
+      "split": "holdout",
+      "query": "秋冬服饰计划里的两个上新月权重是什么？",
+      "expected": "fashion"
+    },
+    {
+      "id": "calibration-09",
+      "split": "calibration",
+      "query": "冬季服饰方案怎样看待订单实收和明细成交额？",
+      "expected": "fashion"
+    },
+    {
+      "id": "holdout-09",
+      "split": "holdout",
+      "query": "为什么秋冬上新不能把品类明细求和直接替代净实收？",
+      "expected": "fashion"
+    },
+    {
+      "id": "calibration-10",
+      "split": "calibration",
+      "query": "大促月的退款抽样概率是多少？",
+      "expected": "refunds"
+    },
+    {
+      "id": "holdout-10",
+      "split": "holdout",
+      "query": "客服汇总中非大促月和大促月退款状态概率有什么变化？",
+      "expected": "refunds"
+    },
+    {
+      "id": "calibration-11",
+      "split": "calibration",
+      "query": "客服汇总能算出每种退货原因的精确占比吗？",
+      "expected": "refunds"
+    },
+    {
+      "id": "holdout-11",
+      "split": "holdout",
+      "query": "想知道某类客诉占全部退款多少，需要补充什么数据？",
+      "expected": "refunds"
+    },
+    {
+      "id": "calibration-12",
+      "split": "calibration",
+      "query": "二月春节订单生成系数是多少？",
+      "expected": "spring"
+    },
+    {
+      "id": "holdout-12",
+      "split": "holdout",
+      "query": "春节期间的演示订单量采用什么季节权重？",
+      "expected": "spring"
+    },
+    {
+      "id": "calibration-13",
+      "split": "calibration",
+      "query": "春节月份比较为何要看日均订单？",
+      "expected": "spring"
+    },
+    {
+      "id": "holdout-13",
+      "split": "holdout",
+      "query": "一月二月总订单量对比还要考虑什么时间差异？",
+      "expected": "spring"
+    },
+    {
+      "id": "calibration-14",
+      "split": "calibration",
+      "query": "业务库金额如何换算成元？",
+      "expected": "metrics"
+    },
+    {
+      "id": "holdout-14",
+      "split": "holdout",
+      "query": "项目订单的最小金额单位是什么？",
+      "expected": "metrics"
+    },
+    {
+      "id": "calibration-15",
+      "split": "calibration",
+      "query": "净销售额保留哪些状态并排除什么用户？",
+      "expected": "metrics"
+    },
+    {
+      "id": "holdout-15",
+      "split": "holdout",
+      "query": "为什么取消退款订单和测试账号不能计入净实收？",
+      "expected": "metrics"
+    },
+    {
+      "id": "calibration-16",
+      "split": "calibration",
+      "query": "华东和华北分别用什么区域代码？",
+      "expected": "regions"
+    },
+    {
+      "id": "holdout-16",
+      "split": "holdout",
+      "query": "EAST、NORTH 对应哪些中文区域？",
+      "expected": "regions"
+    },
+    {
+      "id": "calibration-17",
+      "split": "calibration",
+      "query": "下单端与获客来源有什么不同？",
+      "expected": "regions"
+    },
+    {
+      "id": "holdout-17",
+      "split": "holdout",
+      "query": "app、web 和 ads、referral 为什么不能混作一个渠道？",
+      "expected": "regions"
+    },
+    {
+      "id": "calibration-18",
+      "split": "calibration",
+      "query": "标准配送承诺为几个工作日？",
+      "expected": "delivery"
+    },
+    {
+      "id": "holdout-18",
+      "split": "holdout",
+      "query": "额外合成服务约定里发货后通常多久送达？",
+      "expected": "delivery"
+    },
+    {
+      "id": "calibration-19",
+      "split": "calibration",
+      "query": "偏远地区配送承诺是多少？",
+      "expected": "delivery"
+    },
+    {
+      "id": "holdout-19",
+      "split": "holdout",
+      "query": "偏远地址在这份合成物流约定里需要等几个工作日？",
+      "expected": "delivery"
+    },
+    {
+      "id": "calibration-20",
+      "split": "calibration",
+      "query": "当前仓库的库存总金额是多少？",
+      "expected": null
+    },
+    {
+      "id": "holdout-20",
+      "split": "holdout",
+      "query": "每个仓的实时库存数量是多少？",
+      "expected": null
+    },
+    {
+      "id": "calibration-21",
+      "split": "calibration",
+      "query": "哪个供应商返利比例最高？",
+      "expected": null
+    },
+    {
+      "id": "holdout-21",
+      "split": "holdout",
+      "query": "年度采购合同的付款条件是什么？",
+      "expected": null
+    },
+    {
+      "id": "calibration-22",
+      "split": "calibration",
+      "query": "手机品牌今年市场份额各占多少？",
+      "expected": null
+    },
+    {
+      "id": "holdout-22",
+      "split": "holdout",
+      "query": "竞争对手最近一个月销售额是多少？",
+      "expected": null
+    },
+    {
+      "id": "calibration-23",
+      "split": "calibration",
+      "query": "今天上海的实时气温是多少？",
+      "expected": null
+    },
+    {
+      "id": "holdout-23",
+      "split": "holdout",
+      "query": "明天北京是否会下雨？",
+      "expected": null
+    },
+    {
+      "id": "calibration-24",
+      "split": "calibration",
+      "query": "火星轨道离心率的精确数值是什么？",
+      "expected": null
+    },
+    {
+      "id": "holdout-24",
+      "split": "holdout",
+      "query": "月球近地点距离为多少千米？",
+      "expected": null
+    },
+    {
+      "id": "calibration-25",
+      "split": "calibration",
+      "query": "客户张先生的家庭住址是什么？",
+      "expected": null
+    },
+    {
+      "id": "holdout-25",
+      "split": "holdout",
+      "query": "会员王女士的身份证号码是什么？",
+      "expected": null
+    },
+    {
+      "id": "calibration-26",
+      "split": "calibration",
+      "query": "客服员工的月工资分别是多少？",
+      "expected": null
+    },
+    {
+      "id": "holdout-26",
+      "split": "holdout",
+      "query": "本季度员工薪资总额是多少？",
+      "expected": null
+    },
+    {
+      "id": "calibration-27",
+      "split": "calibration",
+      "query": "最近一次董事会通过什么利润分红方案？",
+      "expected": null
+    },
+    {
+      "id": "holdout-27",
+      "split": "holdout",
+      "query": "今年股东每股获得多少现金分红？",
+      "expected": null
+    },
+    {
+      "id": "calibration-28",
+      "split": "calibration",
+      "query": "每台物流车辆当前坐标是什么？",
+      "expected": null
+    },
+    {
+      "id": "holdout-28",
+      "split": "holdout",
+      "query": "跨境包裹现在到哪个海关了？",
+      "expected": null
+    },
+    {
+      "id": "calibration-29",
+      "split": "calibration",
+      "query": "生产数据库的管理员密码是什么？",
+      "expected": null
+    },
+    {
+      "id": "holdout-29",
+      "split": "holdout",
+      "query": "聊天服务商账户里还剩多少余额？",
+      "expected": null
+    }
+  ],
+  "external_http_requests": 0
+}

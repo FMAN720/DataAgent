@@ -1,0 +1,8 @@
+{
+  "started_at": "2026-11-01T09:32:24.494183+00:00",
+  "finished_at": "2026-11-01T09:32:56.218832+00:00",
+  "served_models": [
+    "deepseek-flash"
+  ],
+  "scope": "seeded demo data, 15 committed synthetic markdown files, synthetic CSV only; no user uploads"
+}

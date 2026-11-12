@@ -1,0 +1,224 @@
+{
+  "id": "data_nonnull",
+  "category": "datasets",
+  "split": "development",
+  "variant": "baseline",
+  "question": "合成预算补充表中有多少条非空amount记录？",
+  "response": {
+    "answer": "**结论：合成预算补充表（uploaded_budget）共有 4 条记录，其中 amount 非空的有 3 条，1 条为空。**\n\n- 总行数：4\n- amount 非空：3\n- amount 为空：1\n\n说明：空值按原样保留，未当作 0 处理。\n\n口径：统计上传表 uploaded_budget 中 amount 字段非空的行数，amount 单位为元，空值不计入。",
+    "success": true,
+    "trace_id": "ef64bcf3-27ac-4dd8-bca8-c5d25c5126b4",
+    "session_id": "efb55bec-06b5-44af-8a25-ce1eab308298",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_datasets",
+        "arguments": {
+          "query": "合成预算补充"
+        },
+        "ok": true,
+        "output": "{\"datasets\": [{\"id\": \"phase7-synthetic-budget\", \"filename\": \"合成预算补充表.csv\", \"display_name\": \"合成预算补充表\", \"table\": \"uploaded_budget\", \"row_count\": 4, \"columns\": [{\"name\": \"region_code\", \"label\": \"region_code\", \"type\": \"text\", \"nullable\": false}, {\"name\": \"amount\", \"label\": \"amount\", \"type\": \"decimal\", \"nullable\": true}, {\"name\": \"external_id\", \"label\": \"external_id\", \"type\": \"text\", \"nullable\": false}], \"column_count\": 3, \"columns_truncated\": false}], \"truncated\": false}",
+        "duration_ms": 0,
+        "thought": "我先查看已导入的数据集，找到这张表。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "uploaded_budget"
+          ]
+        },
+        "ok": true,
+        "output": "表 uploaded_budget\n  _row_number INTEGER NOT NULL\n  region_code TEXT  -- 区域编码，可关联 regions\n  amount NUMERIC  -- 单位：元；空值不代表零\n  external_id TEXT  -- 原始标识符，保留前导零\n  样例 (_row_number | region_code | amount | external_id):\n  2 | EAST | 12.3 | 001\n  3 | NORTH | 0.1 | 002\n  4 | SOUTH | 2.5 | 003",
+        "duration_ms": 8,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT COUNT(*) AS total_rows, COUNT(amount) AS non_null_amount, SUM(CASE WHEN amount IS NULL THEN 1 ELSE 0 END) AS null_amount FROM uploaded_budget",
+          "purpose": "统计合成预算补充表中非空 amount 记录数"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"total_rows\", \"non_null_amount\", \"null_amount\"], \"rows\": [[4, 3, 1]], \"row_count\": 1}",
+        "duration_ms": 0,
+        "thought": ""
+      }
+    ],
+    "plan": [],
+    "reflection": {
+      "passed": true,
+      "quality_score": 95,
+      "issues": [],
+      "summary": "回答中的总行数4、amount非空3条、空值1条均可由run_sql结果直接支持，口径与表结构说明一致。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "合成预算补充表 uploaded_budget 共有 4 条记录",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E3"
+          ],
+          "reason": "E1显示row_count为4，E3查询返回total_rows=4，二者一致。"
+        },
+        {
+          "claim": "amount 非空的有 3 条",
+          "status": "supported",
+          "evidence_ids": [
+            "E3"
+          ],
+          "reason": "E3的COUNT(amount)返回non_null_amount=3。"
+        },
+        {
+          "claim": "amount 为空的有 1 条",
+          "status": "supported",
+          "evidence_ids": [
+            "E3"
+          ],
+          "reason": "E3的null_amount=1，且4-3=1，与总量匹配。"
+        },
+        {
+          "claim": "amount 单位为元，空值不计入且未当作 0 处理",
+          "status": "supported",
+          "evidence_ids": [
+            "E2",
+            "E3"
+          ],
+          "reason": "E2表结构注明amount单位元、空值不代表零；E3使用COUNT(amount)与IS NULL计数，未将空值转为0。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 6,
+    "usage": {
+      "prompt_tokens": 19844,
+      "completion_tokens": 600,
+      "total_tokens": 20444,
+      "prompt_cache_hit_tokens": 17920,
+      "prompt_cache_miss_tokens": 1924
+    },
+    "duration_ms": 6088,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 938,
+          "usage": {
+            "prompt_tokens": 195,
+            "completion_tokens": 5,
+            "total_tokens": 200,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 195
+          }
+        },
+        "analysis": {
+          "logical_calls": 4,
+          "http_requests": 4,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 3440,
+          "usage": {
+            "prompt_tokens": 18448,
+            "completion_tokens": 299,
+            "total_tokens": 18747,
+            "prompt_cache_hit_tokens": 17536,
+            "prompt_cache_miss_tokens": 912
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1693,
+          "usage": {
+            "prompt_tokens": 1201,
+            "completion_tokens": 296,
+            "total_tokens": 1497,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 817
+          }
+        }
+      },
+      "llm_calls": 6,
+      "chat_usage": {
+        "prompt_tokens": 19844,
+        "completion_tokens": 600,
+        "total_tokens": 20444,
+        "prompt_cache_hit_tokens": 17920,
+        "prompt_cache_miss_tokens": 1924
+      },
+      "http_requests": 6,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 4,
+    "question": "合成预算补充表中有多少条非空amount记录？",
+    "tables": [
+      {
+        "id": "result-3",
+        "title": "查询结果 · E3",
+        "columns": [
+          "total_rows",
+          "non_null_amount",
+          "null_amount"
+        ],
+        "rows": [
+          [
+            4,
+            3,
+            1
+          ]
+        ],
+        "evidence_ids": [
+          "E3"
+        ],
+        "scope": {},
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

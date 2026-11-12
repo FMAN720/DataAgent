@@ -1,0 +1,480 @@
+{
+  "id": "cmp_food",
+  "category": "comparison",
+  "split": "development",
+  "variant": "baseline",
+  "question": "比较2025年11月与12月食品生鲜明细成交额，给两个金额及实际增减方向，使用整体维度。",
+  "response": {
+    "answer": "**结论：2025年12月食品生鲜明细成交额比11月下降，减少 3,862.40 元（-9.0%）。**\n\n| 周期 | 食品生鲜明细成交额 |\n|---|---|\n| 2025年11月 | 43,097.80 元 |\n| 2025年12月 | 39,235.40 元 |\n| 增减 | -3,862.40 元（-9.0%） |\n\n- 整体汇总与明细合计核对一致（差异为 0），可加性校验通过。\n- 注意：11月为30天、12月为31天，未做日均调整；若按日均看，降幅会更大（约 -12.0%）。这只是统计拆解，不能据此断定下降原因。\n\n口径：品类销售额 = SUM(order_items.item_amount)，仅统计有效订单（status IN paid/completed）、排除测试账号，按订单下单时间归属月份，金额由分换算为元；该口径未分摊订单级优惠，因此与净销售额不可混用。",
+    "success": true,
+    "trace_id": "936fa439-b464-4537-9a89-717438e64a62",
+    "session_id": "781a84c4-b890-48af-b466-1f96edc9fd0f",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_glossary",
+        "arguments": {
+          "query": "食品生鲜明细成交额"
+        },
+        "ok": true,
+        "output": "## 毛利与毛利率\n- 毛利 = SUM(order_items.item_amount) - SUM(order_items.quantity * products.cost_price)，只统计有效订单，排除测试账号。\n- 毛利率 = 毛利 / SUM(order_items.item_amount)。\n注意：毛利计算基于明细成交价，未扣减订单级优惠。\n\n## 品类销售额\n品类销售额按订单明细的成交金额统计：`SUM(order_items.item_amount)`，关联 products、categories，只统计有效订单（status IN ('paid', 'completed')）并排除测试账号。\n注意：item_amount 未分摊订单级优惠，因此各品类销售额之和会略大于净销售额，这是预期内的差异。\n\n## GMV（成交总额）\nGMV = 已支付订单的实付金额之和，包含之后发生退款的订单。\nSQL 口径：`SUM(pay_amount)`，条件 `status IN ('paid', 'completed', 'refunded')`，并排除测试账号。\n注意：GMV 不包含 cancelled 订单；也不是 total_amount（未扣优惠的原价）之和。",
+        "duration_ms": 0,
+        "thought": "我先确认指标口径和表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_tables",
+        "arguments": {
+          "question": "食品生鲜 品类 明细成交额"
+        },
+        "ok": true,
+        "output": "{\"dialect\": \"sqlite\", \"tables\": [{\"table\": \"categories\", \"columns\": [\"category_id\", \"category_name\", \"parent_id\"]}, {\"table\": \"order_items\", \"columns\": [\"item_id\", \"order_id\", \"product_id\", \"quantity\", \"unit_price\", \"item_amount\"]}, {\"table\": \"orders\", \"columns\": [\"order_id\", \"user_id\", \"order_time\", \"status\", \"channel\", \"total_amount\", \"discount_amount\", \"pay_amount\", \"pay_time\"]}, {\"table\": \"payments\", \"columns\": [\"payment_id\", \"order_id\", \"pay_method\", \"amount\", \"paid_at\"]}, {\"table\": \"products\", \"columns\": [\"product_id\", \"product_name\", \"category_id\", \"list_price\", \"cost_price\", \"is_active\"]}, {\"table\": \"refund_requests\", \"columns\": [\"request_id\", \"order_id\", \"request_time\", \"status\", \"reason\"]}, {\"table\": \"refunds\", \"columns\": [\"refund_id\", \"order_id\", \"refund_amount\", \"refund_time\", \"reason\"]}, {\"table\": \"regions\", \"columns\": [\"region_code\", \"region_name\"]}, {\"table\": \"uploaded_budget\", \"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\"]}, {\"table\": \"user_events\", \"columns\": [\"event_id\", \"user_id\", \"event_date\", \"event_type\"]}, {\"table\": \"users\", \"columns\": [\"user_id\", \"register_date\", \"region_code\", \"gender\", \"birth_year\", \"member_level\", \"acquire_channel\", \"is_test\"]}]}",
+        "duration_ms": 7,
+        "thought": "我先确认指标口径和表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "categories",
+            "products",
+            "order_items",
+            "orders",
+            "users"
+          ]
+        },
+        "ok": true,
+        "output": "表 categories\n  category_id INTEGER\n  category_name TEXT NOT NULL  -- 一级品类名称\n  parent_id INTEGER  -- 预留，当前均为 NULL（无二级品类）\n  样例 (category_id | category_name | parent_id):\n  1 | 手机数码 | None\n  2 | 家用电器 | None\n  3 | 服饰鞋包 | None\n\n表 products\n  product_id INTEGER\n  product_name TEXT NOT NULL\n  category_id INTEGER NOT NULL\n  list_price INTEGER NOT NULL  -- 标价，单位：分\n  cost_price INTEGER NOT NULL  -- 成本价，单位：分\n  is_active INTEGER NOT NULL  -- 1 在售，0 下架\n  外键: category_id -> categories(category_id)\n  样例 (product_id | product_name | category_id | list_price | cost_price | is_active):\n  1 | 旗舰手机 | 1 | 499900 | 368492 | 1\n  2 | 降噪耳机 | 1 | 89900 | 45969 | 1\n  3 | 智能手表 | 1 | 129900 | 78627 | 1\n\n表 order_items\n  item_id INTEGER\n  order_id INTEGER NOT NULL\n  product_id INTEGER NOT NULL\n  quantity INTEGER NOT NULL\n  unit_price INTEGER NOT NULL  -- 成交单价（未分摊优惠），单位：分\n  item_amount INTEGER NOT NULL  -- quantity * unit_price，单位：分\n  外键: product_id -> products(product_id)\n  外键: order_id -> orders(order_id)\n  样例 (item_id | order_id | product_id | quantity | unit_price | item_amount):\n  1 | 1 | 1 | 1 | 499900 | 499900\n  2 | 1 | 18 | 1 | 11900 | 11900\n  3 | 1 | 27 | 1 | 26910 | 26910\n\n表 orders\n  order_id INTEGER\n  user_id INTEGER NOT NULL\n  order_time TEXT NOT NULL  -- 下单时间 YYYY-MM-DD HH:MM:SS\n  status TEXT NOT NULL  -- paid 已支付 / completed 已完成 / cancelled 已取消（未支付） / refunded 已全额退款\n  channel TEXT NOT NULL  -- 下单端：app / web / mini_program\n  total_amount INTEGER NOT NULL  -- 商品原价合计，单位：分\n  discount_amount INTEGER NOT NULL  -- 优惠金额，单位：分\n  pay_amount INTEGER NOT NULL  -- 实付金额 = total_amount - discount_amount，单位：分；cancelled 订单为 0\n  pay_time TEXT  -- 支付时间；cancelled 为 NULL\n  外键: user_id -> users(user_id)\n  样例 (order_id | user_id | order_time | status | channel | total_amount | discount_amount | pay_amount | pay_time):\n  1 | 350 | 2025-01-26 14:43:02 | completed | web | 538710 | 0 | 538710 | 2025-01-26 15:10:02\n  2 | 930 | 2025-01-26 20:03:44 | completed | app | 15930 | 343 | 15587 | 2025-01-26 20:28:44\n  3 | 390 | 2025-01-01 17:46:50 | refunded | web | 12900 | 0 | 12900 | 2025-01-01 18:12:50\n\n表 users\n  user_id INTEGER\n  register_date TEXT NOT NULL  -- 注册日期 YYYY-MM-DD\n  region_code TEXT NOT NULL\n  gender TEXT  -- M / F / NULL（未填写）\n  birth_year INTEGER\n  member_level TEXT NOT NULL  -- normal / silver / gold\n  acquire_channel TEXT NOT NULL  -- 拉新渠道：organic / ads / referral\n  is_test INTEGER NOT NULL  -- 1 表示内部测试账号，统计时必须排除\n  外键: region_code -> regions(region_code)\n  样例 (user_id | register_date | region_code | gender | birth_year | member_level | acquire_channel | is_test):\n  1 | 2024-04-17 | NORTH | F | 1975 | normal | ads | 0\n  2 | 2024-11-26 | NORTH | None | 1983 | silver | ads | 0\n  3 | 2025-12-03 | EAST | F | 1989 | silver | organic | 0",
+        "duration_ms": 6,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT category_id, category_name FROM categories",
+          "purpose": "确认食品生鲜品类名称"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"category_id\", \"category_name\"], \"rows\": [[1, \"手机数码\"], [2, \"家用电器\"], [3, \"服饰鞋包\"], [4, \"美妆个护\"], [5, \"食品生鲜\"], [6, \"图书文娱\"], [7, \"家居日用\"]], \"row_count\": 7}",
+        "duration_ms": 1,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 4,
+        "tool": "prepare_analysis",
+        "arguments": {
+          "scope": {
+            "metric": "食品生鲜明细成交额（品类销售额）",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1 业务库 order_items + products + categories + orders + users",
+            "unit": "元",
+            "dimension": "整体",
+            "base_start": "2025-11-01",
+            "base_end": "2025-12-01",
+            "current_start": "2025-12-01",
+            "current_end": "2026-01-01",
+            "filters": [
+              "categories.category_name = '食品生鲜'",
+              "orders.status IN ('paid','completed')",
+              "users.is_test = 0"
+            ],
+            "assumptions": [
+              "按订单下单时间 order_time 归属月份",
+              "金额由分换算为元"
+            ]
+          }
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"scope\": {\"metric\": \"食品生鲜明细成交额（品类销售额）\", \"metric_kind\": \"additive\", \"source\": \"ecommerce_v1 业务库 order_items + products + categories + orders + users\", \"unit\": \"元\", \"dimension\": \"整体\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [\"按订单下单时间 order_time 归属月份\", \"金额由分换算为元\"], \"filters\": [\"categories.category_name = '食品生鲜'\", \"orders.status IN ('paid','completed')\", \"users.is_test = 0\"]}, \"questions\": [], \"period_convention\": \"start_inclusive_end_exclusive\"}",
+        "duration_ms": 0,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 5,
+        "tool": "compare_periods",
+        "arguments": {
+          "scope": {
+            "assumptions": [
+              "按订单下单时间 order_time 归属月份",
+              "金额由分换算为元"
+            ],
+            "base_end": "2025-12-01",
+            "base_start": "2025-11-01",
+            "current_end": "2026-01-01",
+            "current_start": "2025-12-01",
+            "dimension": "整体",
+            "filters": [
+              "categories.category_name = '食品生鲜'",
+              "orders.status IN ('paid','completed')",
+              "users.is_test = 0"
+            ],
+            "metric": "食品生鲜明细成交额（品类销售额）",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1 业务库",
+            "unit": "元"
+          },
+          "detail_sql": "SELECT '食品生鲜' AS segment,\n       SUM(CASE WHEN o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01' THEN oi.item_amount ELSE 0 END)/100.0 AS base_value,\n       SUM(CASE WHEN o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01' THEN oi.item_amount ELSE 0 END)/100.0 AS current_value\nFROM order_items oi\nJOIN orders o ON o.order_id = oi.order_id\nJOIN products p ON p.product_id = oi.product_id\nJOIN categories c ON c.category_id = p.category_id\nJOIN users u ON u.user_id = o.user_id\nWHERE c.category_name = '食品生鲜'\n  AND o.status IN ('paid','completed')\n  AND u.is_test = 0\n  AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'",
+          "total_sql": "SELECT SUM(CASE WHEN o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01' THEN oi.item_amount ELSE 0 END)/100.0 AS base_value,\n       SUM(CASE WHEN o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01' THEN oi.item_amount ELSE 0 END)/100.0 AS current_value\nFROM order_items oi\nJOIN orders o ON o.order_id = oi.order_id\nJOIN products p ON p.product_id = oi.product_id\nJOIN categories c ON c.category_id = p.category_id\nJOIN users u ON u.user_id = o.user_id\nWHERE c.category_name = '食品生鲜'\n  AND o.status IN ('paid','completed')\n  AND u.is_test = 0\n  AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'"
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"scope\": {\"metric\": \"食品生鲜明细成交额（品类销售额）\", \"metric_kind\": \"additive\", \"source\": \"ecommerce_v1 业务库\", \"unit\": \"元\", \"dimension\": \"整体\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [\"按订单下单时间 order_time 归属月份\", \"金额由分换算为元\"], \"filters\": [\"categories.category_name = '食品生鲜'\", \"orders.status IN ('paid','completed')\", \"users.is_test = 0\"]}, \"summary\": {\"base\": \"43097.8\", \"current\": \"39235.4\", \"delta\": \"-3862.4\", \"change_pct\": \"-8.96194237\"}, \"groups\": [{\"segment\": \"食品生鲜\", \"base_value\": \"43097.8\", \"current_value\": \"39235.4\", \"delta\": \"-3862.4\", \"contribution_pct\": \"100\"}], \"group_count\": 1, \"reconciliation\": {\"matched\": true, \"group_totals\": {\"base_value\": \"43097.8\", \"current_value\": \"39235.4\"}, \"differences\": {\"base_value\": \"0\", \"current_value\": \"0\"}}, \"warnings\": [\"贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。\", \"不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。\", \"两个周期天数不同，当前比较未自动做日均调整。\"], \"causal_claim_supported\": false}",
+        "duration_ms": 7,
+        "thought": ""
+      }
+    ],
+    "plan": [
+      "确认“食品生鲜明细成交额”的指标定义、数据来源、统计口径与金额单位，并明确比较的两个周期为2025年11月与2025年12月",
+      "按整体维度分别查询2025年11月和12月的食品生鲜明细成交额，核对整体汇总与明细合计是否一致",
+      "计算两月成交额的差额与增减方向，输出两个金额及实际增减结论"
+    ],
+    "reflection": {
+      "passed": true,
+      "quality_score": 95,
+      "issues": [],
+      "summary": "回答中的金额、增减方向和百分比均与 compare_periods 结果一致，口径符合品类销售额定义，并正确区分了统计拆解与因果解释。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "2025年11月食品生鲜明细成交额为 43,097.80 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "compare_periods 的 summary.base 为 43097.8，单位为元，与回答一致。"
+        },
+        {
+          "claim": "2025年12月食品生鲜明细成交额为 39,235.40 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "compare_periods 的 summary.current 为 39235.4，单位为元，与回答一致。"
+        },
+        {
+          "claim": "12月比11月减少 3,862.40 元，降幅约 -9.0%",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "summary.delta 为 -3862.4，change_pct 为 -8.96194237%，四舍五入为 -9.0%，方向为下降。"
+        },
+        {
+          "claim": "整体汇总与明细合计核对一致（差异为 0）",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "reconciliation.matched 为 true，base_value 与 current_value 的差异均为 0。"
+        },
+        {
+          "claim": "口径为 SUM(order_items.item_amount)，仅统计 paid/completed，排除测试账号，按下单时间归属月份，金额由分换算为元",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E3",
+            "E5",
+            "E6"
+          ],
+          "reason": "E1 的品类销售额定义与 E3 的字段单位（分）一致；E5/E6 的 filters 和 assumptions 明确包含 status IN ('paid','completed')、is_test=0、按 order_time 归属、由分换算为元。"
+        },
+        {
+          "claim": "11月30天、12月31天，未做日均调整；按日均看降幅约 -12.0%",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "E6 的 warnings 明确提示两个周期天数不同且未做日均调整；按日均计算：43097.8/30≈1436.59，39235.4/31≈1265.66，降幅约 -11.9%，与约 -12.0% 相符。"
+        },
+        {
+          "claim": "这只是统计拆解，不能据此断定下降原因",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "E6 的 warnings 指出贡献是统计拆解，不能证明活动、价格等因素造成变化；causal_claim_supported 为 false，回答未作因果断言。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 8,
+    "usage": {
+      "prompt_tokens": 41157,
+      "completion_tokens": 2028,
+      "total_tokens": 43185,
+      "prompt_cache_hit_tokens": 31232,
+      "prompt_cache_miss_tokens": 9925
+    },
+    "duration_ms": 12593,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": {
+        "metric": "食品生鲜明细成交额（品类销售额）",
+        "metric_kind": "additive",
+        "source": "ecommerce_v1 业务库",
+        "unit": "元",
+        "dimension": "整体",
+        "base_start": "2025-11-01",
+        "base_end": "2025-12-01",
+        "current_start": "2025-12-01",
+        "current_end": "2026-01-01",
+        "assumptions": [
+          "按订单下单时间 order_time 归属月份",
+          "金额由分换算为元"
+        ],
+        "filters": [
+          "categories.category_name = '食品生鲜'",
+          "orders.status IN ('paid','completed')",
+          "users.is_test = 0"
+        ]
+      },
+      "clarification_questions": [],
+      "comparisons": [
+        {
+          "status": "ready",
+          "scope": {
+            "metric": "食品生鲜明细成交额（品类销售额）",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1 业务库",
+            "unit": "元",
+            "dimension": "整体",
+            "base_start": "2025-11-01",
+            "base_end": "2025-12-01",
+            "current_start": "2025-12-01",
+            "current_end": "2026-01-01",
+            "assumptions": [
+              "按订单下单时间 order_time 归属月份",
+              "金额由分换算为元"
+            ],
+            "filters": [
+              "categories.category_name = '食品生鲜'",
+              "orders.status IN ('paid','completed')",
+              "users.is_test = 0"
+            ]
+          },
+          "summary": {
+            "base": "43097.8",
+            "current": "39235.4",
+            "delta": "-3862.4",
+            "change_pct": "-8.96194237"
+          },
+          "groups": [
+            {
+              "segment": "食品生鲜",
+              "base_value": "43097.8",
+              "current_value": "39235.4",
+              "delta": "-3862.4",
+              "contribution_pct": "100"
+            }
+          ],
+          "group_count": 1,
+          "reconciliation": {
+            "matched": true,
+            "group_totals": {
+              "base_value": "43097.8",
+              "current_value": "39235.4"
+            },
+            "differences": {
+              "base_value": "0",
+              "current_value": "0"
+            }
+          },
+          "warnings": [
+            "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+            "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+            "两个周期天数不同，当前比较未自动做日均调整。"
+          ],
+          "causal_claim_supported": false
+        }
+      ],
+      "warnings": [
+        "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+        "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+        "两个周期天数不同，当前比较未自动做日均调整。"
+      ],
+      "comparison_count": 1,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 809,
+          "usage": {
+            "prompt_tokens": 211,
+            "completion_tokens": 93,
+            "total_tokens": 304,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 211
+          }
+        },
+        "analysis": {
+          "logical_calls": 6,
+          "http_requests": 6,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 8655,
+          "usage": {
+            "prompt_tokens": 36737,
+            "completion_tokens": 1292,
+            "total_tokens": 38029,
+            "prompt_cache_hit_tokens": 30848,
+            "prompt_cache_miss_tokens": 5889
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 3096,
+          "usage": {
+            "prompt_tokens": 4209,
+            "completion_tokens": 643,
+            "total_tokens": 4852,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 3825
+          }
+        }
+      },
+      "llm_calls": 8,
+      "chat_usage": {
+        "prompt_tokens": 41157,
+        "completion_tokens": 2028,
+        "total_tokens": 43185,
+        "prompt_cache_hit_tokens": 31232,
+        "prompt_cache_miss_tokens": 9925
+      },
+      "http_requests": 8,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 6,
+    "question": "比较2025年11月与12月食品生鲜明细成交额，给两个金额及实际增减方向，使用整体维度。",
+    "tables": [
+      {
+        "id": "result-4",
+        "title": "查询结果 · E4",
+        "columns": [
+          "category_id",
+          "category_name"
+        ],
+        "rows": [
+          [
+            1,
+            "手机数码"
+          ],
+          [
+            2,
+            "家用电器"
+          ],
+          [
+            3,
+            "服饰鞋包"
+          ],
+          [
+            4,
+            "美妆个护"
+          ],
+          [
+            5,
+            "食品生鲜"
+          ],
+          [
+            6,
+            "图书文娱"
+          ],
+          [
+            7,
+            "家居日用"
+          ]
+        ],
+        "evidence_ids": [
+          "E4"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-6",
+        "title": "食品生鲜明细成交额（品类销售额） · 整体",
+        "columns": [
+          "整体",
+          "基期（元）",
+          "当期（元）",
+          "变化（元）"
+        ],
+        "rows": [
+          [
+            "食品生鲜",
+            "43097.8",
+            "39235.4",
+            "-3862.4"
+          ]
+        ],
+        "evidence_ids": [
+          "E6"
+        ],
+        "scope": {
+          "metric": "食品生鲜明细成交额（品类销售额）",
+          "metric_kind": "additive",
+          "source": "ecommerce_v1 业务库",
+          "unit": "元",
+          "dimension": "整体",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "current_start": "2025-12-01",
+          "current_end": "2026-01-01",
+          "assumptions": [
+            "按订单下单时间 order_time 归属月份",
+            "金额由分换算为元"
+          ],
+          "filters": [
+            "categories.category_name = '食品生鲜'",
+            "orders.status IN ('paid','completed')",
+            "users.is_test = 0"
+          ]
+        },
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true,
+      "fact_0_1": true,
+      "pattern_0": true,
+      "reconciled_comparison": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

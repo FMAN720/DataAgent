@@ -1,0 +1,216 @@
+{
+  "created_at": "2026-10-22T14:45:01.419748+00:00",
+  "kind": "SQL parity (no LLM)",
+  "results": [
+    {
+      "id": "nov_net_sales",
+      "passed": true,
+      "sqlite": [
+        [
+          1047258.23
+        ]
+      ],
+      "postgres": [
+        [
+          "1047258.23"
+        ]
+      ]
+    },
+    {
+      "id": "nov_gmv",
+      "passed": true,
+      "sqlite": [
+        [
+          1148420.0
+        ]
+      ],
+      "postgres": [
+        [
+          "1148420.00"
+        ]
+      ]
+    },
+    {
+      "id": "year_net_sales",
+      "passed": true,
+      "sqlite": [
+        [
+          9297833.48
+        ]
+      ],
+      "postgres": [
+        [
+          "9297833.48"
+        ]
+      ]
+    },
+    {
+      "id": "dec_refund_rate",
+      "passed": true,
+      "sqlite": [
+        [
+          8.0
+        ]
+      ],
+      "postgres": [
+        [
+          "8.0"
+        ]
+      ]
+    },
+    {
+      "id": "category_mom_drop",
+      "passed": true,
+      "sqlite": [
+        [
+          "家用电器",
+          -64.0
+        ]
+      ],
+      "postgres": [
+        [
+          "家用电器",
+          "-64.0"
+        ]
+      ]
+    },
+    {
+      "id": "east_nov_sales",
+      "passed": true,
+      "sqlite": [
+        [
+          287844.92
+        ]
+      ],
+      "postgres": [
+        [
+          "287844.92"
+        ]
+      ]
+    },
+    {
+      "id": "region_rank",
+      "passed": true,
+      "sqlite": [
+        [
+          "华东",
+          2680419.86
+        ],
+        [
+          "华北",
+          2486996.5
+        ],
+        [
+          "华南",
+          2205164.48
+        ],
+        [
+          "华中",
+          1004400.31
+        ],
+        [
+          "西部",
+          920852.33
+        ]
+      ],
+      "postgres": [
+        [
+          "华东",
+          "2680419.86"
+        ],
+        [
+          "华北",
+          "2486996.50"
+        ],
+        [
+          "华南",
+          "2205164.48"
+        ],
+        [
+          "华中",
+          "1004400.31"
+        ],
+        [
+          "西部",
+          "920852.33"
+        ]
+      ]
+    },
+    {
+      "id": "dec_aov",
+      "passed": true,
+      "sqlite": [
+        [
+          1002.7
+        ]
+      ],
+      "postgres": [
+        [
+          "1002.70"
+        ]
+      ]
+    },
+    {
+      "id": "dec_mau",
+      "passed": true,
+      "sqlite": [
+        [
+          798
+        ]
+      ],
+      "postgres": [
+        [
+          798
+        ]
+      ]
+    },
+    {
+      "id": "acquire_channel",
+      "passed": true,
+      "sqlite": [
+        [
+          "organic",
+          309
+        ]
+      ],
+      "postgres": [
+        [
+          "organic",
+          309
+        ]
+      ]
+    },
+    {
+      "id": "top_product",
+      "passed": true,
+      "sqlite": [
+        [
+          "旗舰手机",
+          2669965.9
+        ]
+      ],
+      "postgres": [
+        [
+          "旗舰手机",
+          "2669965.90"
+        ]
+      ]
+    },
+    {
+      "id": "best_margin_category",
+      "passed": true,
+      "sqlite": [
+        [
+          "服饰鞋包",
+          45.9
+        ]
+      ],
+      "postgres": [
+        [
+          "服饰鞋包",
+          "45.9"
+        ]
+      ]
+    }
+  ]
+}

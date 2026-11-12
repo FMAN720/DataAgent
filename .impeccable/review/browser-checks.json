@@ -1,0 +1,73 @@
+{
+  "passed": true,
+  "viewport_checks": [
+    {
+      "capture": "desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1430,
+      "scrollHeight": 901,
+      "document_overflow": false
+    },
+    {
+      "capture": "mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 1273,
+      "document_overflow": false
+    },
+    {
+      "capture": "user-1280",
+      "width": 1280,
+      "height": 800,
+      "scrollWidth": 1270,
+      "scrollHeight": 901,
+      "document_overflow": false
+    },
+    {
+      "interaction": "example fills question without submitting",
+      "passed": true
+    },
+    {
+      "capture": "desktop-data",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "interaction": "data details, uploads, documents, search, and new analysis navigation",
+      "passed": true
+    },
+    {
+      "interaction": "history reads existing local records",
+      "passed": true
+    },
+    {
+      "capture": "desktop-result",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1430,
+      "scrollHeight": 945,
+      "document_overflow": false
+    },
+    {
+      "capture": "mobile-result",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 1961,
+      "document_overflow": false
+    },
+    {
+      "interaction": "mocked SSE result hides welcome and E3 opens its real record while E2 failure is retained",
+      "passed": true
+    }
+  ],
+  "browser_errors": [],
+  "chat_requests_fulfilled_locally": 1,
+  "external_model_requests": 0,
+  "capture_method": "Installed Chrome, isolated headless profile, exact CDP device metrics, full-page capture"
+}

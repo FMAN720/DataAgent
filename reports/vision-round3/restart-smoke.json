@@ -1,0 +1,59 @@
+{
+  "health": {
+    "status": "ready",
+    "agent": "up",
+    "analysis_database": "up",
+    "session_store": "up",
+    "session_backend": "redis",
+    "analysis_history": "up",
+    "document_database": "up",
+    "database": "up",
+    "app_env": "development",
+    "document_retrieval": "up",
+    "dataset_imports": "up",
+    "embedding": "configured"
+  },
+  "config": {
+    "api_prefix": "/api/v1",
+    "embedding_enabled": true,
+    "pdf_available": true,
+    "xlsx_available": true,
+    "upload_max_bytes": 10485760,
+    "import_max_bytes": 20971520,
+    "datasets_available": true,
+    "analysis_history_available": true,
+    "documents_available": true,
+    "vision_available": true,
+    "vision_recognition_available": false,
+    "vision_model": "",
+    "vision_max_bytes": 10485760,
+    "vision_max_pdf_pages": 20,
+    "vision_max_pages_per_request": 5
+  },
+  "drafts": [
+    {
+      "id": "61423d6a-ef1b-48d5-9cef-f4d4adbc0519",
+      "filename": "合成演示-预置人工转录.png",
+      "mime_type": "image/png",
+      "content_hash": "b698f0e7a00f44488da0e32c0676616e478af8d0b11094ba8af4f7dc8191ebee",
+      "page_count": 1,
+      "status": "needs_review",
+      "revision": 3,
+      "error": null,
+      "model": null,
+      "selected_pages": [],
+      "attempts": [],
+      "pages": {},
+      "publications": [
+        {
+          "key": "dataset:1a66af769e4194385ad24fc520535ed48d759e62f13c3ee893b7e28fd98f42b3",
+          "kind": "dataset",
+          "id": "7cf25062-8a83-48d0-8695-30af6ac95b07"
+        }
+      ],
+      "created_at": "2026-10-25T03:52:14.070417+00:00"
+    }
+  ],
+  "datasets": [],
+  "model_api_calls": 0
+}

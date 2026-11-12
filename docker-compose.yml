@@ -1,0 +1,87 @@
+# 默认只启动 Agent 本身（SQLite 演示库内置在镜像中）。
+# 第二阶段：先 python -m app.infrastructure.database.manage init，
+# 再 docker compose --env-file .env.phase2 --profile postgres up -d --no-deps postgres
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        INSTALL_POSTGRES: ${INSTALL_POSTGRES:-false}
+        INSTALL_REDIS: ${INSTALL_REDIS:-false}
+        INSTALL_DOCUMENTS: ${INSTALL_DOCUMENTS:-false}
+        INSTALL_IMPORTS: ${INSTALL_IMPORTS:-false}
+        INSTALL_VISION: ${INSTALL_VISION:-false}
+    container_name: data-analyst-agent
+    ports:
+      - "127.0.0.1:8000:8000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANALYTICS_DB_URL: ${ANALYTICS_DB_URL:-sqlite:////app/data/ecommerce.db}
+      REDIS_URL: ${DOCKER_REDIS_URL:-redis://redis:6379/0}
+      LOCAL_MODEL_SETTINGS_PATH: /home/appuser/.config/DataAnalystAgent/model.json
+      LOCAL_WORKSPACE_PATH: /home/appuser/.config/DataAnalystAgent/workspace.sqlite3
+      # 仅对上方 127.0.0.1 端口映射启用桥接访问，不能改为公网发布。
+      LOCAL_MODEL_SETTINGS_TRUST_PROXY: "true"
+    # 上传文档、导入表格源文件和图片草稿，容器重建后保留
+    volumes:
+      - app_uploads:/app/uploads
+      - app_imports:/app/data/imports
+      - app_vision:/app/data/vision
+      - app_model:/home/appuser/.config/DataAnalystAgent
+    restart: unless-stopped
+
+  redis:
+    profiles: ["redis"]
+    image: redis:8.0.3
+    pull_policy: never
+    container_name: data-analyst-session-redis
+    ports:
+      - "127.0.0.1:16379:6379"
+    command: ["redis-server", "--appendonly", "yes", "--appendfsync", "everysec", "--maxmemory", "128mb", "--maxmemory-policy", "noeviction"]
+    volumes:
+      - session_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    restart: unless-stopped
+
+  postgres:
+    profiles: ["postgres"]
+    image: pgvector/pgvector:0.8.7-pg16
+    container_name: data-analyst-phase2-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${PHASE2_POSTGRES_PASSWORD:-}
+      POSTGRES_DB: analyst_phase2
+    ports:
+      - "127.0.0.1:15432:5432"
+    volumes:
+      - phase2_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d analyst_phase2"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  app_uploads:
+    name: data-analyst-app-uploads
+  app_imports:
+    name: data-analyst-app-imports
+  app_vision:
+    name: data-analyst-app-vision
+  app_model:
+    name: data-analyst-app-model
+  session_redis_data:
+    name: data-analyst-session-redis-data
+  phase2_postgres_data:
+    name: data-analyst-phase2-postgres-data

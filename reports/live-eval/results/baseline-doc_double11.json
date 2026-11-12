@@ -1,0 +1,560 @@
+{
+  "id": "doc_double11",
+  "category": "documents",
+  "split": "development",
+  "variant": "baseline",
+  "question": "双十一复盘中的订单生成系数1.8，能否直接当成实际订单增长80%？说明为什么。",
+  "response": {
+    "answer": "## 结论\n\n**不能。** 1.8 是演示数据生成器里的「种子数据生成系数」，不是订单增长率，把它当成「实际订单增长 80%」是口径错误。\n\n## 为什么不能直接等同\n\n**1. 系数本身的性质：它是生成权重，不是统计结果**\n\n复盘文档明确写道：「演示库的整体订单生成系数为 1.8，高于十月的 1.1。**该系数只控制种子数据生成，不是实际订单增长百分比**。实际订单量、支付金额和折扣分布必须查询数据库，不应直接拿系数作为统计结果。」[D:f81d9064-fd32-4071-b702-672fb2491b1d]（《第七阶段合成评测-2025-11-双十一复盘.md》「活动机制与观察范围」）\n\n同一套资料里其他系数也是同样性质：二月系数 0.7「不表示实际订单恰好下降 30%」[D:5a5eb857-2a2e-4c28-ac9b-38fbdf8d346c]；服饰十一月 1.3 是「选品权重，不是实际环比」[D:89299f54-185b-43c9-b86b-10db34206b90]；十二月食品 1.4「并不等于食品销售额实际增长 40%」[D:74c030ca-f336-4f6e-8344-8e771714bd08]。\n\n**2. 数学上也不成立：1.8 不是「增长 80%」的写法**\n\n- 若把 1.8 当倍数，对应的是「增长 80%」；但系数是**生成权重**，不是「本期/基期」的比值。\n- 更关键的是，文档说 1.8 是十一月、1.1 是十月。若真按倍数理解，环比应是 1.8/1.1 ≈ 1.64，即约 +64%，而不是 +80%。所以「1.8 = 增长 80%」连内部逻辑都对不上。\n\n**3. 实际数据算出来的增长率是 +47.8%，与 80% 相差很远**\n\n按有效订单数口径查询（2025-11 vs 2025-10）：\n\n| 周期 | 有效订单数 |\n|---|---|\n| 2025-10（基期） | 703 单 |\n| 2025-11（当期） | 1,039 单 |\n| 变化 | +336 单，**+47.8%** |\n\n数据质量检查通过：重复订单 0、缺失 0、非法状态 0、非法金额 0、孤儿订单 0。\n\n**4. 还有一层口径差异：月份天数不同**\n\n十月 31 天、十一月 30 天，直接比总量会低估十一月的日均强度。若按日均看，变化幅度会与 +47.8% 不同（工具已提示「两个周期天数不同，当前比较未自动做日均调整」）。所以即使要谈「增长」，也必须先明确是总量还是日均。\n\n## 需要区分的事实、解释与假设\n\n- **已查询事实**：十一月有效订单 1,039 单，十月 703 单，环比 +47.8%（按下单时间、排除测试账号）。\n- **资料所述**：1.8 与 1.1 是种子生成系数，只影响数据生成，不代表实际增长；复盘把「优惠刺激、提前采购」列为**需要验证**的需求变化解释，不能仅凭时间先后认定因果 [D:f81d9064-fd32-4071-b702-672fb2491b1d]。\n- **待验证假设**：① 增长是否由活动优惠驱动（需价格/折扣与对照期数据）；② 家电是否透支十二月需求（需十二月周报、品类环比、区域分布）；③ 拆单/合并、预售尾款、取消与退款对订单计数的影响（当前口径已排除 cancelled 与 refunded，但未验证是否存在拆单）。\n\n**一句话口径**：有效订单数（status IN paid/completed，一行一单，排除测试账号，按下单时间归属），2025-11 对比 2025-10；「订单生成系数 1.8」为演示数据生成权重，不可作为增长率使用。",
+    "success": true,
+    "trace_id": "f86383ad-2870-427d-8967-1264c2e26936",
+    "session_id": "6bad21b8-3468-4ca4-bdc4-52b1b644b3fd",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_documents",
+        "arguments": {
+          "query": "订单生成系数 1.8 双十一复盘"
+        },
+        "ok": true,
+        "output": "{\"mode\": \"hybrid\", \"hits\": [{\"reference\": \"D:f81d9064-fd32-4071-b702-672fb2491b1d\", \"document_id\": \"576c51bf-64c7-5115-80fe-60778f5cd4a5\", \"chunk_id\": \"f81d9064-fd32-4071-b702-672fb2491b1d\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2025-11-双十一复盘.md\", \"content\": \"## 活动机制与观察范围\\n\\n十一月开展年度集中促销，演示库的整体订单生成系数为 1.8，高于十月的 1.1。该系数只控制种子数据生成，不是实际订单增长百分比。活动订单优惠金额按商品合计的 8% 至 20% 生成。实际订单量、支付金额和折扣分布必须查询数据库，不应直接拿系数作为统计结果。\\n\\n家电和日常消费品参与活动，页面资源集中在活动期。复盘将优惠刺激、提前采购列为需要验证的需求变化解释，不能仅凭时间上的先后关系认定因果。家电是否透支十二月需求，还需要结合十二月周报、品类环比及区域分布分析。\", \"score\": 0.03278688524590164, \"source\": \"hybrid\", \"document_date\": \"2025-11-30\", \"document_type\": \"review\", \"page_number\": null, \"section\": \"活动机制与观察范围\"}, {\"reference\": \"D:efdfdf49-f72a-4c7c-be96-ce6aa515dc31\", \"document_id\": \"576c51bf-64c7-5115-80fe-60778f5cd4a5\", \"chunk_id\": \"efdfdf49-f72a-4c7c-be96-ce6aa515dc31\", \"chunk_index\": 0, \"filename\": \"第七阶段合成评测-2025-11-双十一复盘.md\", \"content\": \"# 2025 年双十一活动复盘\\n\\n本文件为合成演示资料，与 app/demo/seed.py 的数据生成规则配套；运营故事不代表真实商业事实。\", \"score\": 0.03225806451612903, \"source\": \"hybrid\", \"document_date\": \"2025-11-30\", \"document_type\": \"review\", \"page_number\": null, \"section\": \"2025 年双十一活动复盘\"}, {\"reference\": \"D:5a5eb857-2a2e-4c28-ac9b-38fbdf8d346c\", \"document_id\": \"a300401e-3a24-51dc-ada7-702b0ae3e41a\", \"chunk_id\": \"5a5eb857-2a2e-4c28-ac9b-38fbdf8d346c\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2025-02-春节运营安排.md\", \"content\": \"## 季节安排\\n\\n二月演示订单生成系数为 0.7，低于一月的 0.9。该设定模拟春节期间交易活跃度变化，不表示实际订单恰好下降 30%。月份天数也会影响总订单量，比较时可补充日均订单数。\\n\\n运营侧调整内容排期，并提示用户留意发货时间。假期、消费节奏与履约变化可作为待核实背景，不能据此认定所有销售变化均由春节导致。实际销量、退款和不同渠道的变化必须查询。\", \"score\": 0.031746031746031744, \"source\": \"hybrid\", \"document_date\": \"2025-02-01\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"季节安排\"}, {\"reference\": \"D:89299f54-185b-43c9-b86b-10db34206b90\", \"document_id\": \"db829c07-3e53-56da-9e81-76f293f4fe89\", \"chunk_id\": \"89299f54-185b-43c9-b86b-10db34206b90\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2025-11-秋冬服饰计划.md\", \"content\": \"## 上新重点与数据映射\\n\\n秋冬服饰上新覆盖服饰鞋包品类，十一月以保暖换季与集中促销为主题，十二月继续保留冬季新品展示。演示生成器对服饰鞋包十一月设置 1.3 的商品选择系数，十二月设置 1.25。这两个系数是不同月份的选品权重，不是实际环比，也不是利润率。\\n\\n应查询相同口径的月度成交额、商品件数、有效订单数，再说明上新期间的变化。品类成交额使用订单明细，整体销售额使用有效订单实付，二者不能在没有分摊规则时直接替代。\", \"score\": 0.03125, \"source\": \"hybrid\", \"document_date\": \"2025-11-01\", \"document_type\": \"campaign\", \"page_number\": null, \"section\": \"上新重点与数据映射\"}, {\"reference\": \"D:74c030ca-f336-4f6e-8344-8e771714bd08\", \"document_id\": \"bce9889b-b095-5a2e-9b5b-e94b93ed34de\", \"chunk_id\": \"74c030ca-f336-4f6e-8344-8e771714bd08\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2025-12-年货节方案.md\", \"content\": \"## 活动重点\\n\\n本次年货节以食品生鲜为主要品类，面向家庭备货、节日送礼和常温食品组合开展内容运营。演示库对十二月食品生鲜设置 1.4 的商品选择系数，用于表达季节性偏好增强。1.4 是生成权重，并不等于食品销售额实际增长 40%；具体增长率需要用十一月、十二月明细查询计算。\", \"score\": 0.015384615384615385, \"source\": \"hybrid\", \"document_date\": \"2025-12-01\", \"document_type\": \"campaign\", \"page_number\": null, \"section\": \"活动重点\"}], \"warnings\": [], \"elapsed_ms\": 331, \"evidence_only\": true}",
+        "duration_ms": 332,
+        "thought": "我先查一下业务文档里关于「订单生成系数」和双十一复盘的口径说明。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_documents",
+        "arguments": {
+          "query": "订单生成系数 定义 计算口径"
+        },
+        "ok": true,
+        "output": "{\"mode\": \"hybrid\", \"hits\": [], \"warnings\": [\"没有达到向量相似度阈值的证据，未放行关键词候选\"], \"elapsed_ms\": 300, \"evidence_only\": true, \"notice\": \"没有找到可引用的文档证据，请说明资料不足，不要编造。\"}",
+        "duration_ms": 300,
+        "thought": "我先查一下业务文档里关于「订单生成系数」和双十一复盘的口径说明。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "get_metric_definition",
+        "arguments": {
+          "metric_id": "order_count"
+        },
+        "ok": true,
+        "output": "{\"definitions\": [{\"id\": \"order_count\", \"name\": \"有效订单数\", \"unit\": \"单\", \"formula\": \"paid、completed 的订单数；一行一单\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}]}",
+        "duration_ms": 0,
+        "thought": "文档已经明确说明。我再核对一下实际订单数据，看真实变化是多少。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "search_glossary",
+        "arguments": {
+          "query": "有效订单数"
+        },
+        "ok": true,
+        "output": "## 有效订单\n有效订单指已支付且未全额退款的订单：`orders.status IN ('paid', 'completed')`。\n- cancelled：下单后未支付即取消，不计入任何销售类指标。\n- refunded：已全额退款，计入 GMV，但不计入净销售额和有效订单数。\n\n## 下单用户数与复购率\n- 下单用户数：统计周期内有至少一笔有效订单的去重用户数。\n- 复购率：统计周期内有效订单数 ≥ 2 的用户数 / 下单用户数。\n均排除测试账号。\n\n## 客单价（AOV）\n客单价 = 净销售额 / 有效订单数，单位换算成元。\nSQL 口径：`SUM(pay_amount) / COUNT(*) / 100.0`，条件 `status IN ('paid', 'completed')`，排除测试账号。",
+        "duration_ms": 0,
+        "thought": "文档已经明确说明。我再核对一下实际订单数据，看真实变化是多少。"
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "query_metric",
+        "arguments": {
+          "metric_id": "order_count",
+          "source": "ecommerce_v1",
+          "start": "2025-11-01",
+          "end": "2025-12-01",
+          "base_start": "2025-10-01",
+          "base_end": "2025-11-01"
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"metric\": {\"id\": \"order_count\", \"name\": \"有效订单数\", \"unit\": \"单\", \"formula\": \"paid、completed 的订单数；一行一单\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}, \"quality\": {\"order_rows\": 9143, \"duplicate_orders\": 0, \"missing_orders\": 0, \"invalid_status\": 0, \"invalid_dates\": 0, \"invalid_money\": 0, \"first_date\": \"2025-01-01 05:25:36\", \"last_date\": \"2025-12-31 23:21:57\", \"duplicate_users\": 0, \"invalid_users\": 0, \"orphan_orders\": 0}, \"comparison\": {\"status\": \"ready\", \"scope\": {\"metric\": \"有效订单数\", \"metric_kind\": \"additive\", \"source\": \"ecommerce_v1\", \"unit\": \"单\", \"dimension\": \"整体\", \"base_start\": \"2025-10-01\", \"base_end\": \"2025-11-01\", \"current_start\": \"2025-11-01\", \"current_end\": \"2025-12-01\", \"assumptions\": [], \"filters\": [\"排除测试账号\", \"按下单时间归属\"]}, \"summary\": {\"base\": \"703\", \"current\": \"1039\", \"delta\": \"336\", \"change_pct\": \"47.79516358\"}, \"groups\": [{\"segment\": \"整体\", \"base_value\": \"703\", \"current_value\": \"1039\", \"delta\": \"336\", \"contribution_pct\": \"100\"}], \"group_count\": 1, \"reconciliation\": {\"matched\": true, \"group_totals\": {\"base_value\": \"703\", \"current_value\": \"1039\"}, \"differences\": {\"base_value\": \"0\", \"current_value\": \"0\"}}, \"warnings\": [\"贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。\", \"不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。\", \"两个周期天数不同，当前比较未自动做日均调整。\", \"检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。\"], \"causal_claim_supported\": false}, \"warnings\": [\"检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。\"], \"queries\": [\"SELECT '整体' AS segment, SUM(CASE WHEN (o.order_time >= '2025-10-01' AND o.order_time < '2025-11-01') AND o.status IN ('paid','completed') THEN 1 ELSE 0 END) AS base_value, SUM(CASE WHEN (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') AND o.status IN ('paid','completed') THEN 1 ELSE 0 END) AS current_value FROM \\\"orders\\\" o JOIN \\\"users\\\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND ((o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') OR (o.order_time >= '2025-10-01' AND o.order_time < '2025-11-01')) GROUP BY 1 ORDER BY segment\", \"SELECT SUM(CASE WHEN (o.order_time >= '2025-10-01' AND o.order_time < '2025-11-01') AND o.status IN ('paid','completed') THEN 1 ELSE 0 END) AS base_value, SUM(CASE WHEN (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') AND o.status IN ('paid','completed') THEN 1 ELSE 0 END) AS current_value FROM \\\"orders\\\" o JOIN \\\"users\\\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND ((o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') OR (o.order_time >= '2025-10-01' AND o.order_time < '2025-11-01'))\"]}",
+        "duration_ms": 38,
+        "thought": ""
+      }
+    ],
+    "plan": [
+      "确认“订单生成系数1.8”的定义、计算口径、数据来源与单位，明确它对应的是订单量、订单金额还是其他指标",
+      "确认“实际订单增长80%”所指的指标口径、对比周期与基准值，判断两者是否同一指标、同一周期、同一单位",
+      "核对系数1.8的分子分母构成，检查是否包含取消、退款、拆单、合并、预售尾款等口径差异，判断能否直接换算为增长率",
+      "查找双十一同期业务资料（活动规则、预售与尾款安排、统计口径说明），区分事实、资料解释与待验证假设",
+      "给出结论：说明系数与增长率的口径差异及不可直接等同的原因，并列出需要补充验证的假设"
+    ],
+    "reflection": {
+      "passed": true,
+      "quality_score": 92,
+      "issues": [],
+      "summary": "回答正确指出1.8是种子数据生成系数而非订单增长率，实际有效订单环比为+47.8%，文档引用与查询结果一致，因果与假设区分清晰。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "1.8是演示数据生成器的种子数据生成系数，不是实际订单增长百分比",
+          "status": "supported",
+          "evidence_ids": [
+            "E1"
+          ],
+          "reason": "E1中复盘文档明确写道该系数只控制种子数据生成，不是实际订单增长百分比，实际订单量必须查询数据库。"
+        },
+        {
+          "claim": "二月系数0.7不表示实际订单恰好下降30%",
+          "status": "supported",
+          "evidence_ids": [
+            "E1"
+          ],
+          "reason": "E1返回的春节运营安排片段明确说明0.7不表示实际订单恰好下降30%。"
+        },
+        {
+          "claim": "服饰十一月1.3是选品权重，不是实际环比",
+          "status": "supported",
+          "evidence_ids": [
+            "E1"
+          ],
+          "reason": "E1秋冬服饰计划片段明确说明1.3是选品权重，不是实际环比。"
+        },
+        {
+          "claim": "十二月食品1.4不等于食品销售额实际增长40%",
+          "status": "supported",
+          "evidence_ids": [
+            "E1"
+          ],
+          "reason": "E1年货节方案片段明确说明1.4是生成权重，并不等于食品销售额实际增长40%。"
+        },
+        {
+          "claim": "若按倍数理解，1.8/1.1≈1.64即约+64%，而非+80%",
+          "status": "supported",
+          "evidence_ids": [
+            "E1"
+          ],
+          "reason": "E1给出十一月1.8、十月1.1，1.8/1.1≈1.636，可由文档数字直接算出，支持内部逻辑不成立的说法。"
+        },
+        {
+          "claim": "2025-10有效订单703单，2025-11有效订单1039单，变化+336单，+47.8%",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "E5的comparison.summary给出base=703、current=1039、delta=336、change_pct=47.79516358，与回答一致。"
+        },
+        {
+          "claim": "数据质量检查通过：重复订单0、缺失0、非法状态0、非法金额0、孤儿订单0",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "E5的quality字段显示duplicate_orders=0、missing_orders=0、invalid_status=0、invalid_money=0、orphan_orders=0。"
+        },
+        {
+          "claim": "有效订单口径为status IN paid/completed、一行一单、排除测试账号、按下单时间归属",
+          "status": "supported",
+          "evidence_ids": [
+            "E3",
+            "E4",
+            "E5"
+          ],
+          "reason": "E3指标定义与E4术语表均定义有效订单为paid/completed、排除测试账号；E5的scope filters为排除测试账号、按下单时间归属。"
+        },
+        {
+          "claim": "十月31天、十一月30天，直接比总量会低估十一月日均强度，工具提示未做日均调整",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "E5的warnings明确提示两个周期天数不同，当前比较未自动做日均调整。"
+        },
+        {
+          "claim": "复盘将优惠刺激、提前采购列为需要验证的需求变化解释，不能仅凭时间先后认定因果",
+          "status": "supported",
+          "evidence_ids": [
+            "E1"
+          ],
+          "reason": "E1片段明确写道复盘将优惠刺激、提前采购列为需要验证的需求变化解释，不能仅凭时间先后关系认定因果。"
+        },
+        {
+          "claim": "增长是否由活动优惠驱动、家电是否透支十二月需求、拆单/合并影响等为待验证假设",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E5"
+          ],
+          "reason": "E1指出家电是否透支十二月需求需结合十二月周报等分析；E5的causal_claim_supported=false及warnings说明贡献拆解不能证明因果，回答将其列为待验证假设是恰当的。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 6,
+    "usage": {
+      "prompt_tokens": 29718,
+      "completion_tokens": 2332,
+      "total_tokens": 32050,
+      "prompt_cache_hit_tokens": 19072,
+      "prompt_cache_miss_tokens": 10646
+    },
+    "duration_ms": 14009,
+    "error": null,
+    "citations": [
+      {
+        "reference": "D:f81d9064-fd32-4071-b702-672fb2491b1d",
+        "document_id": "576c51bf-64c7-5115-80fe-60778f5cd4a5",
+        "chunk_id": "f81d9064-fd32-4071-b702-672fb2491b1d",
+        "chunk_index": 1,
+        "filename": "第七阶段合成评测-2025-11-双十一复盘.md",
+        "snippet": "## 活动机制与观察范围\n\n十一月开展年度集中促销，演示库的整体订单生成系数为 1.8，高于十月的 1.1。该系数只控制种子数据生成，不是实际订单增长百分比。活动订单优惠金额按商品合计的 8% 至 20% 生成。实际订单量、支付金额和折扣分布必须查询数据库，不应直接拿系数作为统计结果。\n\n家电和日常消费品参与活动，页面资源集中在活动期。复盘将优惠刺激、提前采购列为需要验证的需求变化解释，不能仅凭时间上的先后关系认定因果。家电是否透支十二月需求，还需要结合十二月周报、品类环比及区域分布分析。",
+        "document_date": "2025-11-30",
+        "document_type": "review",
+        "page_number": null,
+        "section": "活动机制与观察范围"
+      },
+      {
+        "reference": "D:5a5eb857-2a2e-4c28-ac9b-38fbdf8d346c",
+        "document_id": "a300401e-3a24-51dc-ada7-702b0ae3e41a",
+        "chunk_id": "5a5eb857-2a2e-4c28-ac9b-38fbdf8d346c",
+        "chunk_index": 1,
+        "filename": "第七阶段合成评测-2025-02-春节运营安排.md",
+        "snippet": "## 季节安排\n\n二月演示订单生成系数为 0.7，低于一月的 0.9。该设定模拟春节期间交易活跃度变化，不表示实际订单恰好下降 30%。月份天数也会影响总订单量，比较时可补充日均订单数。\n\n运营侧调整内容排期，并提示用户留意发货时间。假期、消费节奏与履约变化可作为待核实背景，不能据此认定所有销售变化均由春节导致。实际销量、退款和不同渠道的变化必须查询。",
+        "document_date": "2025-02-01",
+        "document_type": "weekly_report",
+        "page_number": null,
+        "section": "季节安排"
+      },
+      {
+        "reference": "D:89299f54-185b-43c9-b86b-10db34206b90",
+        "document_id": "db829c07-3e53-56da-9e81-76f293f4fe89",
+        "chunk_id": "89299f54-185b-43c9-b86b-10db34206b90",
+        "chunk_index": 1,
+        "filename": "第七阶段合成评测-2025-11-秋冬服饰计划.md",
+        "snippet": "## 上新重点与数据映射\n\n秋冬服饰上新覆盖服饰鞋包品类，十一月以保暖换季与集中促销为主题，十二月继续保留冬季新品展示。演示生成器对服饰鞋包十一月设置 1.3 的商品选择系数，十二月设置 1.25。这两个系数是不同月份的选品权重，不是实际环比，也不是利润率。\n\n应查询相同口径的月度成交额、商品件数、有效订单数，再说明上新期间的变化。品类成交额使用订单明细，整体销售额使用有效订单实付，二者不能在没有分摊规则时直接替代。",
+        "document_date": "2025-11-01",
+        "document_type": "campaign",
+        "page_number": null,
+        "section": "上新重点与数据映射"
+      },
+      {
+        "reference": "D:74c030ca-f336-4f6e-8344-8e771714bd08",
+        "document_id": "bce9889b-b095-5a2e-9b5b-e94b93ed34de",
+        "chunk_id": "74c030ca-f336-4f6e-8344-8e771714bd08",
+        "chunk_index": 1,
+        "filename": "第七阶段合成评测-2025-12-年货节方案.md",
+        "snippet": "## 活动重点\n\n本次年货节以食品生鲜为主要品类，面向家庭备货、节日送礼和常温食品组合开展内容运营。演示库对十二月食品生鲜设置 1.4 的商品选择系数，用于表达季节性偏好增强。1.4 是生成权重，并不等于食品销售额实际增长 40%；具体增长率需要用十一月、十二月明细查询计算。",
+        "document_date": "2025-12-01",
+        "document_type": "campaign",
+        "page_number": null,
+        "section": "活动重点"
+      }
+    ],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": {
+        "metric": "有效订单数",
+        "metric_kind": "additive",
+        "source": "ecommerce_v1",
+        "unit": "单",
+        "dimension": "整体",
+        "base_start": "2025-10-01",
+        "base_end": "2025-11-01",
+        "current_start": "2025-11-01",
+        "current_end": "2025-12-01",
+        "assumptions": [],
+        "filters": [
+          "排除测试账号",
+          "按下单时间归属"
+        ]
+      },
+      "clarification_questions": [],
+      "comparisons": [
+        {
+          "status": "ready",
+          "scope": {
+            "metric": "有效订单数",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1",
+            "unit": "单",
+            "dimension": "整体",
+            "base_start": "2025-10-01",
+            "base_end": "2025-11-01",
+            "current_start": "2025-11-01",
+            "current_end": "2025-12-01",
+            "assumptions": [],
+            "filters": [
+              "排除测试账号",
+              "按下单时间归属"
+            ]
+          },
+          "summary": {
+            "base": "703",
+            "current": "1039",
+            "delta": "336",
+            "change_pct": "47.79516358"
+          },
+          "groups": [
+            {
+              "segment": "整体",
+              "base_value": "703",
+              "current_value": "1039",
+              "delta": "336",
+              "contribution_pct": "100"
+            }
+          ],
+          "group_count": 1,
+          "reconciliation": {
+            "matched": true,
+            "group_totals": {
+              "base_value": "703",
+              "current_value": "1039"
+            },
+            "differences": {
+              "base_value": "0",
+              "current_value": "0"
+            }
+          },
+          "warnings": [
+            "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+            "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+            "两个周期天数不同，当前比较未自动做日均调整。",
+            "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+          ],
+          "causal_claim_supported": false
+        }
+      ],
+      "warnings": [
+        "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。",
+        "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+        "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+        "两个周期天数不同，当前比较未自动做日均调整。"
+      ],
+      "comparison_count": 1,
+      "quality_checks": [],
+      "metrics": [
+        {
+          "status": "ready",
+          "metric": {
+            "id": "order_count",
+            "name": "有效订单数",
+            "unit": "单",
+            "formula": "paid、completed 的订单数；一行一单",
+            "kind": "additive",
+            "version": "1",
+            "source": "ecommerce_v1",
+            "time_field": "orders.order_time",
+            "exclude_test_users": true,
+            "allowed_join": "orders.user_id = users.user_id（users.user_id 必须唯一）",
+            "dimensions": [
+              "overall",
+              "region",
+              "order_channel"
+            ],
+            "scope": "项目电商模型；不自动套用于上传表或其他数据库业务口径"
+          },
+          "quality": {
+            "order_rows": 9143,
+            "duplicate_orders": 0,
+            "missing_orders": 0,
+            "invalid_status": 0,
+            "invalid_dates": 0,
+            "invalid_money": 0,
+            "first_date": "2025-01-01 05:25:36",
+            "last_date": "2025-12-31 23:21:57",
+            "duplicate_users": 0,
+            "invalid_users": 0,
+            "orphan_orders": 0
+          },
+          "comparison": {
+            "status": "ready",
+            "scope": {
+              "metric": "有效订单数",
+              "metric_kind": "additive",
+              "source": "ecommerce_v1",
+              "unit": "单",
+              "dimension": "整体",
+              "base_start": "2025-10-01",
+              "base_end": "2025-11-01",
+              "current_start": "2025-11-01",
+              "current_end": "2025-12-01",
+              "assumptions": [],
+              "filters": [
+                "排除测试账号",
+                "按下单时间归属"
+              ]
+            },
+            "summary": {
+              "base": "703",
+              "current": "1039",
+              "delta": "336",
+              "change_pct": "47.79516358"
+            },
+            "groups": [
+              {
+                "segment": "整体",
+                "base_value": "703",
+                "current_value": "1039",
+                "delta": "336",
+                "contribution_pct": "100"
+              }
+            ],
+            "group_count": 1,
+            "reconciliation": {
+              "matched": true,
+              "group_totals": {
+                "base_value": "703",
+                "current_value": "1039"
+              },
+              "differences": {
+                "base_value": "0",
+                "current_value": "0"
+              }
+            },
+            "warnings": [
+              "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+              "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+              "两个周期天数不同，当前比较未自动做日均调整。",
+              "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+            ],
+            "causal_claim_supported": false
+          },
+          "warnings": [
+            "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+          ],
+          "queries": [
+            "SELECT '整体' AS segment, SUM(CASE WHEN (o.order_time >= '2025-10-01' AND o.order_time < '2025-11-01') AND o.status IN ('paid','completed') THEN 1 ELSE 0 END) AS base_value, SUM(CASE WHEN (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') AND o.status IN ('paid','completed') THEN 1 ELSE 0 END) AS current_value FROM \"orders\" o JOIN \"users\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND ((o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') OR (o.order_time >= '2025-10-01' AND o.order_time < '2025-11-01')) GROUP BY 1 ORDER BY segment",
+            "SELECT SUM(CASE WHEN (o.order_time >= '2025-10-01' AND o.order_time < '2025-11-01') AND o.status IN ('paid','completed') THEN 1 ELSE 0 END) AS base_value, SUM(CASE WHEN (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') AND o.status IN ('paid','completed') THEN 1 ELSE 0 END) AS current_value FROM \"orders\" o JOIN \"users\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND ((o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') OR (o.order_time >= '2025-10-01' AND o.order_time < '2025-11-01'))"
+          ]
+        }
+      ]
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1528,
+          "usage": {
+            "prompt_tokens": 206,
+            "completion_tokens": 162,
+            "total_tokens": 368,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 206
+          }
+        },
+        "analysis": {
+          "logical_calls": 4,
+          "http_requests": 4,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 8231,
+          "usage": {
+            "prompt_tokens": 24866,
+            "completion_tokens": 1274,
+            "total_tokens": 26140,
+            "prompt_cache_hit_tokens": 18688,
+            "prompt_cache_miss_tokens": 6178
+          }
+        },
+        "embedding": {
+          "logical_calls": 2,
+          "http_requests": 2,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 390,
+          "usage": {
+            "input_tokens": 26
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 3867,
+          "usage": {
+            "prompt_tokens": 4646,
+            "completion_tokens": 896,
+            "total_tokens": 5542,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 4262
+          }
+        }
+      },
+      "llm_calls": 6,
+      "chat_usage": {
+        "prompt_tokens": 29718,
+        "completion_tokens": 2332,
+        "total_tokens": 32050,
+        "prompt_cache_hit_tokens": 19072,
+        "prompt_cache_miss_tokens": 10646
+      },
+      "http_requests": 8,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 4,
+    "question": "双十一复盘中的订单生成系数1.8，能否直接当成实际订单增长80%？说明为什么。",
+    "tables": [
+      {
+        "id": "result-5",
+        "title": "有效订单数 · 整体",
+        "columns": [
+          "整体",
+          "基期（单）",
+          "当期（单）",
+          "变化（单）"
+        ],
+        "rows": [
+          [
+            "整体",
+            "703",
+            "1039",
+            "336"
+          ]
+        ],
+        "evidence_ids": [
+          "E5"
+        ],
+        "scope": {
+          "metric": "有效订单数",
+          "metric_kind": "additive",
+          "source": "ecommerce_v1",
+          "unit": "单",
+          "dimension": "整体",
+          "base_start": "2025-10-01",
+          "base_end": "2025-11-01",
+          "current_start": "2025-11-01",
+          "current_end": "2025-12-01",
+          "assumptions": [],
+          "filters": [
+            "排除测试账号",
+            "按下单时间归属"
+          ]
+        },
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "pattern_0": true,
+      "pattern_1": true,
+      "source_double11": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

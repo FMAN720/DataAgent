@@ -1,0 +1,86 @@
+[
+  {
+    "id": "nov_net_sales",
+    "question": "上个月的销售额是多少？",
+    "traps": ["上个月=2025-11", "销售额=净销售额，不含 refunded/cancelled", "排除测试账号", "分→元"],
+    "gold_sql": "SELECT ROUND(SUM(o.pay_amount)/100.0, 2) FROM orders o JOIN users u USING(user_id) WHERE o.status IN ('paid','completed') AND u.is_test = 0 AND o.order_time LIKE '2025-11%'",
+    "checks": [{"cell": [0, 0], "type": "number"}]
+  },
+  {
+    "id": "nov_gmv",
+    "question": "11 月的 GMV 是多少？",
+    "traps": ["GMV 含 refunded，和净销售额不同"],
+    "gold_sql": "SELECT ROUND(SUM(o.pay_amount)/100.0, 2) FROM orders o JOIN users u USING(user_id) WHERE o.status IN ('paid','completed','refunded') AND u.is_test = 0 AND o.order_time LIKE '2025-11%'",
+    "checks": [{"cell": [0, 0], "type": "number"}]
+  },
+  {
+    "id": "year_net_sales",
+    "question": "今年全年营收一共多少？",
+    "traps": ["营收=净销售额", "排除测试账号"],
+    "gold_sql": "SELECT ROUND(SUM(o.pay_amount)/100.0, 2) FROM orders o JOIN users u USING(user_id) WHERE o.status IN ('paid','completed') AND u.is_test = 0",
+    "checks": [{"cell": [0, 0], "type": "number"}]
+  },
+  {
+    "id": "dec_refund_rate",
+    "question": "12 月的退款率是多少？",
+    "traps": ["分母是已支付订单（含 refunded）", "不能用 refund_requests（含被驳回的申请）"],
+    "gold_sql": "SELECT ROUND(100.0 * SUM(CASE WHEN o.status = 'refunded' THEN 1 ELSE 0 END) / COUNT(*), 1) FROM orders o JOIN users u USING(user_id) WHERE o.status IN ('paid','completed','refunded') AND u.is_test = 0 AND o.order_time LIKE '2025-12%'",
+    "checks": [{"cell": [0, 0], "type": "number", "abs_tol": 0.15}]
+  },
+  {
+    "id": "category_mom_drop",
+    "question": "12 月相比 11 月，哪个品类的销售额环比下降最多？降了多少？",
+    "traps": ["品类销售额用 order_items.item_amount", "多步：两个月分别统计再比较"],
+    "gold_sql": "WITH t AS (SELECT c.category_name AS cat, substr(o.order_time, 6, 2) AS m, SUM(oi.item_amount) AS amt FROM orders o JOIN users u USING(user_id) JOIN order_items oi USING(order_id) JOIN products p USING(product_id) JOIN categories c USING(category_id) WHERE o.status IN ('paid','completed') AND u.is_test = 0 AND substr(o.order_time, 6, 2) IN ('11','12') GROUP BY 1, 2) SELECT a.cat, ROUND((b.amt - a.amt) * 100.0 / a.amt, 1) FROM t a JOIN t b ON a.cat = b.cat AND a.m = '11' AND b.m = '12' ORDER BY 2 LIMIT 1",
+    "checks": [{"cell": [0, 0], "type": "text"}, {"cell": [0, 1], "type": "number", "abs_tol": 0.6, "absolute": true}]
+  },
+  {
+    "id": "east_nov_sales",
+    "question": "华东地区上个月销售额多少？",
+    "traps": ["华东 → region_code = 'EAST'"],
+    "gold_sql": "SELECT ROUND(SUM(o.pay_amount)/100.0, 2) FROM orders o JOIN users u USING(user_id) WHERE o.status IN ('paid','completed') AND u.is_test = 0 AND u.region_code = 'EAST' AND o.order_time LIKE '2025-11%'",
+    "checks": [{"cell": [0, 0], "type": "number"}]
+  },
+  {
+    "id": "region_rank",
+    "question": "今年各区域的销售额排名如何？最低的是哪个区域？",
+    "traps": ["区域展示中文名"],
+    "gold_sql": "SELECT g.region_name, ROUND(SUM(o.pay_amount)/100.0, 2) FROM orders o JOIN users u USING(user_id) JOIN regions g USING(region_code) WHERE o.status IN ('paid','completed') AND u.is_test = 0 GROUP BY 1 ORDER BY 2 DESC",
+    "checks": [{"cell": [0, 0], "type": "text"}, {"cell": [4, 0], "type": "text"}, {"cell": [4, 1], "type": "number"}]
+  },
+  {
+    "id": "dec_aov",
+    "question": "12 月的客单价是多少？",
+    "traps": ["客单价=净销售额/有效订单数"],
+    "gold_sql": "SELECT ROUND(SUM(o.pay_amount) * 1.0 / COUNT(*) / 100.0, 2) FROM orders o JOIN users u USING(user_id) WHERE o.status IN ('paid','completed') AND u.is_test = 0 AND o.order_time LIKE '2025-12%'",
+    "checks": [{"cell": [0, 0], "type": "number"}]
+  },
+  {
+    "id": "dec_mau",
+    "question": "12 月的月活跃用户有多少？",
+    "traps": ["活跃以 user_events 为准，不是下单用户"],
+    "gold_sql": "SELECT COUNT(DISTINCT e.user_id) FROM user_events e JOIN users u USING(user_id) WHERE u.is_test = 0 AND e.event_date LIKE '2025-12%'",
+    "checks": [{"cell": [0, 0], "type": "number", "abs_tol": 0.5}]
+  },
+  {
+    "id": "acquire_channel",
+    "question": "今年新注册的用户里，哪个拉新渠道带来的用户最多？有多少人？",
+    "traps": ["拉新渠道是 users.acquire_channel，不是 orders.channel"],
+    "gold_sql": "SELECT acquire_channel, COUNT(*) FROM users WHERE is_test = 0 AND register_date LIKE '2025%' GROUP BY 1 ORDER BY 2 DESC LIMIT 1",
+    "checks": [{"cell": [0, 1], "type": "number", "abs_tol": 0.5}]
+  },
+  {
+    "id": "top_product",
+    "question": "今年卖得最好的商品是哪个？销售额多少？",
+    "traps": ["商品级用 item_amount"],
+    "gold_sql": "SELECT p.product_name, ROUND(SUM(oi.item_amount)/100.0, 2) FROM order_items oi JOIN orders o USING(order_id) JOIN users u USING(user_id) JOIN products p USING(product_id) WHERE o.status IN ('paid','completed') AND u.is_test = 0 GROUP BY 1 ORDER BY 2 DESC LIMIT 1",
+    "checks": [{"cell": [0, 0], "type": "text"}, {"cell": [0, 1], "type": "number"}]
+  },
+  {
+    "id": "best_margin_category",
+    "question": "今年毛利率最高的品类是哪个？毛利率是多少？",
+    "traps": ["毛利需要关联 products.cost_price"],
+    "gold_sql": "SELECT c.category_name, ROUND(100.0 * (SUM(oi.item_amount) - SUM(oi.quantity * p.cost_price)) / SUM(oi.item_amount), 1) FROM order_items oi JOIN orders o USING(order_id) JOIN users u USING(user_id) JOIN products p USING(product_id) JOIN categories c USING(category_id) WHERE o.status IN ('paid','completed') AND u.is_test = 0 GROUP BY 1 ORDER BY 2 DESC LIMIT 1",
+    "checks": [{"cell": [0, 0], "type": "text"}, {"cell": [0, 1], "type": "number", "abs_tol": 0.15}]
+  }
+]

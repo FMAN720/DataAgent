@@ -1,0 +1,81 @@
+{
+  "date": "2026-10-25",
+  "scope": "vision round 3",
+  "python": {
+    "passed": 502,
+    "skipped": 0,
+    "failed": 0,
+    "evidence": "pytest.xml"
+  },
+  "new_backend_tests": 38,
+  "new_postgres_tests": 8,
+  "frontend": {
+    "passed": 16,
+    "failed": 0,
+    "evidence": "ui-tests.xml"
+  },
+  "new_installations": {
+    "Pillow": "13.0.0",
+    "pypdfium2": "5.14.0",
+    "authorization": "explicit user approval in this conversation"
+  },
+  "local_ocr_model_downloads": 0,
+  "new_middleware": 0,
+  "model_api_calls": 0,
+  "vision_enabled": false,
+  "model_selection": "pending user choice",
+  "schema_migration": "0005_vision_drafts; additive table only",
+  "pip_check": "No broken requirements found",
+  "static_checks": [
+    "Python AST",
+    "node --check",
+    "git diff --check"
+  ],
+  "credential_audit": {
+    "status": "passed",
+    "scope": "effective credentials after .env.phase2 overrides",
+    "files_checked": 36,
+    "documenter_file_checked": true
+  },
+  "ui_review": "ship",
+  "browser": {
+    "desktop_viewport": [
+      1280,
+      720
+    ],
+    "mobile_viewport": [
+      390,
+      844
+    ],
+    "mobile_page_scroll_width": 390,
+    "source_image_loaded": true,
+    "source_image_width": 1300,
+    "manual_edits_saved": true,
+    "unsaved_changes_block_publication": true,
+    "synthetic_table_imported_and_exact_sql_checked": true
+  },
+  "retained_data": {
+    "synthetic_drafts": 1,
+    "imported_test_datasets": 0,
+    "reference_documents": 0
+  },
+  "limitations": [
+    "No real vision model accuracy or integration result",
+    "Local single-user only; no auth or retention management",
+    "Partial pages and ambiguous table/graph values require review",
+    "No automatic external retry; interrupted requests may have unknown provider charges"
+  ],
+  "evidence": [
+    "README.md",
+    "pytest.xml",
+    "ui-tests.xml",
+    "runtime-smoke.json",
+    "restart-smoke.json",
+    "demo.json",
+    "finish-review.md",
+    "design-verification.md",
+    "captures/desktop.png",
+    "captures/mobile.png",
+    "captures/table-preview.png"
+  ]
+}

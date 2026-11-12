@@ -1,0 +1,200 @@
+{
+  "id": "data_missing",
+  "category": "datasets",
+  "split": "holdout",
+  "variant": "baseline",
+  "question": "请分析我上传的采购合同明细.xlsx。若未找到这个文件，请明确告知缺少资料，不要用其他表代替。",
+  "response": {
+    "answer": "**结论：未找到「采购合同明细.xlsx」，缺少该资料，无法进行分析。**\n\n核对情况：\n- 按文件名/显示名称检索「采购合同明细」：返回 0 条结果。\n- 当前账号下已完成导入（status=ready）的数据集只有 1 个：`合成预算补充表.csv`（表名 `uploaded_budget`，4 行，字段为 region_code、amount、external_id），与采购合同无关。\n\n因此，按你的要求，我不会用其他表替代，也不会基于 `uploaded_budget` 或业务库表推测采购合同情况。以下分析步骤（字段结构核对、金额口径含税/不含税与币种确认、日期范围与缺失值检查、按供应商/合同日期/采购类别汇总核对）均无法执行。\n\n如需继续，请：\n1. 重新上传「采购合同明细.xlsx」，并确认导入状态为 ready（预览或导入失败的数据不可查询）；或\n2. 告知该文件在系统中的实际文件名/显示名称，我再检索一次。\n\n口径说明：本次仅执行了数据集清单检索，未查询任何业务数据，未做任何估算。",
+    "success": true,
+    "trace_id": "145fac42-4215-4502-b8e1-c714b48666fe",
+    "session_id": "78761efd-04a5-4704-9fa0-9bfcd13318b2",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_datasets",
+        "arguments": {
+          "query": "采购合同明细"
+        },
+        "ok": true,
+        "output": "{\"datasets\": [], \"truncated\": false}",
+        "duration_ms": 0,
+        "thought": "我先查询已导入的数据集，确认是否存在该文件。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_datasets",
+        "arguments": {},
+        "ok": true,
+        "output": "{\"datasets\": [{\"id\": \"phase7-synthetic-budget\", \"filename\": \"合成预算补充表.csv\", \"display_name\": \"合成预算补充表\", \"table\": \"uploaded_budget\", \"row_count\": 4, \"columns\": [{\"name\": \"region_code\", \"label\": \"region_code\", \"type\": \"text\", \"nullable\": false}, {\"name\": \"amount\", \"label\": \"amount\", \"type\": \"decimal\", \"nullable\": true}, {\"name\": \"external_id\", \"label\": \"external_id\", \"type\": \"text\", \"nullable\": false}], \"column_count\": 3, \"columns_truncated\": false}], \"truncated\": false}",
+        "duration_ms": 0,
+        "thought": "我先查询已导入的数据集，确认是否存在该文件。"
+      }
+    ],
+    "plan": [
+      "确认是否存在名为“采购合同明细.xlsx”的上传文件；若不存在，明确说明缺少该资料并停止分析，不使用其他表替代",
+      "若文件存在，读取并核对文件结构：字段名、行数、单位、金额口径（含税/不含税、币种）、日期范围与缺失值情况",
+      "明确本次分析的目标指标与口径（如合同金额、合同数量、供应商数等），并说明数据可支持的结论边界",
+      "按供应商、合同日期、采购类别等维度汇总并核对整体与分项是否一致",
+      "输出描述性分析结果，并区分数据事实、资料解释与待验证假设"
+    ],
+    "reflection": {
+      "passed": true,
+      "quality_score": 95,
+      "issues": [],
+      "summary": "回答正确指出未找到「采购合同明细.xlsx」，并如实说明仅有一个无关数据集，未用其他表替代，符合用户要求。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "按文件名/显示名称检索「采购合同明细」返回 0 条结果",
+          "status": "supported",
+          "evidence_ids": [
+            "E1"
+          ],
+          "reason": "list_datasets 查询「采购合同明细」返回空 datasets 数组，truncated=false，支持该结论。"
+        },
+        {
+          "claim": "当前账号下已完成导入的数据集只有 1 个：合成预算补充表.csv（uploaded_budget，4 行，字段 region_code、amount、external_id）",
+          "status": "supported",
+          "evidence_ids": [
+            "E2"
+          ],
+          "reason": "list_datasets 无参数返回唯一数据集，filename/display_name 为合成预算补充表，table 为 uploaded_budget，row_count=4，columns 为 region_code、amount、external_id，与回答一致。"
+        },
+        {
+          "claim": "该数据集与采购合同无关，不会用其他表替代或推测采购合同情况",
+          "status": "supported",
+          "evidence_ids": [
+            "E2"
+          ],
+          "reason": "唯一数据集为预算补充表，字段不含合同、供应商、采购类别等采购合同信息，回答拒绝替代分析符合用户要求。"
+        },
+        {
+          "claim": "字段结构核对、金额口径、日期范围、按供应商/合同日期/采购类别汇总等分析步骤均无法执行",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E2"
+          ],
+          "reason": "目标文件不存在，唯一数据集字段与采购合同无关，因此这些分析确实无法执行。"
+        },
+        {
+          "claim": "本次仅执行了数据集清单检索，未查询任何业务数据，未做任何估算",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E2"
+          ],
+          "reason": "本轮工具调用仅为两次 list_datasets，未调用 query_metric 或其他业务数据查询，回答如实说明。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 4,
+    "usage": {
+      "prompt_tokens": 10595,
+      "completion_tokens": 893,
+      "total_tokens": 11488,
+      "prompt_cache_hit_tokens": 6144,
+      "prompt_cache_miss_tokens": 4451
+    },
+    "duration_ms": 6850,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1598,
+          "usage": {
+            "prompt_tokens": 212,
+            "completion_tokens": 142,
+            "total_tokens": 354,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 212
+          }
+        },
+        "analysis": {
+          "logical_calls": 2,
+          "http_requests": 2,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 2847,
+          "usage": {
+            "prompt_tokens": 9259,
+            "completion_tokens": 309,
+            "total_tokens": 9568,
+            "prompt_cache_hit_tokens": 5760,
+            "prompt_cache_miss_tokens": 3499
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 2398,
+          "usage": {
+            "prompt_tokens": 1124,
+            "completion_tokens": 442,
+            "total_tokens": 1566,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 740
+          }
+        }
+      },
+      "llm_calls": 4,
+      "chat_usage": {
+        "prompt_tokens": 10595,
+        "completion_tokens": 893,
+        "total_tokens": 11488,
+        "prompt_cache_hit_tokens": 6144,
+        "prompt_cache_miss_tokens": 4451
+      },
+      "http_requests": 4,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 2,
+    "question": "请分析我上传的采购合同明细.xlsx。若未找到这个文件，请明确告知缺少资料，不要用其他表代替。",
+    "tables": [],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "pattern_0": true,
+      "no_successful_write": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

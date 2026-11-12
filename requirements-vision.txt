@@ -1,0 +1,3 @@
+# Optional image validation and PDF rendering; no local OCR model or GPU runtime.
+Pillow>=12,<14
+pypdfium2>=4.30,<6

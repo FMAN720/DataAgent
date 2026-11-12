@@ -1,0 +1,74 @@
+{
+  "passed": true,
+  "scope": "Only the two material finish-review findings and desktop home regression",
+  "checks": [
+    {
+      "capture": "home-desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "interaction": "320px welcome content fits below the topbar and submit remains visible",
+      "geometry": {
+        "mark": {
+          "top": 80,
+          "bottom": 114
+        },
+        "canvas": {
+          "top": 52,
+          "bottom": 740
+        },
+        "submit": {
+          "top": 334.125,
+          "bottom": 369.921875,
+          "left": 223,
+          "right": 293
+        },
+        "welcome": {
+          "top": 52,
+          "bottom": 226.03125
+        },
+        "thread": {
+          "top": 52,
+          "bottom": 226.03125
+        }
+      },
+      "passed": true
+    },
+    {
+      "capture": "home-320",
+      "width": 320,
+      "height": 740,
+      "scrollWidth": 320,
+      "scrollHeight": 740,
+      "document_overflow": false
+    },
+    {
+      "capture": "not-applicable-desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "capture": "not-applicable-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "interaction": "Not-applicable validation stays inspectable with a non-certification explanation, only in optional details",
+      "passed": true
+    }
+  ],
+  "browserErrors": [],
+  "providerRequests": 0,
+  "persistentWrites": 0,
+  "method": "Isolated installed headless Chrome; intercepted synthetic APIs; real mouse and keyboard"
+}

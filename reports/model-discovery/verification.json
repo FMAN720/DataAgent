@@ -1,0 +1,53 @@
+{
+  "created_at": "2026-11-06T15:36:52.964943+00:00",
+  "source_state": "working tree; no commit created",
+  "source_fingerprint": {
+    "algorithm": "sha256 sorted(path + NUL + content + NUL)",
+    "files": 100,
+    "digest": "621d00536562f8c864a526e8458059eefd940bbebaaca152f11ae4543ab47ec2"
+  },
+  "checks": [
+    {
+      "command": "RUN_POSTGRES_TESTS=1 RUN_REDIS_TESTS=1 python -m pytest -q",
+      "passed": true,
+      "tests_passed": 620,
+      "tests_failed": 0,
+      "tests_skipped": 0,
+      "duration_seconds": 62.92
+    },
+    {
+      "command": "node --test tests/workspace.test.cjs",
+      "passed": true,
+      "tests_passed": 55
+    },
+    {
+      "command": "ruff check app eval tests lab",
+      "passed": true
+    },
+    {
+      "command": "ruff format --check app eval tests lab",
+      "passed": true,
+      "files": 169
+    },
+    {
+      "command": "mypy app eval",
+      "passed": true,
+      "source_files": 109
+    },
+    {
+      "command": "isolated Chrome model-settings workflows",
+      "passed": true,
+      "captures": 12,
+      "provider_requests": 0,
+      "persistent_user_writes": 0
+    }
+  ],
+  "provider_requests": 0,
+  "new_dependencies": [],
+  "independent_ui_review": "ship",
+  "limits": [
+    "Synthetic transports do not certify a real provider or OCR accuracy.",
+    "Native desktop/mobile emulation tested; no physical phone or other browser engine.",
+    "Only OpenAI-compatible model catalog/chat-image/embedding protocols are supported."
+  ]
+}

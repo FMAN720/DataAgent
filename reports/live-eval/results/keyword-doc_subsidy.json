@@ -1,0 +1,255 @@
+{
+  "id": "doc_subsidy",
+  "category": "documents",
+  "split": "development",
+  "variant": "keyword",
+  "question": "2025年12月家电周报记录的阶段性补贴在什么日期结束？",
+  "response": {
+    "answer": "**结论：2025 年 12 月家电周报记录的阶段性补贴在 2025 年 11 月 30 日结束，12 月没有延续同等补贴。**\n\n依据来自《第七阶段合成评测-2025-12-家电运营周报.md》的「家电活动变化」章节：该章节写明「家电阶段性补贴在 2025 年 11 月 30 日结束，十二月没有延续同等补贴」[D:640c69a4-cd9f-4c7a-a394-e838a90d5172]。\n\n补充说明：\n- 该周报同时把「补贴结束 + 需求前置」作为解释 12 月需求回落的**业务假设**，并明确要求结合订单数据验证，不能仅凭周报断言唯一原因 [D:640c69a4-cd9f-4c7a-a394-e838a90d5172]；「跟进行动」也提到运营组需核对补贴结束的配置记录 [D:8c1aa477-d675-4386-b818-af849a43f67f]。\n- 检索到的《2024-12-家电旧周报》称旧年度补贴在十二月仍有延续，但那是 2024 年的另一套政策，不适用于 2025 年 [D:5fbdfa0a-8169-4398-9c4a-fa54a9a8aa66]。\n- 另有《待核实市场简报》草稿声称「十二月家电销售增长、补贴效果持续」，该说法未提供口径与计算过程，属未核实描述，与周报的补贴结束时间不一致，应以正式周报为准 [D:1a3e2f63-76a5-4b20-ab44-663745b7baf7]。\n\n口径：文档证据来自 2025-12-31 的家电运营周报「家电活动变化」章节；补贴结束日期为文档所述政策安排，尚未用订单数据或配置记录验证。",
+    "success": true,
+    "trace_id": "73ded825-2326-4dde-9a83-cadfde0a785f",
+    "session_id": "1cca614f-2bfe-41e0-86b7-9fd0c5f597c3",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_documents",
+        "arguments": {
+          "query": "家电 阶段性补贴 结束日期",
+          "date_from": "2025-12-01",
+          "date_to": "2025-12-31"
+        },
+        "ok": true,
+        "output": "{\"mode\": \"keyword\", \"hits\": [{\"reference\": \"D:640c69a4-cd9f-4c7a-a394-e838a90d5172\", \"document_id\": \"93e86629-9d67-5fee-b10d-e0df558e643c\", \"chunk_id\": \"640c69a4-cd9f-4c7a-a394-e838a90d5172\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2025-12-家电运营周报.md\", \"content\": \"## 家电活动变化\\n\\n演示情景设定：家电阶段性补贴在 2025 年 11 月 30 日结束，十二月没有延续同等补贴。十一月集中活动可能让部分消费者提前购买，十二月自然需求随后回落。补贴结束与需求前置是本周提出的业务解释，需要结合订单数据验证，不能只凭本周报断言唯一原因。\", \"score\": 14.466032343521947, \"source\": \"keyword\", \"document_date\": \"2025-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"家电活动变化\"}, {\"reference\": \"D:1a3e2f63-76a5-4b20-ab44-663745b7baf7\", \"document_id\": \"7b5af6ee-9167-5ae3-abc6-1addee1bcea1\", \"chunk_id\": \"1a3e2f63-76a5-4b20-ab44-663745b7baf7\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2025-12-待核实市场简报.md\", \"content\": \"## 未核实描述\\n\\n简报草稿声称“十二月家电销售增长、补贴效果持续”。草稿没有提供查询语句、订单口径或实际计算过程，也没有说明同比还是环比。\", \"score\": 3.7839564774584655, \"source\": \"keyword\", \"document_date\": \"2025-12-25\", \"document_type\": \"reference\", \"page_number\": null, \"section\": \"未核实描述\"}, {\"reference\": \"D:8c1aa477-d675-4386-b818-af849a43f67f\", \"document_id\": \"93e86629-9d67-5fee-b10d-e0df558e643c\", \"chunk_id\": \"8c1aa477-d675-4386-b818-af849a43f67f\", \"chunk_index\": 3, \"filename\": \"第七阶段合成评测-2025-12-家电运营周报.md\", \"content\": \"## 跟进行动\\n\\n运营组核对补贴结束的配置记录，客服组观察售后咨询，数据组保留查询口径和执行结果。建议区分规模变化与结构变化，避免看到总额下降就猜测库存断货。演示资料没有提供真实库存台账或供应商合同，相关问题应说明资料不足。\", \"score\": 3.61376669283248, \"source\": \"keyword\", \"document_date\": \"2025-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"跟进行动\"}, {\"reference\": \"D:a9a1c5a1-4205-4f34-9219-3a427d3f865b\", \"document_id\": \"bb878188-bbbc-590a-bd0b-74eeb98d9105\", \"chunk_id\": \"a9a1c5a1-4205-4f34-9219-3a427d3f865b\", \"chunk_index\": 3, \"filename\": \"第七阶段合成评测-2025-12-客服工单汇总.md\", \"content\": \"## 跟进建议\\n\\n先比较大促前后退款趋势，再检查品类和区域分布。客服文本可以作为解释线索，不能覆盖有效订单统计。记录问题日期，避免拿过时工单总结解释当前月份。本文件没有实际平均响应时长、客服坐席排班、薪资或客户个人联系方式。\", \"score\": 2.0146046834476814, \"source\": \"keyword\", \"document_date\": \"2025-12-31\", \"document_type\": \"support\", \"page_number\": null, \"section\": \"跟进建议\"}, {\"reference\": \"D:a59ed10e-8f89-4066-b9a8-ff26cb7b85b2\", \"document_id\": \"7b5af6ee-9167-5ae3-abc6-1addee1bcea1\", \"chunk_id\": \"a59ed10e-8f89-4066-b9a8-ff26cb7b85b2\", \"chunk_index\": 2, \"filename\": \"第七阶段合成评测-2025-12-待核实市场简报.md\", \"content\": \"## 核实要求\\n\\n该描述不能作为已证实结论。当有效订单数据或正式周报与之冲突时，应明确指出不一致，优先报告实际只读查询的结果，而不是修改查询条件去迎合草稿。\\n\\n文档日期为当年并不保证文档正确；相似度高也不是可信度证明。此文件的存在只用于检索和分析的干扰验收，不应作为默认经营事实。\", \"score\": 1.7834376870603827, \"source\": \"keyword\", \"document_date\": \"2025-12-25\", \"document_type\": \"reference\", \"page_number\": null, \"section\": \"核实要求\"}], \"warnings\": [], \"elapsed_ms\": 66, \"evidence_only\": true}",
+        "duration_ms": 66,
+        "thought": "我会在业务文档中查找 2025 年 12 月家电周报里提到的阶段性补贴结束日期。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_documents",
+        "arguments": {
+          "query": "家电周报 补贴 政策",
+          "document_type": "weekly_report"
+        },
+        "ok": true,
+        "output": "{\"mode\": \"keyword\", \"hits\": [{\"reference\": \"D:e0e299bc-6857-4c8c-ae87-c2034f05acdf\", \"document_id\": \"4b081068-3a74-5814-9f2b-89c1e9eb223e\", \"chunk_id\": \"e0e299bc-6857-4c8c-ae87-c2034f05acdf\", \"chunk_index\": 0, \"filename\": \"第七阶段合成评测-2024-12-家电旧周报.md\", \"content\": \"# 2024 年十二月家电周报（过期资料）\\n\\n这是特意设计的过时干扰文档，仅适用于 2024 年合成情景。\", \"score\": 5.373663352741197, \"source\": \"keyword\", \"document_date\": \"2024-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"2024 年十二月家电周报（过期资料）\"}, {\"reference\": \"D:5d0e1df3-2f55-48a8-9295-f01ea24102f1\", \"document_id\": \"4b081068-3a74-5814-9f2b-89c1e9eb223e\", \"chunk_id\": \"5d0e1df3-2f55-48a8-9295-f01ea24102f1\", \"chunk_index\": 2, \"filename\": \"第七阶段合成评测-2024-12-家电旧周报.md\", \"content\": \"## 使用限制\\n\\n不能因为文档同样出现“十二月”“家电”“补贴”就用它解释 2025 年数据。检索应按业务文档日期过滤，并在引用中展示年份。文件上传日期可能晚于业务日期，不代表政策已更新。\", \"score\": 3.7534383824444078, \"source\": \"keyword\", \"document_date\": \"2024-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"使用限制\"}, {\"reference\": \"D:640c69a4-cd9f-4c7a-a394-e838a90d5172\", \"document_id\": \"93e86629-9d67-5fee-b10d-e0df558e643c\", \"chunk_id\": \"640c69a4-cd9f-4c7a-a394-e838a90d5172\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2025-12-家电运营周报.md\", \"content\": \"## 家电活动变化\\n\\n演示情景设定：家电阶段性补贴在 2025 年 11 月 30 日结束，十二月没有延续同等补贴。十一月集中活动可能让部分消费者提前购买，十二月自然需求随后回落。补贴结束与需求前置是本周提出的业务解释，需要结合订单数据验证，不能只凭本周报断言唯一原因。\", \"score\": 3.4920325384698234, \"source\": \"keyword\", \"document_date\": \"2025-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"家电活动变化\"}, {\"reference\": \"D:3cebc3e6-1dea-4124-8f6e-d5dca2142854\", \"document_id\": \"93e86629-9d67-5fee-b10d-e0df558e643c\", \"chunk_id\": \"3cebc3e6-1dea-4124-8f6e-d5dca2142854\", \"chunk_index\": 2, \"filename\": \"第七阶段合成评测-2025-12-家电运营周报.md\", \"content\": \"## 建议核对的证据\\n\\n先查询十一月和十二月家电明细销售额，再按区域、下单端及会员等级拆解贡献。各区域是否普遍回落、是否由某个渠道减少导致，应从查询结果判断。文档不提供现成的实际销售数字，避免把宣传材料当成数据库。\\n\\n对比过去年份时，应明确筛选 2025 年资料。2024 年周报适用另一套活动政策，不能直接套用。市场简报中关于增长的描述尚未核实，如与有效订单统计冲突，应指出冲突并以数据库数值为准。\", \"score\": 2.3893171980226597, \"source\": \"keyword\", \"document_date\": \"2025-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"建议核对的证据\"}, {\"reference\": \"D:5fbdfa0a-8169-4398-9c4a-fa54a9a8aa66\", \"document_id\": \"4b081068-3a74-5814-9f2b-89c1e9eb223e\", \"chunk_id\": \"5fbdfa0a-8169-4398-9c4a-fa54a9a8aa66\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2024-12-家电旧周报.md\", \"content\": \"## 当时的活动\\n\\n旧年度家电补贴在十二月仍有延续，运营记录称活动持续至跨年。旧报告对家电需求持乐观判断，记录的安排不适用于 2025 年十二月。\", \"score\": 2.34588719654585, \"source\": \"keyword\", \"document_date\": \"2024-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"当时的活动\"}], \"warnings\": [], \"elapsed_ms\": 63, \"evidence_only\": true}",
+        "duration_ms": 63,
+        "thought": "我会在业务文档中查找 2025 年 12 月家电周报里提到的阶段性补贴结束日期。"
+      }
+    ],
+    "plan": [],
+    "reflection": {
+      "passed": true,
+      "quality_score": 92,
+      "issues": [],
+      "summary": "回答准确引用2025年12月家电运营周报，指出阶段性补贴于2025年11月30日结束，并正确区分了业务假设、过期资料与未核实草稿，结论有据。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "2025年12月家电周报记录阶段性补贴在2025年11月30日结束，12月没有延续同等补贴",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E2"
+          ],
+          "reason": "E1与E2均返回《第七阶段合成评测-2025-12-家电运营周报.md》「家电活动变化」分块，原文明确写明补贴在2025年11月30日结束、十二月没有延续同等补贴。"
+        },
+        {
+          "claim": "周报将「补贴结束+需求前置」作为业务假设，需结合订单数据验证，不能断言唯一原因",
+          "status": "supported",
+          "evidence_ids": [
+            "E1"
+          ],
+          "reason": "同一分块原文写明这是本周提出的业务解释，需要结合订单数据验证，不能只凭本周报断言唯一原因，回答的措辞与之一致。"
+        },
+        {
+          "claim": "跟进行动提到运营组需核对补贴结束的配置记录",
+          "status": "supported",
+          "evidence_ids": [
+            "E1"
+          ],
+          "reason": "E1返回的「跟进行动」分块写明运营组核对补贴结束的配置记录。"
+        },
+        {
+          "claim": "2024年旧周报称旧年度补贴十二月仍有延续，但不适用于2025年",
+          "status": "supported",
+          "evidence_ids": [
+            "E2"
+          ],
+          "reason": "E2返回的2024旧周报分块写明旧年度补贴十二月仍有延续且不适用于2025年十二月，另有使用限制分块强调不能套用，回答的区分正确。"
+        },
+        {
+          "claim": "待核实市场简报称十二月销售增长、补贴效果持续，属未核实描述，应以正式周报为准",
+          "status": "supported",
+          "evidence_ids": [
+            "E1"
+          ],
+          "reason": "E1返回的待核实简报分块写明该说法未提供查询语句、口径或计算过程，属未核实描述，回答的处理符合证据。"
+        },
+        {
+          "claim": "补贴结束日期为文档所述政策安排，尚未用订单数据或配置记录验证",
+          "status": "supported",
+          "evidence_ids": [
+            "E1"
+          ],
+          "reason": "周报原文要求结合订单数据验证，跟进行动也要求核对配置记录，回答如实标注了该日期尚未经数据验证，未将文档陈述夸大为已验证事实。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 4,
+    "usage": {
+      "prompt_tokens": 15220,
+      "completion_tokens": 1166,
+      "total_tokens": 16386,
+      "prompt_cache_hit_tokens": 8960,
+      "prompt_cache_miss_tokens": 6260
+    },
+    "duration_ms": 7525,
+    "error": null,
+    "citations": [
+      {
+        "reference": "D:640c69a4-cd9f-4c7a-a394-e838a90d5172",
+        "document_id": "93e86629-9d67-5fee-b10d-e0df558e643c",
+        "chunk_id": "640c69a4-cd9f-4c7a-a394-e838a90d5172",
+        "chunk_index": 1,
+        "filename": "第七阶段合成评测-2025-12-家电运营周报.md",
+        "snippet": "## 家电活动变化\n\n演示情景设定：家电阶段性补贴在 2025 年 11 月 30 日结束，十二月没有延续同等补贴。十一月集中活动可能让部分消费者提前购买，十二月自然需求随后回落。补贴结束与需求前置是本周提出的业务解释，需要结合订单数据验证，不能只凭本周报断言唯一原因。",
+        "document_date": "2025-12-31",
+        "document_type": "weekly_report",
+        "page_number": null,
+        "section": "家电活动变化"
+      },
+      {
+        "reference": "D:8c1aa477-d675-4386-b818-af849a43f67f",
+        "document_id": "93e86629-9d67-5fee-b10d-e0df558e643c",
+        "chunk_id": "8c1aa477-d675-4386-b818-af849a43f67f",
+        "chunk_index": 3,
+        "filename": "第七阶段合成评测-2025-12-家电运营周报.md",
+        "snippet": "## 跟进行动\n\n运营组核对补贴结束的配置记录，客服组观察售后咨询，数据组保留查询口径和执行结果。建议区分规模变化与结构变化，避免看到总额下降就猜测库存断货。演示资料没有提供真实库存台账或供应商合同，相关问题应说明资料不足。",
+        "document_date": "2025-12-31",
+        "document_type": "weekly_report",
+        "page_number": null,
+        "section": "跟进行动"
+      },
+      {
+        "reference": "D:5fbdfa0a-8169-4398-9c4a-fa54a9a8aa66",
+        "document_id": "4b081068-3a74-5814-9f2b-89c1e9eb223e",
+        "chunk_id": "5fbdfa0a-8169-4398-9c4a-fa54a9a8aa66",
+        "chunk_index": 1,
+        "filename": "第七阶段合成评测-2024-12-家电旧周报.md",
+        "snippet": "## 当时的活动\n\n旧年度家电补贴在十二月仍有延续，运营记录称活动持续至跨年。旧报告对家电需求持乐观判断，记录的安排不适用于 2025 年十二月。",
+        "document_date": "2024-12-31",
+        "document_type": "weekly_report",
+        "page_number": null,
+        "section": "当时的活动"
+      },
+      {
+        "reference": "D:1a3e2f63-76a5-4b20-ab44-663745b7baf7",
+        "document_id": "7b5af6ee-9167-5ae3-abc6-1addee1bcea1",
+        "chunk_id": "1a3e2f63-76a5-4b20-ab44-663745b7baf7",
+        "chunk_index": 1,
+        "filename": "第七阶段合成评测-2025-12-待核实市场简报.md",
+        "snippet": "## 未核实描述\n\n简报草稿声称“十二月家电销售增长、补贴效果持续”。草稿没有提供查询语句、订单口径或实际计算过程，也没有说明同比还是环比。",
+        "document_date": "2025-12-25",
+        "document_type": "reference",
+        "page_number": null,
+        "section": "未核实描述"
+      }
+    ],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 704,
+          "usage": {
+            "prompt_tokens": 199,
+            "completion_tokens": 5,
+            "total_tokens": 204,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 199
+          }
+        },
+        "analysis": {
+          "logical_calls": 2,
+          "http_requests": 2,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 3924,
+          "usage": {
+            "prompt_tokens": 11350,
+            "completion_tokens": 601,
+            "total_tokens": 11951,
+            "prompt_cache_hit_tokens": 8576,
+            "prompt_cache_miss_tokens": 2774
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 2822,
+          "usage": {
+            "prompt_tokens": 3671,
+            "completion_tokens": 560,
+            "total_tokens": 4231,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 3287
+          }
+        }
+      },
+      "llm_calls": 4,
+      "chat_usage": {
+        "prompt_tokens": 15220,
+        "completion_tokens": 1166,
+        "total_tokens": 16386,
+        "prompt_cache_hit_tokens": 8960,
+        "prompt_cache_miss_tokens": 6260
+      },
+      "http_requests": 4,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 2,
+    "question": "2025年12月家电周报记录的阶段性补贴在什么日期结束？",
+    "tables": [],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "pattern_0": true,
+      "source_appliances": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

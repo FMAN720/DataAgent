@@ -1,0 +1,218 @@
+{
+  "id": "sql_nov_net",
+  "category": "sql",
+  "split": "development",
+  "variant": "no_reflection",
+  "question": "2025年11月净销售额是多少？请给精确到分的元数。",
+  "response": {
+    "answer": "**2025年11月净销售额为 1,047,258.23 元。**\n\n数据质量检查通过：订单无重复主键、无缺失、无非法状态/日期/金额，用户表无重复、无孤立订单。\n\n口径：净销售额 = 有效订单（paid、completed）实付金额求和，已排除测试账号，按下单时间（order_time）统计，区间为 2025-11-01 至 2025-11-30（左闭右开）。",
+    "success": true,
+    "trace_id": "0de0a830-a1a8-492d-95c6-ad62a6e27ab1",
+    "session_id": "09eac880-ed92-4349-ae58-15d6fc5dcae1",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "get_metric_definition",
+        "arguments": {
+          "metric_id": "net_sales"
+        },
+        "ok": true,
+        "output": "{\"definitions\": [{\"id\": \"net_sales\", \"name\": \"净销售额\", \"unit\": \"元\", \"formula\": \"有效订单 pay_amount（分）求和 / 100；paid、completed\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}]}",
+        "duration_ms": 0,
+        "thought": "I'll look up the metric definition first, then query November 2025."
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "query_metric",
+        "arguments": {
+          "metric_id": "net_sales",
+          "source": "ecommerce_v1",
+          "start": "2025-11-01",
+          "end": "2025-12-01",
+          "unit": "元"
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"metric\": {\"id\": \"net_sales\", \"name\": \"净销售额\", \"unit\": \"元\", \"formula\": \"有效订单 pay_amount（分）求和 / 100；paid、completed\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}, \"quality\": {\"order_rows\": 9143, \"duplicate_orders\": 0, \"missing_orders\": 0, \"invalid_status\": 0, \"invalid_dates\": 0, \"invalid_money\": 0, \"first_date\": \"2025-01-01 05:25:36\", \"last_date\": \"2025-12-31 23:21:57\", \"duplicate_users\": 0, \"invalid_users\": 0, \"orphan_orders\": 0}, \"period\": {\"start\": \"2025-11-01\", \"end\": \"2025-12-01\"}, \"summary\": {\"value\": \"1047258.23\"}, \"groups\": [{\"segment\": \"整体\", \"value\": \"1047258.23\"}], \"group_count\": 1, \"warnings\": [\"检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。\"], \"queries\": [\"SELECT '整体' AS segment, SUM(CASE WHEN (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS value FROM \\\"orders\\\" o JOIN \\\"users\\\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') GROUP BY 1 ORDER BY segment\", \"SELECT SUM(CASE WHEN (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS value FROM \\\"orders\\\" o JOIN \\\"users\\\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01')\"]}",
+        "duration_ms": 52,
+        "thought": ""
+      }
+    ],
+    "plan": [],
+    "reflection": null,
+    "reflection_status": "skipped",
+    "revised": false,
+    "llm_calls": 4,
+    "usage": {
+      "prompt_tokens": 14346,
+      "completion_tokens": 288,
+      "total_tokens": 14634,
+      "prompt_cache_hit_tokens": 13568,
+      "prompt_cache_miss_tokens": 778
+    },
+    "duration_ms": 3967,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "unverified",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [
+        "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+      ],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": [
+        {
+          "status": "ready",
+          "metric": {
+            "id": "net_sales",
+            "name": "净销售额",
+            "unit": "元",
+            "formula": "有效订单 pay_amount（分）求和 / 100；paid、completed",
+            "kind": "additive",
+            "version": "1",
+            "source": "ecommerce_v1",
+            "time_field": "orders.order_time",
+            "exclude_test_users": true,
+            "allowed_join": "orders.user_id = users.user_id（users.user_id 必须唯一）",
+            "dimensions": [
+              "overall",
+              "region",
+              "order_channel"
+            ],
+            "scope": "项目电商模型；不自动套用于上传表或其他数据库业务口径"
+          },
+          "quality": {
+            "order_rows": 9143,
+            "duplicate_orders": 0,
+            "missing_orders": 0,
+            "invalid_status": 0,
+            "invalid_dates": 0,
+            "invalid_money": 0,
+            "first_date": "2025-01-01 05:25:36",
+            "last_date": "2025-12-31 23:21:57",
+            "duplicate_users": 0,
+            "invalid_users": 0,
+            "orphan_orders": 0
+          },
+          "period": {
+            "start": "2025-11-01",
+            "end": "2025-12-01"
+          },
+          "summary": {
+            "value": "1047258.23"
+          },
+          "groups": [
+            {
+              "segment": "整体",
+              "value": "1047258.23"
+            }
+          ],
+          "group_count": 1,
+          "warnings": [
+            "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+          ],
+          "queries": [
+            "SELECT '整体' AS segment, SUM(CASE WHEN (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS value FROM \"orders\" o JOIN \"users\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') GROUP BY 1 ORDER BY segment",
+            "SELECT SUM(CASE WHEN (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS value FROM \"orders\" o JOIN \"users\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01')"
+          ]
+        }
+      ]
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 835,
+          "usage": {
+            "prompt_tokens": 200,
+            "completion_tokens": 5,
+            "total_tokens": 205,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 200
+          }
+        },
+        "analysis": {
+          "logical_calls": 3,
+          "http_requests": 3,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 3070,
+          "usage": {
+            "prompt_tokens": 14146,
+            "completion_tokens": 283,
+            "total_tokens": 14429,
+            "prompt_cache_hit_tokens": 13568,
+            "prompt_cache_miss_tokens": 578
+          }
+        }
+      },
+      "llm_calls": 4,
+      "chat_usage": {
+        "prompt_tokens": 14346,
+        "completion_tokens": 288,
+        "total_tokens": 14634,
+        "prompt_cache_hit_tokens": 13568,
+        "prompt_cache_miss_tokens": 778
+      },
+      "http_requests": 4,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 3,
+    "question": "2025年11月净销售额是多少？请给精确到分的元数。",
+    "tables": [
+      {
+        "id": "result-2",
+        "title": "净销售额",
+        "columns": [
+          "分组",
+          "净销售额（元）"
+        ],
+        "rows": [
+          [
+            "整体",
+            "1047258.23"
+          ]
+        ],
+        "evidence_ids": [
+          "E2"
+        ],
+        "scope": {
+          "metric": "净销售额",
+          "unit": "元",
+          "source": "ecommerce_v1",
+          "start": "2025-11-01",
+          "end": "2025-12-01"
+        },
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

@@ -1,0 +1,926 @@
+{
+  "id": "cmp_mismatch",
+  "category": "comparison",
+  "split": "holdout",
+  "variant": "baseline",
+  "question": "核对2025年11月和12月各品类明细成交额之和是否等于订单净销售额。未分摊订单优惠时，能否直接报告净销售额的品类贡献？",
+  "response": {
+    "answer": "## 结论\n\n**不相等，两个月都存在差异，而且差异正好等于订单级优惠金额。因此，在优惠未分摊的情况下，不能直接报告「净销售额的品类贡献」。**\n\n### 1. 核对结果（单位：元）\n\n| 月份 | 品类明细成交额之和（item_amount） | 订单净销售额（pay_amount） | 差异 | 订单优惠合计（discount_amount） |\n|---|---|---|---|---|\n| 2025-11 | 1,218,786.55 | 1,047,258.23 | +171,528.32 | 171,528.32 |\n| 2025-12 | 749,729.90 | 734,981.67 | +14,748.23 | 14,748.23 |\n\n- 11 月明细之和比净销售额高 **16.4%**（171,528.32 / 1,047,258.23），12 月高 **2.0%**。\n- 两个月的差异金额与订单优惠合计**完全一致**，说明差异来源就是订单级优惠没有分摊到明细，不存在其他漏项。\n\n### 2. 差异来源定位（事实）\n\n- 明细成交额之和 = 订单原价合计（total_amount）：11 月 1,218,786.55、12 月 749,729.90，两者逐月相等，说明明细覆盖完整、没有未归类明细，也没有订单缺明细（无明细订单数 = 0）。\n- 净销售额 = 原价合计 − 优惠合计，即 pay_amount。\n- 11 月 1,039 笔有效订单**全部**带优惠；12 月 733 笔中 236 笔带优惠，优惠覆盖面和力度明显下降，这也是 12 月差异率只有 2.0% 的原因。\n- 跨品类订单普遍存在：11 月 1,039 笔中 414 笔、12 月 733 笔中 270 笔包含多个品类。因此，即使把优惠按订单分摊，也需要按明细金额比例拆分，不能整单归到某一品类。\n\n### 3. 能否直接报告品类贡献？\n\n**不能。** 原因：\n\n1. 品类明细用的是 `item_amount`（未分摊优惠），净销售额用的是 `pay_amount`（已扣优惠），两者口径不同，明细之和天然大于净销售额，这是口径文档明确说明的预期差异 [D:b54cedbc-be9e-4abd-9667-4a4e913150c3]（《第七阶段合成评测-2025-01-销售口径说明.md》「金额与状态」）。\n2. 若直接用明细之和计算品类占比，分母（1,218,786.55 / 749,729.90）大于真实净销售额，各品类占比会被系统性稀释，且稀释程度随优惠力度变化（11 月与 12 月差异率相差 8 倍），跨月比较会失真。\n3. 复盘资料也要求「不要把 GMV、实收销售额和订单明细金额混成一个指标」[D:3a7325db-3dc0-40b5-ad85-ab465bc56134]（《第七阶段合成评测-2025-11-双十一复盘.md》「核算与复盘动作」）。\n\n**可以怎么报告**：把品类明细成交额作为「品类成交结构（未分摊优惠）」单独呈现，并注明与净销售额的差额；若需要「净销售额的品类贡献」，必须先按明细金额比例把订单优惠分摊到各品类（本项目未提供官方分摊规则，属待确认事项），或明确说明这是未分摊口径下的近似结构。\n\n### 4. 待验证假设\n\n- 优惠按明细金额比例分摊是否与业务实际规则一致，当前资料未给出分摊政策，**尚未验证**。\n- 11 月优惠力度高与双十一促销相关（文档提到活动订单优惠按商品合计 8%–20% 生成 [D:f81d9064-fd32-4071-b702-672fb2491b1d]），但这只是数据生成说明，不能作为实际优惠归因结论。\n\n口径：净销售额 = 有效订单（paid、completed）pay_amount 求和，已排除测试账号，按下单时间统计；品类明细成交额 = 有效订单 order_items.item_amount 求和，未分摊订单级优惠。",
+    "success": true,
+    "trace_id": "c2582139-2579-4f36-8e3c-706e860b527c",
+    "session_id": "4fc55d22-80de-409b-8ca4-ed8e9fc90542",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "get_metric_definition",
+        "arguments": {
+          "metric_id": "net_sales"
+        },
+        "ok": true,
+        "output": "{\"definitions\": [{\"id\": \"net_sales\", \"name\": \"净销售额\", \"unit\": \"元\", \"formula\": \"有效订单 pay_amount（分）求和 / 100；paid、completed\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}]}",
+        "duration_ms": 0,
+        "thought": "我先确认指标口径和表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_glossary",
+        "arguments": {
+          "query": "品类销售额 明细成交金额 订单优惠分摊"
+        },
+        "ok": true,
+        "output": "## 品类销售额\n品类销售额按订单明细的成交金额统计：`SUM(order_items.item_amount)`，关联 products、categories，只统计有效订单（status IN ('paid', 'completed')）并排除测试账号。\n注意：item_amount 未分摊订单级优惠，因此各品类销售额之和会略大于净销售额，这是预期内的差异。\n\n## 毛利与毛利率\n- 毛利 = SUM(order_items.item_amount) - SUM(order_items.quantity * products.cost_price)，只统计有效订单，排除测试账号。\n- 毛利率 = 毛利 / SUM(order_items.item_amount)。\n注意：毛利计算基于明细成交价，未扣减订单级优惠。\n\n## 净销售额（营收 / 销售额）\n净销售额 = 有效订单的实付金额之和，即 GMV 扣除已退款订单。\nSQL 口径：`SUM(pay_amount)`，条件 `status IN ('paid', 'completed')`，并排除测试账号。\n用户说「销售额」「营收」「收入」时，默认指净销售额。",
+        "duration_ms": 0,
+        "thought": "我先确认指标口径和表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_tables",
+        "arguments": {
+          "question": "订单 品类 明细成交额 优惠"
+        },
+        "ok": true,
+        "output": "{\"dialect\": \"sqlite\", \"tables\": [{\"table\": \"categories\", \"columns\": [\"category_id\", \"category_name\", \"parent_id\"]}, {\"table\": \"order_items\", \"columns\": [\"item_id\", \"order_id\", \"product_id\", \"quantity\", \"unit_price\", \"item_amount\"]}, {\"table\": \"orders\", \"columns\": [\"order_id\", \"user_id\", \"order_time\", \"status\", \"channel\", \"total_amount\", \"discount_amount\", \"pay_amount\", \"pay_time\"]}, {\"table\": \"payments\", \"columns\": [\"payment_id\", \"order_id\", \"pay_method\", \"amount\", \"paid_at\"]}, {\"table\": \"products\", \"columns\": [\"product_id\", \"product_name\", \"category_id\", \"list_price\", \"cost_price\", \"is_active\"]}, {\"table\": \"refund_requests\", \"columns\": [\"request_id\", \"order_id\", \"request_time\", \"status\", \"reason\"]}, {\"table\": \"refunds\", \"columns\": [\"refund_id\", \"order_id\", \"refund_amount\", \"refund_time\", \"reason\"]}, {\"table\": \"regions\", \"columns\": [\"region_code\", \"region_name\"]}, {\"table\": \"uploaded_budget\", \"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\"]}, {\"table\": \"user_events\", \"columns\": [\"event_id\", \"user_id\", \"event_date\", \"event_type\"]}, {\"table\": \"users\", \"columns\": [\"user_id\", \"register_date\", \"region_code\", \"gender\", \"birth_year\", \"member_level\", \"acquire_channel\", \"is_test\"]}]}",
+        "duration_ms": 4,
+        "thought": "我先确认指标口径和表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "orders",
+            "order_items",
+            "products",
+            "categories",
+            "users"
+          ]
+        },
+        "ok": true,
+        "output": "表 orders\n  order_id INTEGER\n  user_id INTEGER NOT NULL\n  order_time TEXT NOT NULL  -- 下单时间 YYYY-MM-DD HH:MM:SS\n  status TEXT NOT NULL  -- paid 已支付 / completed 已完成 / cancelled 已取消（未支付） / refunded 已全额退款\n  channel TEXT NOT NULL  -- 下单端：app / web / mini_program\n  total_amount INTEGER NOT NULL  -- 商品原价合计，单位：分\n  discount_amount INTEGER NOT NULL  -- 优惠金额，单位：分\n  pay_amount INTEGER NOT NULL  -- 实付金额 = total_amount - discount_amount，单位：分；cancelled 订单为 0\n  pay_time TEXT  -- 支付时间；cancelled 为 NULL\n  外键: user_id -> users(user_id)\n  样例 (order_id | user_id | order_time | status | channel | total_amount | discount_amount | pay_amount | pay_time):\n  1 | 350 | 2025-01-26 14:43:02 | completed | web | 538710 | 0 | 538710 | 2025-01-26 15:10:02\n  2 | 930 | 2025-01-26 20:03:44 | completed | app | 15930 | 343 | 15587 | 2025-01-26 20:28:44\n  3 | 390 | 2025-01-01 17:46:50 | refunded | web | 12900 | 0 | 12900 | 2025-01-01 18:12:50\n\n表 order_items\n  item_id INTEGER\n  order_id INTEGER NOT NULL\n  product_id INTEGER NOT NULL\n  quantity INTEGER NOT NULL\n  unit_price INTEGER NOT NULL  -- 成交单价（未分摊优惠），单位：分\n  item_amount INTEGER NOT NULL  -- quantity * unit_price，单位：分\n  外键: product_id -> products(product_id)\n  外键: order_id -> orders(order_id)\n  样例 (item_id | order_id | product_id | quantity | unit_price | item_amount):\n  1 | 1 | 1 | 1 | 499900 | 499900\n  2 | 1 | 18 | 1 | 11900 | 11900\n  3 | 1 | 27 | 1 | 26910 | 26910\n\n表 products\n  product_id INTEGER\n  product_name TEXT NOT NULL\n  category_id INTEGER NOT NULL\n  list_price INTEGER NOT NULL  -- 标价，单位：分\n  cost_price INTEGER NOT NULL  -- 成本价，单位：分\n  is_active INTEGER NOT NULL  -- 1 在售，0 下架\n  外键: category_id -> categories(category_id)\n  样例 (product_id | product_name | category_id | list_price | cost_price | is_active):\n  1 | 旗舰手机 | 1 | 499900 | 368492 | 1\n  2 | 降噪耳机 | 1 | 89900 | 45969 | 1\n  3 | 智能手表 | 1 | 129900 | 78627 | 1\n\n表 categories\n  category_id INTEGER\n  category_name TEXT NOT NULL  -- 一级品类名称\n  parent_id INTEGER  -- 预留，当前均为 NULL（无二级品类）\n  样例 (category_id | category_name | parent_id):\n  1 | 手机数码 | None\n  2 | 家用电器 | None\n  3 | 服饰鞋包 | None\n\n表 users\n  user_id INTEGER\n  register_date TEXT NOT NULL  -- 注册日期 YYYY-MM-DD\n  region_code TEXT NOT NULL\n  gender TEXT  -- M / F / NULL（未填写）\n  birth_year INTEGER\n  member_level TEXT NOT NULL  -- normal / silver / gold\n  acquire_channel TEXT NOT NULL  -- 拉新渠道：organic / ads / referral\n  is_test INTEGER NOT NULL  -- 1 表示内部测试账号，统计时必须排除\n  外键: region_code -> regions(region_code)\n  样例 (user_id | register_date | region_code | gender | birth_year | member_level | acquire_channel | is_test):\n  1 | 2024-04-17 | NORTH | F | 1975 | normal | ads | 0\n  2 | 2024-11-26 | NORTH | None | 1983 | silver | ads | 0\n  3 | 2025-12-03 | EAST | F | 1989 | silver | organic | 0",
+        "duration_ms": 5,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "query_metric",
+        "arguments": {
+          "metric_id": "net_sales",
+          "source": "ecommerce_v1",
+          "start": "2025-11-01",
+          "end": "2025-12-01"
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"metric\": {\"id\": \"net_sales\", \"name\": \"净销售额\", \"unit\": \"元\", \"formula\": \"有效订单 pay_amount（分）求和 / 100；paid、completed\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}, \"quality\": {\"order_rows\": 9143, \"duplicate_orders\": 0, \"missing_orders\": 0, \"invalid_status\": 0, \"invalid_dates\": 0, \"invalid_money\": 0, \"first_date\": \"2025-01-01 05:25:36\", \"last_date\": \"2025-12-31 23:21:57\", \"duplicate_users\": 0, \"invalid_users\": 0, \"orphan_orders\": 0}, \"period\": {\"start\": \"2025-11-01\", \"end\": \"2025-12-01\"}, \"summary\": {\"value\": \"1047258.23\"}, \"groups\": [{\"segment\": \"整体\", \"value\": \"1047258.23\"}], \"group_count\": 1, \"warnings\": [\"检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。\"], \"queries\": [\"SELECT '整体' AS segment, SUM(CASE WHEN (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS value FROM \\\"orders\\\" o JOIN \\\"users\\\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') GROUP BY 1 ORDER BY segment\", \"SELECT SUM(CASE WHEN (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS value FROM \\\"orders\\\" o JOIN \\\"users\\\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01')\"]}",
+        "duration_ms": 20,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "query_metric",
+        "arguments": {
+          "metric_id": "net_sales",
+          "source": "ecommerce_v1",
+          "start": "2025-12-01",
+          "end": "2026-01-01"
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"metric\": {\"id\": \"net_sales\", \"name\": \"净销售额\", \"unit\": \"元\", \"formula\": \"有效订单 pay_amount（分）求和 / 100；paid、completed\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}, \"quality\": {\"order_rows\": 9143, \"duplicate_orders\": 0, \"missing_orders\": 0, \"invalid_status\": 0, \"invalid_dates\": 0, \"invalid_money\": 0, \"first_date\": \"2025-01-01 05:25:36\", \"last_date\": \"2025-12-31 23:21:57\", \"duplicate_users\": 0, \"invalid_users\": 0, \"orphan_orders\": 0}, \"period\": {\"start\": \"2025-12-01\", \"end\": \"2026-01-01\"}, \"summary\": {\"value\": \"734981.67\"}, \"groups\": [{\"segment\": \"整体\", \"value\": \"734981.67\"}], \"group_count\": 1, \"warnings\": [\"检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。\"], \"queries\": [\"SELECT '整体' AS segment, SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS value FROM \\\"orders\\\" o JOIN \\\"users\\\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') GROUP BY 1 ORDER BY segment\", \"SELECT SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS value FROM \\\"orders\\\" o JOIN \\\"users\\\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01')\"]}",
+        "duration_ms": 17,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 4,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT CASE WHEN o.order_time < '2025-12-01' THEN '2025-11' ELSE '2025-12' END AS period,\n SUM(oi.item_amount)/100.0 AS item_sum_yuan,\n COUNT(DISTINCT o.order_id) AS orders,\n SUM(oi.item_amount) AS item_sum_fen\nFROM orders o\nJOIN users u ON u.user_id=o.user_id\nJOIN order_items oi ON oi.order_id=o.order_id\nWHERE u.is_test=0 AND o.status IN ('paid','completed')\n AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'\nGROUP BY 1",
+          "purpose": "各月品类明细成交额之和"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"period\", \"item_sum_yuan\", \"orders\", \"item_sum_fen\"], \"rows\": [[\"2025-11\", 1218786.55, 1039, 121878655], [\"2025-12\", 749729.9, 733, 74972990]], \"row_count\": 2}",
+        "duration_ms": 5,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 4,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT CASE WHEN o.order_time < '2025-12-01' THEN '2025-11' ELSE '2025-12' END AS period,\n SUM(o.total_amount)/100.0 AS total_amount_yuan,\n SUM(o.discount_amount)/100.0 AS discount_yuan,\n SUM(o.pay_amount)/100.0 AS pay_yuan,\n SUM(CASE WHEN o.discount_amount>0 THEN 1 ELSE 0 END) AS orders_with_discount,\n COUNT(*) AS orders\nFROM orders o JOIN users u ON u.user_id=o.user_id\nWHERE u.is_test=0 AND o.status IN ('paid','completed')\n AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'\nGROUP BY 1",
+          "purpose": "各月订单原价、优惠、实付合计"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"period\", \"total_amount_yuan\", \"discount_yuan\", \"pay_yuan\", \"orders_with_discount\", \"orders\"], \"rows\": [[\"2025-11\", 1218786.55, 171528.32, 1047258.23, 1039, 1039], [\"2025-12\", 749729.9, 14748.23, 734981.67, 236, 733]], \"row_count\": 2}",
+        "duration_ms": 4,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 5,
+        "tool": "run_sql",
+        "arguments": {
+          "purpose": "检查明细是否跨品类、是否有未归类品类",
+          "sql": "SELECT CASE WHEN o.order_time < '2025-12-01' THEN '2025-11' ELSE '2025-12' END AS period,\n COUNT(*) AS orders,\n SUM(CASE WHEN cat_cnt>1 THEN 1 ELSE 0 END) AS multi_category_orders,\n SUM(CASE WHEN cat_cnt IS NULL THEN 1 ELSE 0 END) AS orders_no_items\nFROM (\n SELECT o.order_id, o.order_time, COUNT(DISTINCT p.category_id) AS cat_cnt\n FROM orders o JOIN users u ON u.user_id=o.user_id\n LEFT JOIN order_items oi ON oi.order_id=o.order_id\n LEFT JOIN products p ON p.product_id=oi.product_id\n WHERE u.is_test=0 AND o.status IN ('paid','completed')\n  AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'\n GROUP BY o.order_id\n) o\nGROUP BY 1"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"period\", \"orders\", \"multi_category_orders\", \"orders_no_items\"], \"rows\": [[\"2025-11\", 1039, 414, 0], [\"2025-12\", 733, 270, 0]], \"row_count\": 2}",
+        "duration_ms": 4,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 5,
+        "tool": "run_sql",
+        "arguments": {
+          "purpose": "按品类看明细成交额与订单优惠",
+          "sql": "SELECT CASE WHEN o.order_time < '2025-12-01' THEN '2025-11' ELSE '2025-12' END AS period,\n c.category_name,\n SUM(oi.item_amount)/100.0 AS item_yuan\nFROM orders o JOIN users u ON u.user_id=o.user_id\nJOIN order_items oi ON oi.order_id=o.order_id\nJOIN products p ON p.product_id=oi.product_id\nJOIN categories c ON c.category_id=p.category_id\nWHERE u.is_test=0 AND o.status IN ('paid','completed')\n AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'\nGROUP BY 1,2 ORDER BY 1,3 DESC"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"period\", \"category_name\", \"item_yuan\"], \"rows\": [[\"2025-11\", \"手机数码\", 688214.5], [\"2025-11\", \"家用电器\", 234927.75], [\"2025-11\", \"服饰鞋包\", 157145.25], [\"2025-11\", \"食品生鲜\", 43097.8], [\"2025-11\", \"美妆个护\", 42358.4], [\"2025-11\", \"家居日用\", 32921.65], [\"2025-11\", \"图书文娱\", 20121.2], [\"2025-12\", \"手机数码\", 449127.45], [\"2025-12\", \"服饰鞋包\", 102535.3], [\"2025-12\", \"家用电器\", 84642.95], [\"2025-12\", \"食品生鲜\", 39235.4], [\"2025-12\", \"美妆个护\", 35483.8], [\"2025-12\", \"家居日用\", 26137.55], [\"2025-12\", \"图书文娱\", 12567.45]], \"row_count\": 14}",
+        "duration_ms": 3,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 6,
+        "tool": "search_documents",
+        "arguments": {
+          "query": "订单级优惠分摊 品类销售额 口径说明"
+        },
+        "ok": true,
+        "output": "{\"mode\": \"hybrid\", \"hits\": [{\"reference\": \"D:b54cedbc-be9e-4abd-9667-4a4e913150c3\", \"document_id\": \"70aa0a60-b1ff-5841-8bac-de462f569675\", \"chunk_id\": \"b54cedbc-be9e-4abd-9667-4a4e913150c3\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2025-01-销售口径说明.md\", \"content\": \"## 金额与状态\\n\\n业务库金额以分存储，展示为元时除以 100。净销售额使用 paid、completed 有效订单，排除 cancelled、refunded 和 users.is_test=1 的测试账号。GMV 与净销售额不是同一个指标，不应混用名称。\\n\\n整体订单销售额和品类明细成交额使用不同字段；整体实收使用 pay_amount，品类明细使用 item_amount。订单级折扣并未自动分摊至每条明细，所以不要直接假设明细求和等于订单净实收。\", \"score\": 0.032266458495966696, \"source\": \"hybrid\", \"document_date\": \"2025-01-01\", \"document_type\": \"reference\", \"page_number\": null, \"section\": \"金额与状态\"}, {\"reference\": \"D:3a7325db-3dc0-40b5-ad85-ab465bc56134\", \"document_id\": \"576c51bf-64c7-5115-80fe-60778f5cd4a5\", \"chunk_id\": \"3a7325db-3dc0-40b5-ad85-ab465bc56134\", \"chunk_index\": 2, \"filename\": \"第七阶段合成评测-2025-11-双十一复盘.md\", \"content\": \"## 核算与复盘动作\\n\\n统计销售额时排除测试账号、退款与取消订单，保留 paid 和 completed 状态。品类分析按订单明细成交额计算，金额从分转为元后展示。不要把 GMV、实收销售额和订单明细金额混成一个指标。\\n\\n活动执行组需要保留优惠配置、资源排期与客诉记录。客服组整理退款事项，数据组按渠道与区域下钻；复盘意见必须区分数据库证据、文档记录和待验证推断。下次活动先明确对照期，再确定看金额增量还是订单增量。\", \"score\": 0.03200204813108039, \"source\": \"hybrid\", \"document_date\": \"2025-11-30\", \"document_type\": \"review\", \"page_number\": null, \"section\": \"核算与复盘动作\"}, {\"reference\": \"D:ea8fc1e9-20fd-45f6-843d-6ff311d9101b\", \"document_id\": \"70aa0a60-b1ff-5841-8bac-de462f569675\", \"chunk_id\": \"ea8fc1e9-20fd-45f6-843d-6ff311d9101b\", \"chunk_index\": 0, \"filename\": \"第七阶段合成评测-2025-01-销售口径说明.md\", \"content\": \"# 2025 年销售指标核算说明\\n\\n合成演示资料，规则与项目内业务口径库配套。精确指标规则仍以 search_glossary 返回的口径为准。\", \"score\": 0.031009615384615385, \"source\": \"hybrid\", \"document_date\": \"2025-01-01\", \"document_type\": \"reference\", \"page_number\": null, \"section\": \"2025 年销售指标核算说明\"}, {\"reference\": \"D:f81d9064-fd32-4071-b702-672fb2491b1d\", \"document_id\": \"576c51bf-64c7-5115-80fe-60778f5cd4a5\", \"chunk_id\": \"f81d9064-fd32-4071-b702-672fb2491b1d\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2025-11-双十一复盘.md\", \"content\": \"## 活动机制与观察范围\\n\\n十一月开展年度集中促销，演示库的整体订单生成系数为 1.8，高于十月的 1.1。该系数只控制种子数据生成，不是实际订单增长百分比。活动订单优惠金额按商品合计的 8% 至 20% 生成。实际订单量、支付金额和折扣分布必须查询数据库，不应直接拿系数作为统计结果。\\n\\n家电和日常消费品参与活动，页面资源集中在活动期。复盘将优惠刺激、提前采购列为需要验证的需求变化解释，不能仅凭时间上的先后关系认定因果。家电是否透支十二月需求，还需要结合十二月周报、品类环比及区域分布分析。\", \"score\": 0.030776515151515152, \"source\": \"hybrid\", \"document_date\": \"2025-11-30\", \"document_type\": \"review\", \"page_number\": null, \"section\": \"活动机制与观察范围\"}, {\"reference\": \"D:277a3343-9b2e-4793-9f73-bc572ca26698\", \"document_id\": \"bce9889b-b095-5a2e-9b5b-e94b93ed34de\", \"chunk_id\": \"277a3343-9b2e-4793-9f73-bc572ca26698\", \"chunk_index\": 2, \"filename\": \"第七阶段合成评测-2025-12-年货节方案.md\", \"content\": \"## 口径与关联分析\\n\\n活动商品名单应保存 product_id，导入表格后与 business.products、business.order_items 和 business.orders 关联，避免按模糊商品名直接拼接。上传预算金额保持源文件单位，如果业务订单金额为分，应在查询中明确换算后再比较。\\n\\n除销售金额外，运营还应观察支付订单数、商品件数、退款与不同区域贡献。没有活动对照组时，只能描述活动期变化，不能直接把全部增量归给活动。折扣规则应查订单数据，不能把十一月的折扣区间沿用到十二月。\", \"score\": 0.030679156908665108, \"source\": \"hybrid\", \"document_date\": \"2025-12-01\", \"document_type\": \"campaign\", \"page_number\": null, \"section\": \"口径与关联分析\"}], \"warnings\": [], \"elapsed_ms\": 365, \"evidence_only\": true}",
+        "duration_ms": 366,
+        "thought": ""
+      }
+    ],
+    "plan": [
+      "确认指标定义与来源：明确“品类明细成交额”“订单净销售额”“未分摊订单优惠”各自的统计口径、单位与数据来源，并确认2025年11月和12月两个周期。",
+      "分别查询并核对两个月的整体订单净销售额与各品类明细成交额之和，检查两者是否相等及差异金额。",
+      "若存在差异，定位差异来源：检查订单级优惠是否已分摊到品类明细、是否存在跨品类订单或未归类明细，区分事实与待验证假设。",
+      "评估未分摊订单优惠对品类贡献的影响：判断在优惠未分摊时品类明细成交额之和是否仍等于净销售额，以及能否直接报告品类贡献。",
+      "查找同期业务资料（优惠规则、分摊政策、数据说明），解释差异原因，并明确结论中事实、资料解释与待验证假设的边界。"
+    ],
+    "reflection": {
+      "passed": true,
+      "quality_score": 92,
+      "issues": [],
+      "summary": "回答的核心数字均可由查询结果直接核对，口径与文档一致，且正确区分了事实、文档解释与待验证假设。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "2025-11 品类明细成交额之和为 1,218,786.55 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E7"
+          ],
+          "reason": "E7 返回 2025-11 item_sum_yuan=1218786.55，且 item_sum_fen=121878655 除以 100 一致。"
+        },
+        {
+          "claim": "2025-12 品类明细成交额之和为 749,729.90 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E7"
+          ],
+          "reason": "E7 返回 2025-12 item_sum_yuan=749729.9。"
+        },
+        {
+          "claim": "2025-11 订单净销售额为 1,047,258.23 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E5",
+            "E8"
+          ],
+          "reason": "E5 的 net_sales 汇总值为 1047258.23，E8 的 pay_yuan 同为 1047258.23，口径为 paid/completed 且排除测试账号。"
+        },
+        {
+          "claim": "2025-12 订单净销售额为 734,981.67 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E6",
+            "E8"
+          ],
+          "reason": "E6 的 net_sales 汇总值为 734981.67，E8 的 pay_yuan 同为 734981.67。"
+        },
+        {
+          "claim": "11 月差异为 +171,528.32 元，12 月差异为 +14,748.23 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E7",
+            "E8"
+          ],
+          "reason": "1218786.55-1047258.23=171528.32；749729.90-734981.67=14748.23，均可由 E7、E8 直接算出。"
+        },
+        {
+          "claim": "差异金额与订单优惠合计完全一致（11 月 171,528.32、12 月 14,748.23）",
+          "status": "supported",
+          "evidence_ids": [
+            "E8"
+          ],
+          "reason": "E8 返回 discount_yuan 分别为 171528.32 和 14748.23，与差异金额逐月相等。"
+        },
+        {
+          "claim": "11 月明细之和比净销售额高 16.4%，12 月高 2.0%",
+          "status": "supported",
+          "evidence_ids": [
+            "E7",
+            "E8"
+          ],
+          "reason": "171528.32/1047258.23≈16.38%，14748.23/734981.67≈2.01%，可由 E7、E8 算出。"
+        },
+        {
+          "claim": "明细成交额之和等于订单原价合计（total_amount），11 月 1,218,786.55、12 月 749,729.90",
+          "status": "supported",
+          "evidence_ids": [
+            "E7",
+            "E8"
+          ],
+          "reason": "E8 的 total_amount_yuan 与 E7 的 item_sum_yuan 逐月相等。"
+        },
+        {
+          "claim": "无明细订单数为 0，明细覆盖完整",
+          "status": "supported",
+          "evidence_ids": [
+            "E9"
+          ],
+          "reason": "E9 返回两月 orders_no_items 均为 0。"
+        },
+        {
+          "claim": "11 月 1,039 笔有效订单全部带优惠；12 月 733 笔中 236 笔带优惠",
+          "status": "supported",
+          "evidence_ids": [
+            "E8"
+          ],
+          "reason": "E8 返回 11 月 orders_with_discount=1039、orders=1039；12 月 orders_with_discount=236、orders=733。"
+        },
+        {
+          "claim": "跨品类订单：11 月 1,039 笔中 414 笔、12 月 733 笔中 270 笔",
+          "status": "supported",
+          "evidence_ids": [
+            "E9"
+          ],
+          "reason": "E9 返回 multi_category_orders 分别为 414 和 270，orders 分别为 1039 和 733。"
+        },
+        {
+          "claim": "品类明细用 item_amount、净销售额用 pay_amount，明细之和天然大于净销售额，属预期差异",
+          "status": "supported",
+          "evidence_ids": [
+            "E2",
+            "E11"
+          ],
+          "reason": "E2 词汇表说明 item_amount 未分摊订单级优惠、各品类之和会略大于净销售额；E11 的 D:b54cedbc 分块亦说明订单级折扣未自动分摊至明细。"
+        },
+        {
+          "claim": "不能直接报告净销售额的品类贡献，否则占比会被系统性稀释且跨月失真",
+          "status": "supported",
+          "evidence_ids": [
+            "E2",
+            "E11",
+            "E7",
+            "E8"
+          ],
+          "reason": "口径差异由 E2/E11 支持；两月差异率 16.4% 与 2.0% 由 E7/E8 算出，支持稀释程度随优惠力度变化的判断。"
+        },
+        {
+          "claim": "复盘资料要求不要把 GMV、实收销售额和订单明细金额混成一个指标",
+          "status": "supported",
+          "evidence_ids": [
+            "E11"
+          ],
+          "reason": "E11 的 D:3a7325db 分块「核算与复盘动作」明确要求不要把三者混成一个指标。"
+        },
+        {
+          "claim": "优惠按明细金额比例分摊是否与业务实际规则一致尚未验证",
+          "status": "supported",
+          "evidence_ids": [
+            "E11"
+          ],
+          "reason": "检索片段未给出官方分摊规则，回答将其列为待确认事项，未作因果或规则断言。"
+        },
+        {
+          "claim": "11 月优惠力度高与双十一促销相关，但数据生成说明不能作为实际归因结论",
+          "status": "supported",
+          "evidence_ids": [
+            "E11"
+          ],
+          "reason": "E11 的 D:f81d9064 分块说明 8%–20% 为种子数据生成规则、不能直接当统计结果，回答正确将其限定为待验证假设。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 9,
+    "usage": {
+      "prompt_tokens": 60900,
+      "completion_tokens": 3806,
+      "total_tokens": 64706,
+      "prompt_cache_hit_tokens": 44800,
+      "prompt_cache_miss_tokens": 16100
+    },
+    "duration_ms": 21171,
+    "error": null,
+    "citations": [
+      {
+        "reference": "D:b54cedbc-be9e-4abd-9667-4a4e913150c3",
+        "document_id": "70aa0a60-b1ff-5841-8bac-de462f569675",
+        "chunk_id": "b54cedbc-be9e-4abd-9667-4a4e913150c3",
+        "chunk_index": 1,
+        "filename": "第七阶段合成评测-2025-01-销售口径说明.md",
+        "snippet": "## 金额与状态\n\n业务库金额以分存储，展示为元时除以 100。净销售额使用 paid、completed 有效订单，排除 cancelled、refunded 和 users.is_test=1 的测试账号。GMV 与净销售额不是同一个指标，不应混用名称。\n\n整体订单销售额和品类明细成交额使用不同字段；整体实收使用 pay_amount，品类明细使用 item_amount。订单级折扣并未自动分摊至每条明细，所以不要直接假设明细求和等于订单净实收。",
+        "document_date": "2025-01-01",
+        "document_type": "reference",
+        "page_number": null,
+        "section": "金额与状态"
+      },
+      {
+        "reference": "D:3a7325db-3dc0-40b5-ad85-ab465bc56134",
+        "document_id": "576c51bf-64c7-5115-80fe-60778f5cd4a5",
+        "chunk_id": "3a7325db-3dc0-40b5-ad85-ab465bc56134",
+        "chunk_index": 2,
+        "filename": "第七阶段合成评测-2025-11-双十一复盘.md",
+        "snippet": "## 核算与复盘动作\n\n统计销售额时排除测试账号、退款与取消订单，保留 paid 和 completed 状态。品类分析按订单明细成交额计算，金额从分转为元后展示。不要把 GMV、实收销售额和订单明细金额混成一个指标。\n\n活动执行组需要保留优惠配置、资源排期与客诉记录。客服组整理退款事项，数据组按渠道与区域下钻；复盘意见必须区分数据库证据、文档记录和待验证推断。下次活动先明确对照期，再确定看金额增量还是订单增量。",
+        "document_date": "2025-11-30",
+        "document_type": "review",
+        "page_number": null,
+        "section": "核算与复盘动作"
+      },
+      {
+        "reference": "D:f81d9064-fd32-4071-b702-672fb2491b1d",
+        "document_id": "576c51bf-64c7-5115-80fe-60778f5cd4a5",
+        "chunk_id": "f81d9064-fd32-4071-b702-672fb2491b1d",
+        "chunk_index": 1,
+        "filename": "第七阶段合成评测-2025-11-双十一复盘.md",
+        "snippet": "## 活动机制与观察范围\n\n十一月开展年度集中促销，演示库的整体订单生成系数为 1.8，高于十月的 1.1。该系数只控制种子数据生成，不是实际订单增长百分比。活动订单优惠金额按商品合计的 8% 至 20% 生成。实际订单量、支付金额和折扣分布必须查询数据库，不应直接拿系数作为统计结果。\n\n家电和日常消费品参与活动，页面资源集中在活动期。复盘将优惠刺激、提前采购列为需要验证的需求变化解释，不能仅凭时间上的先后关系认定因果。家电是否透支十二月需求，还需要结合十二月周报、品类环比及区域分布分析。",
+        "document_date": "2025-11-30",
+        "document_type": "review",
+        "page_number": null,
+        "section": "活动机制与观察范围"
+      }
+    ],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [
+        "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+      ],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": [
+        {
+          "status": "ready",
+          "metric": {
+            "id": "net_sales",
+            "name": "净销售额",
+            "unit": "元",
+            "formula": "有效订单 pay_amount（分）求和 / 100；paid、completed",
+            "kind": "additive",
+            "version": "1",
+            "source": "ecommerce_v1",
+            "time_field": "orders.order_time",
+            "exclude_test_users": true,
+            "allowed_join": "orders.user_id = users.user_id（users.user_id 必须唯一）",
+            "dimensions": [
+              "overall",
+              "region",
+              "order_channel"
+            ],
+            "scope": "项目电商模型；不自动套用于上传表或其他数据库业务口径"
+          },
+          "quality": {
+            "order_rows": 9143,
+            "duplicate_orders": 0,
+            "missing_orders": 0,
+            "invalid_status": 0,
+            "invalid_dates": 0,
+            "invalid_money": 0,
+            "first_date": "2025-01-01 05:25:36",
+            "last_date": "2025-12-31 23:21:57",
+            "duplicate_users": 0,
+            "invalid_users": 0,
+            "orphan_orders": 0
+          },
+          "period": {
+            "start": "2025-11-01",
+            "end": "2025-12-01"
+          },
+          "summary": {
+            "value": "1047258.23"
+          },
+          "groups": [
+            {
+              "segment": "整体",
+              "value": "1047258.23"
+            }
+          ],
+          "group_count": 1,
+          "warnings": [
+            "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+          ],
+          "queries": [
+            "SELECT '整体' AS segment, SUM(CASE WHEN (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS value FROM \"orders\" o JOIN \"users\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') GROUP BY 1 ORDER BY segment",
+            "SELECT SUM(CASE WHEN (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS value FROM \"orders\" o JOIN \"users\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01')"
+          ]
+        },
+        {
+          "status": "ready",
+          "metric": {
+            "id": "net_sales",
+            "name": "净销售额",
+            "unit": "元",
+            "formula": "有效订单 pay_amount（分）求和 / 100；paid、completed",
+            "kind": "additive",
+            "version": "1",
+            "source": "ecommerce_v1",
+            "time_field": "orders.order_time",
+            "exclude_test_users": true,
+            "allowed_join": "orders.user_id = users.user_id（users.user_id 必须唯一）",
+            "dimensions": [
+              "overall",
+              "region",
+              "order_channel"
+            ],
+            "scope": "项目电商模型；不自动套用于上传表或其他数据库业务口径"
+          },
+          "quality": {
+            "order_rows": 9143,
+            "duplicate_orders": 0,
+            "missing_orders": 0,
+            "invalid_status": 0,
+            "invalid_dates": 0,
+            "invalid_money": 0,
+            "first_date": "2025-01-01 05:25:36",
+            "last_date": "2025-12-31 23:21:57",
+            "duplicate_users": 0,
+            "invalid_users": 0,
+            "orphan_orders": 0
+          },
+          "period": {
+            "start": "2025-12-01",
+            "end": "2026-01-01"
+          },
+          "summary": {
+            "value": "734981.67"
+          },
+          "groups": [
+            {
+              "segment": "整体",
+              "value": "734981.67"
+            }
+          ],
+          "group_count": 1,
+          "warnings": [
+            "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+          ],
+          "queries": [
+            "SELECT '整体' AS segment, SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS value FROM \"orders\" o JOIN \"users\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') GROUP BY 1 ORDER BY segment",
+            "SELECT SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS value FROM \"orders\" o JOIN \"users\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01')"
+          ]
+        }
+      ]
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1865,
+          "usage": {
+            "prompt_tokens": 218,
+            "completion_tokens": 185,
+            "total_tokens": 403,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 218
+          }
+        },
+        "analysis": {
+          "logical_calls": 7,
+          "http_requests": 7,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 13470,
+          "usage": {
+            "prompt_tokens": 52919,
+            "completion_tokens": 2272,
+            "total_tokens": 55191,
+            "prompt_cache_hit_tokens": 44416,
+            "prompt_cache_miss_tokens": 8503
+          }
+        },
+        "embedding": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 229,
+          "usage": {
+            "input_tokens": 16
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 5402,
+          "usage": {
+            "prompt_tokens": 7763,
+            "completion_tokens": 1349,
+            "total_tokens": 9112,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 7379
+          }
+        }
+      },
+      "llm_calls": 9,
+      "chat_usage": {
+        "prompt_tokens": 60900,
+        "completion_tokens": 3806,
+        "total_tokens": 64706,
+        "prompt_cache_hit_tokens": 44800,
+        "prompt_cache_miss_tokens": 16100
+      },
+      "http_requests": 10,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 7,
+    "question": "核对2025年11月和12月各品类明细成交额之和是否等于订单净销售额。未分摊订单优惠时，能否直接报告净销售额的品类贡献？",
+    "tables": [
+      {
+        "id": "result-5",
+        "title": "净销售额",
+        "columns": [
+          "分组",
+          "净销售额（元）"
+        ],
+        "rows": [
+          [
+            "整体",
+            "1047258.23"
+          ]
+        ],
+        "evidence_ids": [
+          "E5"
+        ],
+        "scope": {
+          "metric": "净销售额",
+          "unit": "元",
+          "source": "ecommerce_v1",
+          "start": "2025-11-01",
+          "end": "2025-12-01"
+        },
+        "truncated": false
+      },
+      {
+        "id": "result-6",
+        "title": "净销售额",
+        "columns": [
+          "分组",
+          "净销售额（元）"
+        ],
+        "rows": [
+          [
+            "整体",
+            "734981.67"
+          ]
+        ],
+        "evidence_ids": [
+          "E6"
+        ],
+        "scope": {
+          "metric": "净销售额",
+          "unit": "元",
+          "source": "ecommerce_v1",
+          "start": "2025-12-01",
+          "end": "2026-01-01"
+        },
+        "truncated": false
+      },
+      {
+        "id": "result-7",
+        "title": "查询结果 · E7",
+        "columns": [
+          "period",
+          "item_sum_yuan",
+          "orders",
+          "item_sum_fen"
+        ],
+        "rows": [
+          [
+            "2025-11",
+            1218786.55,
+            1039,
+            121878655
+          ],
+          [
+            "2025-12",
+            749729.9,
+            733,
+            74972990
+          ]
+        ],
+        "evidence_ids": [
+          "E7"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-8",
+        "title": "查询结果 · E8",
+        "columns": [
+          "period",
+          "total_amount_yuan",
+          "discount_yuan",
+          "pay_yuan",
+          "orders_with_discount",
+          "orders"
+        ],
+        "rows": [
+          [
+            "2025-11",
+            1218786.55,
+            171528.32,
+            1047258.23,
+            1039,
+            1039
+          ],
+          [
+            "2025-12",
+            749729.9,
+            14748.23,
+            734981.67,
+            236,
+            733
+          ]
+        ],
+        "evidence_ids": [
+          "E8"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-9",
+        "title": "查询结果 · E9",
+        "columns": [
+          "period",
+          "orders",
+          "multi_category_orders",
+          "orders_no_items"
+        ],
+        "rows": [
+          [
+            "2025-11",
+            1039,
+            414,
+            0
+          ],
+          [
+            "2025-12",
+            733,
+            270,
+            0
+          ]
+        ],
+        "evidence_ids": [
+          "E9"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-10",
+        "title": "查询结果 · E10",
+        "columns": [
+          "period",
+          "category_name",
+          "item_yuan"
+        ],
+        "rows": [
+          [
+            "2025-11",
+            "手机数码",
+            688214.5
+          ],
+          [
+            "2025-11",
+            "家用电器",
+            234927.75
+          ],
+          [
+            "2025-11",
+            "服饰鞋包",
+            157145.25
+          ],
+          [
+            "2025-11",
+            "食品生鲜",
+            43097.8
+          ],
+          [
+            "2025-11",
+            "美妆个护",
+            42358.4
+          ],
+          [
+            "2025-11",
+            "家居日用",
+            32921.65
+          ],
+          [
+            "2025-11",
+            "图书文娱",
+            20121.2
+          ],
+          [
+            "2025-12",
+            "手机数码",
+            449127.45
+          ],
+          [
+            "2025-12",
+            "服饰鞋包",
+            102535.3
+          ],
+          [
+            "2025-12",
+            "家用电器",
+            84642.95
+          ],
+          [
+            "2025-12",
+            "食品生鲜",
+            39235.4
+          ],
+          [
+            "2025-12",
+            "美妆个护",
+            35483.8
+          ],
+          [
+            "2025-12",
+            "家居日用",
+            26137.55
+          ],
+          [
+            "2025-12",
+            "图书文娱",
+            12567.45
+          ]
+        ],
+        "evidence_ids": [
+          "E10"
+        ],
+        "scope": {},
+        "truncated": false
+      }
+    ],
+    "charts": [
+      {
+        "id": "result-7-line",
+        "table_id": "result-7",
+        "kind": "line",
+        "title": "查询结果 · E7",
+        "unit": "原始数值（单位未声明）",
+        "labels": [
+          "2025-11",
+          "2025-12"
+        ],
+        "series": [
+          {
+            "name": "item_sum_yuan",
+            "values": [
+              "1218786.55",
+              "749729.9"
+            ]
+          },
+          {
+            "name": "orders",
+            "values": [
+              "1039",
+              "733"
+            ]
+          },
+          {
+            "name": "item_sum_fen",
+            "values": [
+              "121878655",
+              "74972990"
+            ]
+          }
+        ],
+        "evidence_ids": [
+          "E7"
+        ],
+        "scope": {}
+      },
+      {
+        "id": "result-8-line",
+        "table_id": "result-8",
+        "kind": "line",
+        "title": "查询结果 · E8",
+        "unit": "原始数值（单位未声明）",
+        "labels": [
+          "2025-11",
+          "2025-12"
+        ],
+        "series": [
+          {
+            "name": "total_amount_yuan",
+            "values": [
+              "1218786.55",
+              "749729.9"
+            ]
+          },
+          {
+            "name": "discount_yuan",
+            "values": [
+              "171528.32",
+              "14748.23"
+            ]
+          },
+          {
+            "name": "pay_yuan",
+            "values": [
+              "1047258.23",
+              "734981.67"
+            ]
+          }
+        ],
+        "evidence_ids": [
+          "E8"
+        ],
+        "scope": {}
+      },
+      {
+        "id": "result-9-line",
+        "table_id": "result-9",
+        "kind": "line",
+        "title": "查询结果 · E9",
+        "unit": "原始数值（单位未声明）",
+        "labels": [
+          "2025-11",
+          "2025-12"
+        ],
+        "series": [
+          {
+            "name": "orders",
+            "values": [
+              "1039",
+              "733"
+            ]
+          },
+          {
+            "name": "multi_category_orders",
+            "values": [
+              "414",
+              "270"
+            ]
+          },
+          {
+            "name": "orders_no_items",
+            "values": [
+              "0",
+              "0"
+            ]
+          }
+        ],
+        "evidence_ids": [
+          "E9"
+        ],
+        "scope": {}
+      }
+    ],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "pattern_0": true,
+      "pattern_1": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

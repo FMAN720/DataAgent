@@ -1,0 +1,44 @@
+[
+  {
+    "role": "body",
+    "foreground": "#203447",
+    "background": "#f2f5f8",
+    "contrast": 11.68,
+    "passes_4_5": true
+  },
+  {
+    "role": "secondary",
+    "foreground": "#5b6c7c",
+    "background": "#f2f5f8",
+    "contrast": 4.95,
+    "passes_4_5": true
+  },
+  {
+    "role": "placeholder",
+    "foreground": "#5b6c7c",
+    "background": "#ffffff",
+    "contrast": 5.41,
+    "passes_4_5": true
+  },
+  {
+    "role": "primary-button",
+    "foreground": "#ffffff",
+    "background": "#087f80",
+    "contrast": 4.82,
+    "passes_4_5": true
+  },
+  {
+    "role": "sidebar-label",
+    "foreground": "#b4c4d2",
+    "background": "#192e41",
+    "contrast": 7.8,
+    "passes_4_5": true
+  },
+  {
+    "role": "active-nav",
+    "foreground": "#8de4d7",
+    "background": "#294b5f",
+    "contrast": 6.27,
+    "passes_4_5": true
+  }
+]

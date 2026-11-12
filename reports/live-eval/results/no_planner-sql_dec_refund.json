@@ -1,0 +1,289 @@
+{
+  "id": "sql_dec_refund",
+  "category": "sql",
+  "split": "development",
+  "variant": "no_planner",
+  "question": "2025年12月退款率是多少？请说明分母。",
+  "response": {
+    "answer": "**2025年12月退款率为 8.0%**（64 / 797）。\n\n- 分子：状态为 `refunded` 的订单数 = 64 单\n- 分母：状态为 `paid`、`completed`、`refunded` 的订单数合计 = 797 单（即已支付口径的有效订单，不含未支付/取消等状态）\n- 数据检查：订单 9143 行，无重复订单、无缺失、无非法状态/日期/金额，无重复用户与孤儿订单；已排除测试账号。\n\n口径：退款率 = refunded 订单数 ÷ (paid + completed + refunded) 订单数 × 100%，按下单时间（order_time）统计，已排除测试账号。另需说明：日期边界覆盖不代表数据完整，当前未接入业务入库完成水位，12月数据完整性未经验证。",
+    "success": true,
+    "trace_id": "e27459d1-c007-4b60-8313-d454d4e29bb9",
+    "session_id": "b0196cd4-95dd-4f02-8dbc-a672a0920c1b",
+    "mode": "react",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "get_metric_definition",
+        "arguments": {
+          "metric_id": "refund_rate"
+        },
+        "ok": true,
+        "output": "{\"definitions\": [{\"id\": \"refund_rate\", \"name\": \"退款率\", \"unit\": \"%\", \"formula\": \"refunded 订单数 / paid、completed、refunded 订单数 × 100\", \"kind\": \"rate\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}]}",
+        "duration_ms": 0,
+        "thought": "我先查一下退款率的固定口径。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "query_metric",
+        "arguments": {
+          "metric_id": "refund_rate",
+          "source": "ecommerce_v1",
+          "start": "2025-12-01",
+          "end": "2026-01-01"
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"metric\": {\"id\": \"refund_rate\", \"name\": \"退款率\", \"unit\": \"%\", \"formula\": \"refunded 订单数 / paid、completed、refunded 订单数 × 100\", \"kind\": \"rate\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}, \"quality\": {\"order_rows\": 9143, \"duplicate_orders\": 0, \"missing_orders\": 0, \"invalid_status\": 0, \"invalid_dates\": 0, \"invalid_money\": 0, \"first_date\": \"2025-01-01 05:25:36\", \"last_date\": \"2025-12-31 23:21:57\", \"duplicate_users\": 0, \"invalid_users\": 0, \"orphan_orders\": 0}, \"period\": {\"start\": \"2025-12-01\", \"end\": \"2026-01-01\"}, \"summary\": {\"numerator\": 64, \"denominator\": 797, \"value\": \"8.03011292\"}, \"groups\": [{\"segment\": \"整体\", \"numerator\": 64, \"denominator\": 797}], \"group_count\": 1, \"warnings\": [\"检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。\"], \"queries\": [\"SELECT '整体' AS segment, SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status='refunded' THEN 1 ELSE 0 END) AS numerator, SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed','refunded') THEN 1 ELSE 0 END) AS denominator FROM \\\"orders\\\" o JOIN \\\"users\\\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') GROUP BY 1 ORDER BY segment\", \"SELECT SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status='refunded' THEN 1 ELSE 0 END) AS numerator, SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed','refunded') THEN 1 ELSE 0 END) AS denominator FROM \\\"orders\\\" o JOIN \\\"users\\\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01')\"]}",
+        "duration_ms": 54,
+        "thought": ""
+      }
+    ],
+    "plan": [],
+    "reflection": {
+      "passed": true,
+      "quality_score": 95,
+      "issues": [],
+      "summary": "退款率 8.0%（64/797）与口径定义、查询结果完全一致，分母说明清楚，数据质量与完整性限制已如实披露。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "2025年12月退款率为 8.0%（64/797）",
+          "status": "supported",
+          "evidence_ids": [
+            "E2"
+          ],
+          "reason": "query_metric 返回 numerator=64、denominator=797、value=8.03011292，四舍五入为 8.0%，与回答一致。"
+        },
+        {
+          "claim": "分子为状态 refunded 的订单数 64 单",
+          "status": "supported",
+          "evidence_ids": [
+            "E2"
+          ],
+          "reason": "查询 SQL 中 numerator 统计 order_time 在 2025-12-01 至 2026-01-01 之间且 status='refunded' 的订单，结果为 64。"
+        },
+        {
+          "claim": "分母为 paid、completed、refunded 订单合计 797 单",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E2"
+          ],
+          "reason": "指标定义公式为 refunded / (paid、completed、refunded)，查询 SQL 分母使用 status IN ('paid','completed','refunded')，结果为 797。"
+        },
+        {
+          "claim": "按下单时间 order_time 统计，时间范围为 2025-12-01 至 2026-01-01（左闭右开）",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E2"
+          ],
+          "reason": "指标定义 time_field 为 orders.order_time，查询 period 为 start 2025-12-01、end 2026-01-01，SQL 使用 >= 与 < 边界。"
+        },
+        {
+          "claim": "已排除测试账号",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E2"
+          ],
+          "reason": "指标定义 exclude_test_users=true，查询 SQL 含 u.is_test=0 过滤条件。"
+        },
+        {
+          "claim": "数据检查：订单 9143 行，无重复订单、无缺失、无非法状态/日期/金额，无重复用户与孤儿订单",
+          "status": "supported",
+          "evidence_ids": [
+            "E2"
+          ],
+          "reason": "quality 字段显示 order_rows=9143，duplicate_orders=0、missing_orders=0、invalid_status=0、invalid_dates=0、invalid_money=0、duplicate_users=0、invalid_users=0、orphan_orders=0。"
+        },
+        {
+          "claim": "日期边界覆盖不代表数据完整，12月数据完整性未经验证",
+          "status": "supported",
+          "evidence_ids": [
+            "E2"
+          ],
+          "reason": "warnings 明确说明日期边界覆盖不证明数据完整、未接入业务入库完成水位，回答如实转述。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 4,
+    "usage": {
+      "prompt_tokens": 16009,
+      "completion_tokens": 972,
+      "total_tokens": 16981,
+      "prompt_cache_hit_tokens": 13440,
+      "prompt_cache_miss_tokens": 2569
+    },
+    "duration_ms": 6433,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [
+        "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+      ],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": [
+        {
+          "status": "ready",
+          "metric": {
+            "id": "refund_rate",
+            "name": "退款率",
+            "unit": "%",
+            "formula": "refunded 订单数 / paid、completed、refunded 订单数 × 100",
+            "kind": "rate",
+            "version": "1",
+            "source": "ecommerce_v1",
+            "time_field": "orders.order_time",
+            "exclude_test_users": true,
+            "allowed_join": "orders.user_id = users.user_id（users.user_id 必须唯一）",
+            "dimensions": [
+              "overall",
+              "region",
+              "order_channel"
+            ],
+            "scope": "项目电商模型；不自动套用于上传表或其他数据库业务口径"
+          },
+          "quality": {
+            "order_rows": 9143,
+            "duplicate_orders": 0,
+            "missing_orders": 0,
+            "invalid_status": 0,
+            "invalid_dates": 0,
+            "invalid_money": 0,
+            "first_date": "2025-01-01 05:25:36",
+            "last_date": "2025-12-31 23:21:57",
+            "duplicate_users": 0,
+            "invalid_users": 0,
+            "orphan_orders": 0
+          },
+          "period": {
+            "start": "2025-12-01",
+            "end": "2026-01-01"
+          },
+          "summary": {
+            "numerator": 64,
+            "denominator": 797,
+            "value": "8.03011292"
+          },
+          "groups": [
+            {
+              "segment": "整体",
+              "numerator": 64,
+              "denominator": 797
+            }
+          ],
+          "group_count": 1,
+          "warnings": [
+            "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+          ],
+          "queries": [
+            "SELECT '整体' AS segment, SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status='refunded' THEN 1 ELSE 0 END) AS numerator, SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed','refunded') THEN 1 ELSE 0 END) AS denominator FROM \"orders\" o JOIN \"users\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') GROUP BY 1 ORDER BY segment",
+            "SELECT SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status='refunded' THEN 1 ELSE 0 END) AS numerator, SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed','refunded') THEN 1 ELSE 0 END) AS denominator FROM \"orders\" o JOIN \"users\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01')"
+          ]
+        }
+      ]
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "analysis": {
+          "logical_calls": 3,
+          "http_requests": 3,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 3370,
+          "usage": {
+            "prompt_tokens": 14233,
+            "completion_tokens": 344,
+            "total_tokens": 14577,
+            "prompt_cache_hit_tokens": 13056,
+            "prompt_cache_miss_tokens": 1177
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 3001,
+          "usage": {
+            "prompt_tokens": 1776,
+            "completion_tokens": 628,
+            "total_tokens": 2404,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 1392
+          }
+        }
+      },
+      "llm_calls": 4,
+      "chat_usage": {
+        "prompt_tokens": 16009,
+        "completion_tokens": 972,
+        "total_tokens": 16981,
+        "prompt_cache_hit_tokens": 13440,
+        "prompt_cache_miss_tokens": 2569
+      },
+      "http_requests": 4,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 3,
+    "question": "2025年12月退款率是多少？请说明分母。",
+    "tables": [
+      {
+        "id": "result-2",
+        "title": "退款率",
+        "columns": [
+          "分组",
+          "退款率（%）"
+        ],
+        "rows": [
+          [
+            "整体",
+            "8.030112923462986198243412798"
+          ]
+        ],
+        "evidence_ids": [
+          "E2"
+        ],
+        "scope": {
+          "metric": "退款率",
+          "unit": "%",
+          "source": "ecommerce_v1",
+          "start": "2025-12-01",
+          "end": "2026-01-01"
+        },
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true,
+      "pattern_0": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

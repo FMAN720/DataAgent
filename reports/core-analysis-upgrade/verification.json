@@ -1,0 +1,64 @@
+{
+  "created_at": "2026-11-05T11:21:16.740208+00:00",
+  "source_state": "Working tree; no commit created",
+  "source_fingerprint": {
+    "algorithm": "sha256(path + NUL + content + NUL), sorted paths",
+    "file_count": 98,
+    "digest": "306074a500050c30a625d5a90b19f3dfde0c9b01285e713f84b3804373d23295",
+    "scope": "app source files; eval/core* files; tests/workspace.test.cjs"
+  },
+  "checks": [
+    {
+      "command": "RUN_POSTGRES_TESTS=1 RUN_REDIS_TESTS=1 python -m pytest -q",
+      "passed": true,
+      "tests_passed": 600,
+      "tests_failed": 0,
+      "tests_skipped": 0,
+      "duration_seconds": 66.15
+    },
+    {
+      "command": "node --test tests/workspace.test.cjs",
+      "passed": true,
+      "tests_passed": 51,
+      "tests_failed": 0
+    },
+    {
+      "command": "node --check app/web/business.js; node --check app/web/workspace.js",
+      "passed": true
+    },
+    {
+      "command": "python -m ruff check app eval tests lab",
+      "passed": true
+    },
+    {
+      "command": "python -m ruff format --check app eval tests lab",
+      "passed": true,
+      "files": 165
+    },
+    {
+      "command": "python -m mypy app eval",
+      "passed": true,
+      "source_files": 107
+    },
+    {
+      "command": "python -m eval.core_regression",
+      "passed": true,
+      "cases_passed": 21,
+      "cases_total": 21,
+      "provider_requests": 0
+    },
+    {
+      "command": "BusinessProfile.model_validate_json for the three business-*.json documentation templates",
+      "passed": true,
+      "files": 3
+    }
+  ],
+  "limits": [
+    "Scripted models and synthetic fixtures; no live-model accuracy claim.",
+    "Integration tests used the existing local PostgreSQL and Redis; user configuration was not replaced.",
+    "Frontend-only finish fixes followed the full Python run and were checked by the final frontend run."
+  ],
+  "provider_requests": 0,
+  "existing_live_eval_budget_cny": 30,
+  "additional_live_eval_requested": false
+}

@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies
+        run: python -m pip install -r requirements-dev.txt -r requirements-optional.txt
+      - name: Python tests (offline; database integrations opt in)
+        run: python -m pytest -q
+      - name: Workspace tests
+        run: node --test tests/workspace.test.cjs
+      - name: Lint
+        run: ruff check app eval tests lab
+      - name: Formatting
+        run: ruff format --check app eval tests lab
+      - name: Types
+        run: mypy app eval

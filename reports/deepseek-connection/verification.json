@@ -1,0 +1,18 @@
+{
+  "python_full_suite": {
+    "passed": 633,
+    "failed": 0,
+    "duration_seconds": 57.78
+  },
+  "final_targeted_sdk_and_settings_tests": {
+    "passed": 28,
+    "failed": 0
+  },
+  "ruff": "passed",
+  "formatted_files": 171,
+  "mypy_source_files": 110,
+  "service_ready": true,
+  "provider_requests_by_agent": 0,
+  "user_configuration_modified": false,
+  "limits": "MockTransport reproduces protocol behavior; user account was not used for live inference."
+}

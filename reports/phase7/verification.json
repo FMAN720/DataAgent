@@ -1,0 +1,31 @@
+{
+  "created_at": "2026-10-22T14:56:29.506828+00:00",
+  "scope": "offline verification only, no live model evaluation",
+  "python": {
+    "tests": 329,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "frontend": {
+    "tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "sql_parity": {
+    "passed": 12,
+    "cases": 12
+  },
+  "scripted_analysis": {
+    "passed": 4,
+    "cases": 4
+  },
+  "live_evaluation_status": "not_run",
+  "live_evaluation_runs": 0,
+  "external_model_api_requests": 0,
+  "dependency_installations": 0,
+  "compilation": "passed",
+  "javascript_syntax": "passed",
+  "git_whitespace_check": "passed"
+}

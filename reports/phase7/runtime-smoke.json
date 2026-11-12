@@ -1,0 +1,19 @@
+{
+  "created_at": "2026-10-22T14:54:46.906564+00:00",
+  "health_status": 200,
+  "readiness": {
+    "status": "ready",
+    "agent": "up",
+    "analysis_database": "up",
+    "document_database": "up",
+    "database": "up",
+    "app_env": "development",
+    "document_retrieval": "up",
+    "dataset_imports": "up",
+    "embedding": "configured"
+  },
+  "workspace_status": 200,
+  "embedding_enabled": true,
+  "usage_response_fields": true,
+  "external_api_requests": 0
+}

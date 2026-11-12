@@ -1,0 +1,122 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "capture": "unconfigured-desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "capture": "settings-desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "capture": "settings-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "capture": "settings-320",
+      "width": 320,
+      "height": 740,
+      "scrollWidth": 320,
+      "scrollHeight": 740,
+      "document_overflow": false
+    },
+    {
+      "interaction": "No profile prompts settings and preserves draft; show/hide; save without model call; clear requires confirmation; reload restores masked metadata; no Key in browser storage; connection test explicit and mocked",
+      "passed": true
+    },
+    {
+      "capture": "answer-desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "capture": "answer-1280",
+      "width": 1280,
+      "height": 800,
+      "scrollWidth": 1280,
+      "scrollHeight": 800,
+      "document_overflow": false
+    },
+    {
+      "capture": "answer-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "capture": "answer-320",
+      "width": 320,
+      "height": 740,
+      "scrollWidth": 320,
+      "scrollHeight": 740,
+      "document_overflow": false
+    },
+    {
+      "capture": "details-desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "capture": "details-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "interaction": "Answer contains no audit, records, query table, export or save metadata; one details action opens right drawer; E navigation, SQL example, citation and return work; closing restores focus",
+      "passed": true
+    },
+    {
+      "capture": "running-main",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "capture": "running-details",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "interaction": "History uses the same clean answer; details show snapshot notice; new chat closes old drawer; running status stays compact and tools only show on demand; abort preserves next question",
+      "passed": true
+    }
+  ],
+  "saves": 2,
+  "deletes": 1,
+  "connectionTests": 1,
+  "mockedChat": 1,
+  "mockedSqlSaves": 1,
+  "browserErrors": [],
+  "persistentWrites": 0,
+  "externalModelRequests": 0,
+  "method": "Isolated installed Chrome with real mouse/keyboard. All model-settings, connection check, chat, archive and SQL writes are intercepted synthetic responses; slow SSE is a local ReadableStream. No real Key or provider is used."
+}

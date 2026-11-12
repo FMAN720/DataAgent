@@ -1,0 +1,45 @@
+{
+  "status": "imported",
+  "tables": {
+    "regions": {
+      "rows": 5,
+      "sha256": "98f35cd8971753b8641629ade3ab10b2088968773503b62a3c8db702069e4a39"
+    },
+    "categories": {
+      "rows": 7,
+      "sha256": "8d63b882bfdcad36673575cb8eba4b22202a0bfebfdc3341eb4a1c06bab80852"
+    },
+    "products": {
+      "rows": 30,
+      "sha256": "3df727c770adb9a6bbb29a9e4cdf7aafc09bb39a2fda66eec8dfb79ed3f7e823"
+    },
+    "users": {
+      "rows": 1215,
+      "sha256": "5368012e8863b735f7c3ae8d2345ec5641afe12595aa8631c80c887c8abcbf24"
+    },
+    "orders": {
+      "rows": 9143,
+      "sha256": "987253a1c7e3164dafba0cf01fbe036717850ef20b07c1bdb2259f072faa22b6"
+    },
+    "order_items": {
+      "rows": 15286,
+      "sha256": "363843c21d59f8c479c253eec9481ce140fba72d93202750ad969de58f96aaf3"
+    },
+    "payments": {
+      "rows": 8501,
+      "sha256": "4d6ab78325d0ada11f48900ba54ee2c1c61046bfb57448abc53d160e6ea80b05"
+    },
+    "refunds": {
+      "rows": 522,
+      "sha256": "f8d2a6b4fed4fdc30034660a628bb0222dcd3a1b4ddac29410773ebc57ea2c1d"
+    },
+    "refund_requests": {
+      "rows": 814,
+      "sha256": "72fa61f24b94a728eccda413bd759f64bb833a85ea229137cf0f0e5a64e13162"
+    },
+    "user_events": {
+      "rows": 52873,
+      "sha256": "b242ee62c37d884af943c5e4d93435e391736bf66a0cd551ef0a023d8de29a7c"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "inventory",
+  "name": "库存快照",
+  "description": "模板：一行是某日、某仓库、某SKU的快照。替换实际表和字段；库存余额不跨日累加。",
+  "reference_date": "today",
+  "metrics": [{
+    "id": "stock_quantity",
+    "name": "库存数量",
+    "table": "uploads.your_stock",
+    "primary_key": ["sku_id","snapshot_day","warehouse"],
+    "date_column": "snapshot_day",
+    "aggregation": "sum",
+    "time_behavior": "snapshot",
+    "storage_unit": "件",
+    "value_column": "quantity",
+    "dimensions": ["warehouse"],
+    "non_negative_columns": ["quantity"]
+  }],
+  "document_ids": []
+}

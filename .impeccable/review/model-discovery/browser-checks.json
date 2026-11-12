@@ -1,0 +1,186 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "capture": "chat-desktop",
+      "width": 1440,
+      "height": 1000,
+      "scrollWidth": 1440,
+      "scrollHeight": 1000,
+      "document_overflow": false
+    },
+    {
+      "capture": "chat-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "capture": "chat-320",
+      "width": 320,
+      "height": 740,
+      "scrollWidth": 320,
+      "scrollHeight": 740,
+      "document_overflow": false
+    },
+    {
+      "capture": "loading-desktop",
+      "width": 1440,
+      "height": 1000,
+      "scrollWidth": 1440,
+      "scrollHeight": 1000,
+      "document_overflow": false
+    },
+    {
+      "capture": "catalog-desktop",
+      "width": 1440,
+      "height": 1000,
+      "scrollWidth": 1440,
+      "scrollHeight": 1000,
+      "document_overflow": false
+    },
+    {
+      "capture": "manual-error-desktop",
+      "width": 1440,
+      "height": 1000,
+      "scrollWidth": 1440,
+      "scrollHeight": 1000,
+      "document_overflow": false
+    },
+    {
+      "capture": "vision-desktop",
+      "width": 1440,
+      "height": 1000,
+      "scrollWidth": 1440,
+      "scrollHeight": 1000,
+      "document_overflow": false
+    },
+    {
+      "capture": "vision-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "capture": "embedding-desktop",
+      "width": 1440,
+      "height": 1000,
+      "scrollWidth": 1440,
+      "scrollHeight": 1000,
+      "document_overflow": false
+    },
+    {
+      "capture": "embedding-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "capture": "embedding-320",
+      "width": 320,
+      "height": 740,
+      "scrollWidth": 320,
+      "scrollHeight": 740,
+      "document_overflow": false
+    },
+    {
+      "capture": "embedding-actions-320",
+      "width": 320,
+      "height": 740,
+      "scrollWidth": 320,
+      "scrollHeight": 740,
+      "document_overflow": false
+    },
+    {
+      "interaction": "Real mouse/keyboard: provider presets, model discovery and selection, loading lock, manual fallback on catalog failure, isolated per-purpose drafts and saves, synthetic probes, inferred dimensions, explicit embedding enable, scoped two-click clear, native Escape and Key cleanup",
+      "passed": true
+    }
+  ],
+  "providerRequests": 0,
+  "persistentUserWrites": 0,
+  "browserErrors": [],
+  "apiOperations": [
+    {
+      "path": "/api/v1/model-settings",
+      "method": "GET",
+      "purpose": "chat"
+    },
+    {
+      "path": "/api/v1/model-settings",
+      "method": "GET",
+      "purpose": "chat"
+    },
+    {
+      "path": "/api/v1/model-settings/models",
+      "method": "POST",
+      "purpose": "chat"
+    },
+    {
+      "path": "/api/v1/model-settings/models",
+      "method": "POST",
+      "purpose": "vision"
+    },
+    {
+      "path": "/api/v1/model-settings/models",
+      "method": "POST",
+      "purpose": "vision"
+    },
+    {
+      "path": "/api/v1/model-settings/check",
+      "method": "POST",
+      "purpose": "vision"
+    },
+    {
+      "path": "/api/v1/model-settings",
+      "method": "PUT",
+      "purpose": "vision"
+    },
+    {
+      "path": "/api/v1/model-settings/models",
+      "method": "POST",
+      "purpose": "embedding"
+    },
+    {
+      "path": "/api/v1/model-settings/check",
+      "method": "POST",
+      "purpose": "embedding"
+    },
+    {
+      "path": "/api/v1/model-settings",
+      "method": "PUT",
+      "purpose": "embedding"
+    },
+    {
+      "path": "/api/v1/model-settings",
+      "method": "PUT",
+      "purpose": "embedding"
+    },
+    {
+      "path": "/api/v1/model-settings/check",
+      "method": "POST",
+      "purpose": "chat"
+    },
+    {
+      "path": "/api/v1/model-settings",
+      "method": "PUT",
+      "purpose": "chat"
+    },
+    {
+      "path": "/api/v1/model-settings",
+      "method": "GET",
+      "purpose": "chat"
+    },
+    {
+      "path": "/api/v1/model-settings",
+      "method": "DELETE",
+      "purpose": "vision"
+    }
+  ],
+  "method": "Isolated installed Chrome; all API requests intercepted with synthetic fixtures. No actual Key, provider request or user-config mutation."
+}

@@ -1,0 +1,153 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "capture": "home-desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "capture": "user-2000",
+      "width": 2000,
+      "height": 1139,
+      "scrollWidth": 2000,
+      "scrollHeight": 1139,
+      "document_overflow": false
+    },
+    {
+      "capture": "user-1280",
+      "width": 1280,
+      "height": 800,
+      "scrollWidth": 1280,
+      "scrollHeight": 800,
+      "document_overflow": false
+    },
+    {
+      "capture": "home-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "capture": "home-320",
+      "width": 320,
+      "height": 740,
+      "scrollWidth": 320,
+      "scrollHeight": 740,
+      "document_overflow": false
+    },
+    {
+      "capture": "source-menu-desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "capture": "document-upload-desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "capture": "scan-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "capture": "sidebar-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "capture": "guide-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "interaction": "Sidebar history restore from another view; mobile drawer focus trap and Escape; guide links to actual history; no model request",
+      "passed": true
+    },
+    {
+      "capture": "running-desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "capture": "running-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "capture": "thread-desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "document_overflow": false
+    },
+    {
+      "capture": "thread-1280",
+      "width": 1280,
+      "height": 800,
+      "scrollWidth": 1280,
+      "scrollHeight": 800,
+      "document_overflow": false
+    },
+    {
+      "capture": "thread-mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "document_overflow": false
+    },
+    {
+      "capture": "thread-320",
+      "width": 320,
+      "height": 740,
+      "scrollWidth": 320,
+      "scrollHeight": 740,
+      "document_overflow": false
+    },
+    {
+      "interaction": "Actual SSE parser consumes local events, shows tool failure and reasoning-free activity, stops without losing draft; final Markdown and evidence render; independent thread scroll keeps composer in view",
+      "passed": true
+    }
+  ],
+  "contrasts": {
+    "body": 14.929084202335536,
+    "muted": 7.361940058903388,
+    "primary": 9.977436720766809
+  },
+  "browser_errors": [],
+  "mocked_chat_requests": 1,
+  "mocked_upload_requests": 2,
+  "file_choosers": 3,
+  "persistent_writes": 0,
+  "external_model_requests": 0,
+  "method": "Installed Chrome, isolated profile, exact viewport metrics, real mouse/keyboard/file chooser; history and POST responses mocked; slow SSE uses an in-page ReadableStream with AbortSignal; no model request reaches server."
+}

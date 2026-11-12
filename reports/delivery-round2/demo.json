@@ -1,0 +1,626 @@
+{
+  "model_api_calls": 0,
+  "persisted": true,
+  "reports": [
+    {
+      "answer": "合成演示，未调用聊天模型。11月净销售额 1047258.23 元，12月为 734981.67 元。变化按用户注册区域拆解，不能据此证明业务原因。",
+      "success": true,
+      "trace_id": "ea2aa31f-04ae-4a62-9957-f3e3edbe0066",
+      "session_id": "delivery-demo-d6839f9c587345c3823fc8487c9daa99",
+      "mode": "react",
+      "steps": [
+        {
+          "step": 1,
+          "tool": "query_metric",
+          "arguments": {
+            "metric_id": "net_sales",
+            "source": "ecommerce_v1",
+            "base_start": "2025-11-01",
+            "base_end": "2025-12-01",
+            "start": "2025-12-01",
+            "end": "2026-01-01",
+            "dimension": "region"
+          },
+          "ok": true,
+          "output": "{\"status\": \"ready\", \"metric\": {\"id\": \"net_sales\", \"name\": \"净销售额\", \"unit\": \"元\", \"formula\": \"有效订单 pay_amount（分）求和 / 100；paid、completed\", \"kind\": \"additive\", \"version\": \"1\", \"source\": \"ecommerce_v1\", \"time_field\": \"orders.order_time\", \"exclude_test_users\": true, \"allowed_join\": \"orders.user_id = users.user_id（users.user_id 必须唯一）\", \"dimensions\": [\"overall\", \"region\", \"order_channel\"], \"scope\": \"项目电商模型；不自动套用于上传表或其他数据库业务口径\"}, \"quality\": {\"order_rows\": 9143, \"duplicate_orders\": 0, \"missing_orders\": 0, \"invalid_status\": 0, \"invalid_dates\": 0, \"invalid_money\": 0, \"first_date\": \"2025-01-01 05:25:36\", \"last_date\": \"2025-12-31 23:21:57\", \"duplicate_users\": 0, \"invalid_users\": 0, \"orphan_orders\": 0}, \"comparison\": {\"status\": \"ready\", \"scope\": {\"metric\": \"净销售额\", \"metric_kind\": \"additive\", \"source\": \"ecommerce_v1\", \"unit\": \"元\", \"dimension\": \"注册区域\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [], \"filters\": [\"排除测试账号\", \"按下单时间归属\"]}, \"summary\": {\"base\": \"1047258.23\", \"current\": \"734981.67\", \"delta\": \"-312276.56\", \"change_pct\": \"-29.81848708\"}, \"groups\": [{\"segment\": \"SOUTH\", \"base_value\": \"274283.79\", \"current_value\": \"134553.03\", \"delta\": \"-139730.76\", \"contribution_pct\": \"44.74583683\"}, {\"segment\": \"NORTH\", \"base_value\": \"258660.85\", \"current_value\": \"194328.58\", \"delta\": \"-64332.27\", \"contribution_pct\": \"20.60105632\"}, {\"segment\": \"EAST\", \"base_value\": \"287844.92\", \"current_value\": \"230744.67\", \"delta\": \"-57100.25\", \"contribution_pct\": \"18.28515403\"}, {\"segment\": \"WEST\", \"base_value\": \"122930.46\", \"current_value\": \"81845.46\", \"delta\": \"-41085\", \"contribution_pct\": \"13.15660708\"}, {\"segment\": \"CENTRAL\", \"base_value\": \"103538.21\", \"current_value\": \"93509.93\", \"delta\": \"-10028.28\", \"contribution_pct\": \"3.21134574\"}], \"group_count\": 5, \"reconciliation\": {\"matched\": true, \"group_totals\": {\"base_value\": \"1047258.23\", \"current_value\": \"734981.67\"}, \"differences\": {\"base_value\": \"0\", \"current_value\": \"0\"}}, \"warnings\": [\"贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。\", \"不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。\", \"两个周期天数不同，当前比较未自动做日均调整。\", \"检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。\"], \"causal_claim_supported\": false}, \"warnings\": [\"检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。\"], \"queries\": [\"SELECT u.region_code AS segment, SUM(CASE WHEN (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS base_value, SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS current_value FROM \\\"business\\\".\\\"orders\\\" o JOIN \\\"business\\\".\\\"users\\\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND ((o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') OR (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01')) GROUP BY 1 ORDER BY segment\", \"SELECT SUM(CASE WHEN (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS base_value, SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS current_value FROM \\\"business\\\".\\\"orders\\\" o JOIN \\\"business\\\".\\\"users\\\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND ((o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') OR (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01'))\"]}",
+          "duration_ms": 0,
+          "thought": ""
+        }
+      ],
+      "plan": [],
+      "reflection": null,
+      "reflection_status": "skipped",
+      "revised": false,
+      "llm_calls": 0,
+      "usage": {},
+      "duration_ms": 0,
+      "error": null,
+      "citations": [],
+      "citation_errors": [],
+      "analysis": {
+        "status": "unverified",
+        "scope": {
+          "metric": "净销售额",
+          "metric_kind": "additive",
+          "source": "ecommerce_v1",
+          "unit": "元",
+          "dimension": "注册区域",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "current_start": "2025-12-01",
+          "current_end": "2026-01-01",
+          "assumptions": [],
+          "filters": [
+            "排除测试账号",
+            "按下单时间归属"
+          ]
+        },
+        "clarification_questions": [],
+        "comparisons": [
+          {
+            "status": "ready",
+            "scope": {
+              "metric": "净销售额",
+              "metric_kind": "additive",
+              "source": "ecommerce_v1",
+              "unit": "元",
+              "dimension": "注册区域",
+              "base_start": "2025-11-01",
+              "base_end": "2025-12-01",
+              "current_start": "2025-12-01",
+              "current_end": "2026-01-01",
+              "assumptions": [],
+              "filters": [
+                "排除测试账号",
+                "按下单时间归属"
+              ]
+            },
+            "summary": {
+              "base": "1047258.23",
+              "current": "734981.67",
+              "delta": "-312276.56",
+              "change_pct": "-29.81848708"
+            },
+            "groups": [
+              {
+                "segment": "SOUTH",
+                "base_value": "274283.79",
+                "current_value": "134553.03",
+                "delta": "-139730.76",
+                "contribution_pct": "44.74583683"
+              },
+              {
+                "segment": "NORTH",
+                "base_value": "258660.85",
+                "current_value": "194328.58",
+                "delta": "-64332.27",
+                "contribution_pct": "20.60105632"
+              },
+              {
+                "segment": "EAST",
+                "base_value": "287844.92",
+                "current_value": "230744.67",
+                "delta": "-57100.25",
+                "contribution_pct": "18.28515403"
+              },
+              {
+                "segment": "WEST",
+                "base_value": "122930.46",
+                "current_value": "81845.46",
+                "delta": "-41085",
+                "contribution_pct": "13.15660708"
+              },
+              {
+                "segment": "CENTRAL",
+                "base_value": "103538.21",
+                "current_value": "93509.93",
+                "delta": "-10028.28",
+                "contribution_pct": "3.21134574"
+              }
+            ],
+            "group_count": 5,
+            "reconciliation": {
+              "matched": true,
+              "group_totals": {
+                "base_value": "1047258.23",
+                "current_value": "734981.67"
+              },
+              "differences": {
+                "base_value": "0",
+                "current_value": "0"
+              }
+            },
+            "warnings": [
+              "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+              "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+              "两个周期天数不同，当前比较未自动做日均调整。",
+              "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+            ],
+            "causal_claim_supported": false
+          }
+        ],
+        "warnings": [
+          "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。",
+          "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+          "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+          "两个周期天数不同，当前比较未自动做日均调整。"
+        ],
+        "comparison_count": 1,
+        "quality_checks": [],
+        "metrics": [
+          {
+            "status": "ready",
+            "metric": {
+              "id": "net_sales",
+              "name": "净销售额",
+              "unit": "元",
+              "formula": "有效订单 pay_amount（分）求和 / 100；paid、completed",
+              "kind": "additive",
+              "version": "1",
+              "source": "ecommerce_v1",
+              "time_field": "orders.order_time",
+              "exclude_test_users": true,
+              "allowed_join": "orders.user_id = users.user_id（users.user_id 必须唯一）",
+              "dimensions": [
+                "overall",
+                "region",
+                "order_channel"
+              ],
+              "scope": "项目电商模型；不自动套用于上传表或其他数据库业务口径"
+            },
+            "quality": {
+              "order_rows": 9143,
+              "duplicate_orders": 0,
+              "missing_orders": 0,
+              "invalid_status": 0,
+              "invalid_dates": 0,
+              "invalid_money": 0,
+              "first_date": "2025-01-01 05:25:36",
+              "last_date": "2025-12-31 23:21:57",
+              "duplicate_users": 0,
+              "invalid_users": 0,
+              "orphan_orders": 0
+            },
+            "comparison": {
+              "status": "ready",
+              "scope": {
+                "metric": "净销售额",
+                "metric_kind": "additive",
+                "source": "ecommerce_v1",
+                "unit": "元",
+                "dimension": "注册区域",
+                "base_start": "2025-11-01",
+                "base_end": "2025-12-01",
+                "current_start": "2025-12-01",
+                "current_end": "2026-01-01",
+                "assumptions": [],
+                "filters": [
+                  "排除测试账号",
+                  "按下单时间归属"
+                ]
+              },
+              "summary": {
+                "base": "1047258.23",
+                "current": "734981.67",
+                "delta": "-312276.56",
+                "change_pct": "-29.81848708"
+              },
+              "groups": [
+                {
+                  "segment": "SOUTH",
+                  "base_value": "274283.79",
+                  "current_value": "134553.03",
+                  "delta": "-139730.76",
+                  "contribution_pct": "44.74583683"
+                },
+                {
+                  "segment": "NORTH",
+                  "base_value": "258660.85",
+                  "current_value": "194328.58",
+                  "delta": "-64332.27",
+                  "contribution_pct": "20.60105632"
+                },
+                {
+                  "segment": "EAST",
+                  "base_value": "287844.92",
+                  "current_value": "230744.67",
+                  "delta": "-57100.25",
+                  "contribution_pct": "18.28515403"
+                },
+                {
+                  "segment": "WEST",
+                  "base_value": "122930.46",
+                  "current_value": "81845.46",
+                  "delta": "-41085",
+                  "contribution_pct": "13.15660708"
+                },
+                {
+                  "segment": "CENTRAL",
+                  "base_value": "103538.21",
+                  "current_value": "93509.93",
+                  "delta": "-10028.28",
+                  "contribution_pct": "3.21134574"
+                }
+              ],
+              "group_count": 5,
+              "reconciliation": {
+                "matched": true,
+                "group_totals": {
+                  "base_value": "1047258.23",
+                  "current_value": "734981.67"
+                },
+                "differences": {
+                  "base_value": "0",
+                  "current_value": "0"
+                }
+              },
+              "warnings": [
+                "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+                "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+                "两个周期天数不同，当前比较未自动做日均调整。",
+                "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+              ],
+              "causal_claim_supported": false
+            },
+            "warnings": [
+              "检查范围覆盖全业务表；日期边界覆盖不证明数据完整，当前未接入业务入库完成水位。"
+            ],
+            "queries": [
+              "SELECT u.region_code AS segment, SUM(CASE WHEN (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS base_value, SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS current_value FROM \"business\".\"orders\" o JOIN \"business\".\"users\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND ((o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') OR (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01')) GROUP BY 1 ORDER BY segment",
+              "SELECT SUM(CASE WHEN (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS base_value, SUM(CASE WHEN (o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') AND o.status IN ('paid','completed') THEN o.pay_amount ELSE 0 END) AS current_value FROM \"business\".\"orders\" o JOIN \"business\".\"users\" u ON u.user_id=o.user_id WHERE u.is_test=0 AND ((o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01') OR (o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01'))"
+            ]
+          }
+        ]
+      },
+      "needs_clarification": false,
+      "usage_breakdown": {},
+      "execution_llm_calls": 0,
+      "question": "合成演示：11月至12月各区域净销售额对比",
+      "tables": [
+        {
+          "id": "result-1",
+          "title": "净销售额 · 注册区域",
+          "columns": [
+            "注册区域",
+            "基期（元）",
+            "当期（元）",
+            "变化（元）"
+          ],
+          "rows": [
+            [
+              "SOUTH",
+              "274283.79",
+              "134553.03",
+              "-139730.76"
+            ],
+            [
+              "NORTH",
+              "258660.85",
+              "194328.58",
+              "-64332.27"
+            ],
+            [
+              "EAST",
+              "287844.92",
+              "230744.67",
+              "-57100.25"
+            ],
+            [
+              "WEST",
+              "122930.46",
+              "81845.46",
+              "-41085"
+            ],
+            [
+              "CENTRAL",
+              "103538.21",
+              "93509.93",
+              "-10028.28"
+            ]
+          ],
+          "evidence_ids": [
+            "E1"
+          ],
+          "scope": {
+            "metric": "净销售额",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1",
+            "unit": "元",
+            "dimension": "注册区域",
+            "base_start": "2025-11-01",
+            "base_end": "2025-12-01",
+            "current_start": "2025-12-01",
+            "current_end": "2026-01-01",
+            "assumptions": [],
+            "filters": [
+              "排除测试账号",
+              "按下单时间归属"
+            ]
+          },
+          "truncated": false
+        }
+      ],
+      "charts": [
+        {
+          "id": "result-1-bar",
+          "table_id": "result-1",
+          "kind": "bar",
+          "title": "净销售额 · 注册区域",
+          "unit": "元",
+          "labels": [
+            "SOUTH",
+            "NORTH",
+            "EAST",
+            "WEST",
+            "CENTRAL"
+          ],
+          "series": [
+            {
+              "name": "基期",
+              "values": [
+                "274283.79",
+                "258660.85",
+                "287844.92",
+                "122930.46",
+                "103538.21"
+              ]
+            },
+            {
+              "name": "当期",
+              "values": [
+                "134553.03",
+                "194328.58",
+                "230744.67",
+                "81845.46",
+                "93509.93"
+              ]
+            }
+          ],
+          "evidence_ids": [
+            "E1"
+          ],
+          "scope": {
+            "metric": "净销售额",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1",
+            "unit": "元",
+            "dimension": "注册区域",
+            "base_start": "2025-11-01",
+            "base_end": "2025-12-01",
+            "current_start": "2025-12-01",
+            "current_end": "2026-01-01",
+            "assumptions": [],
+            "filters": [
+              "排除测试账号",
+              "按下单时间归属"
+            ]
+          }
+        },
+        {
+          "id": "result-1-contribution",
+          "table_id": "result-1",
+          "kind": "contribution",
+          "title": "净销售额 · 注册区域",
+          "unit": "元",
+          "labels": [
+            "SOUTH",
+            "NORTH",
+            "EAST",
+            "WEST",
+            "CENTRAL"
+          ],
+          "series": [
+            {
+              "name": "变化贡献",
+              "values": [
+                "-139730.76",
+                "-64332.27",
+                "-57100.25",
+                "-41085",
+                "-10028.28"
+              ]
+            }
+          ],
+          "evidence_ids": [
+            "E1"
+          ],
+          "scope": {
+            "metric": "净销售额",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1",
+            "unit": "元",
+            "dimension": "注册区域",
+            "base_start": "2025-11-01",
+            "base_end": "2025-12-01",
+            "current_start": "2025-12-01",
+            "current_end": "2026-01-01",
+            "assumptions": [],
+            "filters": [
+              "排除测试账号",
+              "按下单时间归属"
+            ]
+          }
+        }
+      ],
+      "analysis_state": {
+        "scope": {
+          "metric_id": "net_sales",
+          "source": "ecommerce_v1",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "start": "2025-12-01",
+          "end": "2026-01-01",
+          "dimension": "region",
+          "metric": "净销售额",
+          "unit": "元",
+          "metric_version": "1"
+        },
+        "evidence_id": "E1"
+      },
+      "archive_status": "saved",
+      "archive_error": null,
+      "context_applied": true,
+      "created_at": "2026-10-25T03:10:28.805908+00:00"
+    },
+    {
+      "answer": "合成演示，未调用聊天模型。折线来自演示库实际查询；本例统计每月有效订单数。图表不补造缺失观测，完整 SQL 和数据见查询证据。",
+      "success": true,
+      "trace_id": "113e70ec-e4c6-4311-878b-b7aa2895f3b2",
+      "session_id": "delivery-demo-7dcef8a4a90b466d90b6e1c499f00a24",
+      "mode": "react",
+      "steps": [
+        {
+          "step": 1,
+          "tool": "run_sql",
+          "arguments": {
+            "sql": "SELECT substr(o.order_time,1,7) AS month, COUNT(*) AS order_count FROM business.orders o JOIN business.users u ON u.user_id=o.user_id WHERE u.is_test=0 AND o.status IN ('paid','completed') GROUP BY 1 ORDER BY 1"
+          },
+          "ok": true,
+          "output": "{\"columns\": [\"month\", \"order_count\"], \"rows\": [[\"2025-01\", 565], [\"2025-02\", 405], [\"2025-03\", 602], [\"2025-04\", 603], [\"2025-05\", 631], [\"2025-06\", 754], [\"2025-07\", 590], [\"2025-08\", 596], [\"2025-09\", 614], [\"2025-10\", 703], [\"2025-11\", 1039], [\"2025-12\", 733]], \"row_count\": 12}",
+          "duration_ms": 0,
+          "thought": ""
+        }
+      ],
+      "plan": [],
+      "reflection": null,
+      "reflection_status": "skipped",
+      "revised": false,
+      "llm_calls": 0,
+      "usage": {},
+      "duration_ms": 0,
+      "error": null,
+      "citations": [],
+      "citation_errors": [],
+      "analysis": {
+        "status": "unverified",
+        "scope": null,
+        "clarification_questions": [],
+        "comparisons": [],
+        "warnings": [],
+        "comparison_count": 0,
+        "quality_checks": [],
+        "metrics": []
+      },
+      "needs_clarification": false,
+      "usage_breakdown": {},
+      "execution_llm_calls": 0,
+      "question": "合成演示：月度有效订单数趋势",
+      "tables": [
+        {
+          "id": "result-1",
+          "title": "查询结果 · E1",
+          "columns": [
+            "month",
+            "order_count"
+          ],
+          "rows": [
+            [
+              "2025-01",
+              565
+            ],
+            [
+              "2025-02",
+              405
+            ],
+            [
+              "2025-03",
+              602
+            ],
+            [
+              "2025-04",
+              603
+            ],
+            [
+              "2025-05",
+              631
+            ],
+            [
+              "2025-06",
+              754
+            ],
+            [
+              "2025-07",
+              590
+            ],
+            [
+              "2025-08",
+              596
+            ],
+            [
+              "2025-09",
+              614
+            ],
+            [
+              "2025-10",
+              703
+            ],
+            [
+              "2025-11",
+              1039
+            ],
+            [
+              "2025-12",
+              733
+            ]
+          ],
+          "evidence_ids": [
+            "E1"
+          ],
+          "scope": {},
+          "truncated": false
+        }
+      ],
+      "charts": [
+        {
+          "id": "result-1-line",
+          "table_id": "result-1",
+          "kind": "line",
+          "title": "查询结果 · E1",
+          "unit": "原始数值（单位未声明）",
+          "labels": [
+            "2025-01",
+            "2025-02",
+            "2025-03",
+            "2025-04",
+            "2025-05",
+            "2025-06",
+            "2025-07",
+            "2025-08",
+            "2025-09",
+            "2025-10",
+            "2025-11",
+            "2025-12"
+          ],
+          "series": [
+            {
+              "name": "order_count",
+              "values": [
+                "565",
+                "405",
+                "602",
+                "603",
+                "631",
+                "754",
+                "590",
+                "596",
+                "614",
+                "703",
+                "1039",
+                "733"
+              ]
+            }
+          ],
+          "evidence_ids": [
+            "E1"
+          ],
+          "scope": {}
+        }
+      ],
+      "analysis_state": {},
+      "archive_status": "saved",
+      "archive_error": null,
+      "context_applied": true,
+      "created_at": "2026-10-25T03:10:28.881620+00:00"
+    }
+  ]
+}

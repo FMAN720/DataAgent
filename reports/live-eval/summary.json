@@ -1,0 +1,183 @@
+{
+  "live_status": "partial",
+  "expected_runs": 80,
+  "completed_runs": 76,
+  "variants": {
+    "baseline": {
+      "completed": 50,
+      "rule_passed": 46,
+      "splits": {
+        "development": {
+          "completed": 30,
+          "rule_passed": 29
+        },
+        "holdout": {
+          "completed": 20,
+          "rule_passed": 17
+        }
+      },
+      "p50_ms": 8692.5,
+      "p95_ms": 37643,
+      "llm_calls": 314,
+      "chat_tokens": 1648046,
+      "citation_error_cases": 0,
+      "reviewed_cases": 41,
+      "revised_cases": 6,
+      "complete_usage_cases": 50,
+      "failures": [
+        {
+          "id": "cmp_regions",
+          "checks": [
+            "fact_0_0"
+          ]
+        },
+        {
+          "id": "cmp_south_app",
+          "checks": [
+            "fact_0_0",
+            "fact_0_1",
+            "reconciled_comparison"
+          ]
+        },
+        {
+          "id": "doc_channel_meaning",
+          "checks": [
+            "text_0",
+            "text_1",
+            "source_regions"
+          ]
+        },
+        {
+          "id": "safe_future",
+          "checks": [
+            "pattern_0"
+          ]
+        }
+      ]
+    },
+    "keyword": {
+      "completed": 10,
+      "rule_passed": 9,
+      "splits": {
+        "development": {
+          "completed": 7,
+          "rule_passed": 6
+        },
+        "holdout": {
+          "completed": 3,
+          "rule_passed": 3
+        }
+      },
+      "p50_ms": 11148.5,
+      "p95_ms": 42437,
+      "llm_calls": 74,
+      "chat_tokens": 494351,
+      "citation_error_cases": 0,
+      "reviewed_cases": 8,
+      "revised_cases": 2,
+      "complete_usage_cases": 10,
+      "failures": [
+        {
+          "id": "cmp_regions",
+          "checks": [
+            "fact_0_0"
+          ]
+        }
+      ]
+    },
+    "no_planner": {
+      "completed": 10,
+      "rule_passed": 8,
+      "splits": {
+        "development": {
+          "completed": 7,
+          "rule_passed": 6
+        },
+        "holdout": {
+          "completed": 3,
+          "rule_passed": 2
+        }
+      },
+      "p50_ms": 9120.0,
+      "p95_ms": 41306,
+      "llm_calls": 56,
+      "chat_tokens": 353137,
+      "citation_error_cases": 0,
+      "reviewed_cases": 8,
+      "revised_cases": 2,
+      "complete_usage_cases": 10,
+      "failures": [
+        {
+          "id": "cmp_regions",
+          "checks": [
+            "fact_0_0"
+          ]
+        },
+        {
+          "id": "doc_appliance_cause",
+          "checks": [
+            "fact_0_0",
+            "fact_0_1"
+          ]
+        }
+      ]
+    },
+    "no_reflection": {
+      "completed": 6,
+      "rule_passed": 4,
+      "splits": {
+        "development": {
+          "completed": 5,
+          "rule_passed": 3
+        },
+        "holdout": {
+          "completed": 1,
+          "rule_passed": 1
+        }
+      },
+      "p50_ms": 5826.0,
+      "p95_ms": 18755,
+      "llm_calls": 27,
+      "chat_tokens": 134701,
+      "citation_error_cases": 0,
+      "reviewed_cases": 0,
+      "revised_cases": 0,
+      "complete_usage_cases": 6,
+      "failures": [
+        {
+          "id": "cmp_refund",
+          "checks": [
+            "fact_0_0",
+            "fact_0_1",
+            "pattern_0",
+            "reconciled_comparison"
+          ]
+        },
+        {
+          "id": "cmp_regions",
+          "checks": [
+            "fact_0_0"
+          ]
+        }
+      ]
+    }
+  },
+  "paired_ablations": {
+    "keyword": {
+      "pairs": 10,
+      "baseline_passed": 9,
+      "variant_passed": 9
+    },
+    "no_planner": {
+      "pairs": 10,
+      "baseline_passed": 9,
+      "variant_passed": 8
+    },
+    "no_reflection": {
+      "pairs": 6,
+      "baseline_passed": 5,
+      "variant_passed": 4
+    }
+  },
+  "interpretation": "Rule-based acceptance only; a single synthetic run does not establish general accuracy or statistical significance."
+}

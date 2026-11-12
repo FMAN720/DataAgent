@@ -1,0 +1,52 @@
+{
+  "checked_at": "2026-10-22T13:50:03.732420+00:00",
+  "model": "BAAI/bge-m3",
+  "dimensions": 1024,
+  "existing_documents_at_activation": 0,
+  "existing_chunks_at_activation": 0,
+  "connectivity_check_usage": {
+    "requests": 1,
+    "input_tokens": 18,
+    "texts": 1,
+    "failures": 0
+  },
+  "test_input_kind": "one short synthetic connectivity sentence; no uploaded document",
+  "persistent_enablement_verified": true,
+  "runtime_embedding": "configured",
+  "temporary_index": {
+    "completed_chunks": 1,
+    "total_chunks": 1,
+    "status": "succeeded"
+  },
+  "retrieval": {
+    "vector": {
+      "matched": true,
+      "warnings": [],
+      "source": "vector"
+    },
+    "hybrid": {
+      "matched": true,
+      "warnings": [],
+      "source": "hybrid"
+    }
+  },
+  "service_verification_usage": {
+    "requests": 3,
+    "input_tokens": 192,
+    "texts": 3,
+    "failures": 0
+  },
+  "temporary_document_cleanup": "deleted",
+  "verified_at": "2026-10-22T13:52:50.638237+00:00",
+  "final_document_store_counts": {
+    "documents": 0,
+    "chunks": 0,
+    "vectors": 0,
+    "index_jobs": 0
+  },
+  "historical_documents_enqueued": 0,
+  "final_verified_at": "2026-10-22T13:54:05.517397+00:00",
+  "historical_indexing_result": "empty_corpus_no_documents_to_index",
+  "total_verification_api_requests": 4,
+  "total_verification_input_tokens": 210
+}

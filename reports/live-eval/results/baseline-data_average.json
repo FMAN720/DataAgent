@@ -1,0 +1,319 @@
+{
+  "id": "data_average",
+  "category": "datasets",
+  "split": "holdout",
+  "variant": "baseline",
+  "question": "合成预算补充表amount单位为元，排除空值后的平均金额是多少元？",
+  "response": {
+    "answer": "**结论：排除空值后的平均金额为 4.97 元。**\n\n- 表内共 4 行，其中 `amount` 有 1 个空值（缺失率 25.0%），有效值 3 个。\n- 有效金额合计 14.90 元，平均值 = 14.90 ÷ 3 = **4.97 元**（精确值 4.9667）。\n- 有效值范围 0.10 ~ 12.30 元，无负值；`external_id` 无重复。\n\n注意：空值按「缺失」处理，未当作 0 参与计算；若把空值视为 0，平均值会变成 3.73 元，口径不同。\n\n口径：上传表 `uploaded_budget` 的 `amount` 字段（单位：元，原始单位未做换算），仅对非空值求算术平均。",
+    "success": true,
+    "trace_id": "0f87a2de-3050-40d4-a208-62d78b238bb8",
+    "session_id": "62b5b092-da5a-4adf-bded-51560ba90c5b",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_datasets",
+        "arguments": {
+          "query": "预算"
+        },
+        "ok": true,
+        "output": "{\"datasets\": [{\"id\": \"phase7-synthetic-budget\", \"filename\": \"合成预算补充表.csv\", \"display_name\": \"合成预算补充表\", \"table\": \"uploaded_budget\", \"row_count\": 4, \"columns\": [{\"name\": \"region_code\", \"label\": \"region_code\", \"type\": \"text\", \"nullable\": false}, {\"name\": \"amount\", \"label\": \"amount\", \"type\": \"decimal\", \"nullable\": true}, {\"name\": \"external_id\", \"label\": \"external_id\", \"type\": \"text\", \"nullable\": false}], \"column_count\": 3, \"columns_truncated\": false}], \"truncated\": false}",
+        "duration_ms": 0,
+        "thought": "我先查看已导入的数据集。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "uploaded_budget"
+          ]
+        },
+        "ok": true,
+        "output": "表 uploaded_budget\n  _row_number INTEGER NOT NULL\n  region_code TEXT  -- 区域编码，可关联 regions\n  amount NUMERIC  -- 单位：元；空值不代表零\n  external_id TEXT  -- 原始标识符，保留前导零\n  样例 (_row_number | region_code | amount | external_id):\n  2 | EAST | 12.3 | 001\n  3 | NORTH | 0.1 | 002\n  4 | SOUTH | 2.5 | 003",
+        "duration_ms": 1,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "profile_dataset",
+        "arguments": {
+          "table": "uploaded_budget",
+          "columns": [
+            "region_code",
+            "amount",
+            "external_id"
+          ],
+          "key_columns": [
+            "external_id"
+          ]
+        },
+        "ok": true,
+        "output": "{\"status\": \"warning\", \"table\": \"uploaded_budget\", \"row_count\": 4, \"columns\": [{\"column\": \"region_code\", \"type\": \"TEXT\", \"null_count\": 0, \"blank_count\": 0, \"missing_pct\": 0.0, \"distinct_count\": 3}, {\"column\": \"amount\", \"type\": \"NUMERIC\", \"null_count\": 1, \"blank_count\": 0, \"missing_pct\": 25.0, \"distinct_count\": 3, \"min\": 0.1, \"max\": 12.3, \"negative_count\": 0, \"invalid_numeric_count\": 0}, {\"column\": \"external_id\", \"type\": \"TEXT\", \"null_count\": 0, \"blank_count\": 0, \"missing_pct\": 0.0, \"distinct_count\": 4}], \"columns_truncated\": true, \"duplicate_excess_rows\": 0, \"key_columns\": [\"external_id\"], \"key_missing_rows\": 0, \"date_range\": null, \"warnings\": [\"字段 amount 存在 1 个缺失或空白值。\"], \"questions\": [], \"method\": \"full_table_aggregates_readonly_snapshot\"}",
+        "duration_ms": 9,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT COUNT(*) AS total_rows, COUNT(amount) AS non_null_cnt, SUM(amount) AS sum_amount, AVG(amount) AS avg_amount FROM uploaded_budget",
+          "purpose": "计算排除空值后的平均金额"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"total_rows\", \"non_null_cnt\", \"sum_amount\", \"avg_amount\"], \"rows\": [[4, 3, 14.9, 4.966666666666667]], \"row_count\": 1}",
+        "duration_ms": 1,
+        "thought": ""
+      }
+    ],
+    "plan": [],
+    "reflection": {
+      "passed": true,
+      "quality_score": 98,
+      "issues": [],
+      "summary": "回答中的关键数字均与查询结果一致，口径正确，已完整回应问题。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "表内共 4 行，amount 有 1 个空值（缺失率 25.0%），有效值 3 个",
+          "status": "supported",
+          "evidence_ids": [
+            "E3",
+            "E4"
+          ],
+          "reason": "profile_dataset 显示 row_count=4、amount null_count=1、missing_pct=25.0；run_sql 返回 total_rows=4、non_null_cnt=3。"
+        },
+        {
+          "claim": "有效金额合计 14.90 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E4"
+          ],
+          "reason": "run_sql 返回 sum_amount=14.9。"
+        },
+        {
+          "claim": "平均值 = 14.90 ÷ 3 = 4.97 元（精确值 4.9667）",
+          "status": "supported",
+          "evidence_ids": [
+            "E4"
+          ],
+          "reason": "run_sql 返回 avg_amount=4.966666666666667，四舍五入为 4.97，与 14.9/3 一致。"
+        },
+        {
+          "claim": "有效值范围 0.10 ~ 12.30 元，无负值",
+          "status": "supported",
+          "evidence_ids": [
+            "E3"
+          ],
+          "reason": "profile_dataset 显示 amount min=0.1、max=12.3、negative_count=0。"
+        },
+        {
+          "claim": "external_id 无重复",
+          "status": "supported",
+          "evidence_ids": [
+            "E3"
+          ],
+          "reason": "profile_dataset 以 external_id 为键，duplicate_excess_rows=0、key_missing_rows=0。"
+        },
+        {
+          "claim": "若把空值视为 0，平均值会变成 3.73 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E4"
+          ],
+          "reason": "由 run_sql 的 sum_amount=14.9 与 total_rows=4 可直接算出 14.9/4=3.725≈3.73，属于口径对比说明。"
+        },
+        {
+          "claim": "amount 单位为元，原始单位未做换算",
+          "status": "supported",
+          "evidence_ids": [
+            "E2"
+          ],
+          "reason": "describe_tables 注明 amount 单位：元；上传数据未假定为分，未做二次换算。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 6,
+    "usage": {
+      "prompt_tokens": 21030,
+      "completion_tokens": 995,
+      "total_tokens": 22025,
+      "prompt_cache_hit_tokens": 18432,
+      "prompt_cache_miss_tokens": 2598
+    },
+    "duration_ms": 7850,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [
+        "字段 amount 存在 1 个缺失或空白值。"
+      ],
+      "comparison_count": 0,
+      "quality_checks": [
+        {
+          "status": "warning",
+          "table": "uploaded_budget",
+          "row_count": 4,
+          "columns": [
+            {
+              "column": "region_code",
+              "type": "TEXT",
+              "null_count": 0,
+              "blank_count": 0,
+              "missing_pct": 0.0,
+              "distinct_count": 3
+            },
+            {
+              "column": "amount",
+              "type": "NUMERIC",
+              "null_count": 1,
+              "blank_count": 0,
+              "missing_pct": 25.0,
+              "distinct_count": 3,
+              "min": 0.1,
+              "max": 12.3,
+              "negative_count": 0,
+              "invalid_numeric_count": 0
+            },
+            {
+              "column": "external_id",
+              "type": "TEXT",
+              "null_count": 0,
+              "blank_count": 0,
+              "missing_pct": 0.0,
+              "distinct_count": 4
+            }
+          ],
+          "columns_truncated": true,
+          "duplicate_excess_rows": 0,
+          "key_columns": [
+            "external_id"
+          ],
+          "key_missing_rows": 0,
+          "date_range": null,
+          "warnings": [
+            "字段 amount 存在 1 个缺失或空白值。"
+          ],
+          "questions": [],
+          "method": "full_table_aggregates_readonly_snapshot"
+        }
+      ],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 556,
+          "usage": {
+            "prompt_tokens": 200,
+            "completion_tokens": 5,
+            "total_tokens": 205,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 200
+          }
+        },
+        "analysis": {
+          "logical_calls": 4,
+          "http_requests": 4,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 4665,
+          "usage": {
+            "prompt_tokens": 19183,
+            "completion_tokens": 460,
+            "total_tokens": 19643,
+            "prompt_cache_hit_tokens": 18048,
+            "prompt_cache_miss_tokens": 1135
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 2604,
+          "usage": {
+            "prompt_tokens": 1647,
+            "completion_tokens": 530,
+            "total_tokens": 2177,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 1263
+          }
+        }
+      },
+      "llm_calls": 6,
+      "chat_usage": {
+        "prompt_tokens": 21030,
+        "completion_tokens": 995,
+        "total_tokens": 22025,
+        "prompt_cache_hit_tokens": 18432,
+        "prompt_cache_miss_tokens": 2598
+      },
+      "http_requests": 6,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 4,
+    "question": "合成预算补充表amount单位为元，排除空值后的平均金额是多少元？",
+    "tables": [
+      {
+        "id": "result-4",
+        "title": "查询结果 · E4",
+        "columns": [
+          "total_rows",
+          "non_null_cnt",
+          "sum_amount",
+          "avg_amount"
+        ],
+        "rows": [
+          [
+            4,
+            3,
+            14.9,
+            4.966666666666667
+          ]
+        ],
+        "evidence_ids": [
+          "E4"
+        ],
+        "scope": {},
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

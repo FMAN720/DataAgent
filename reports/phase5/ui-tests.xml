@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="post-mutation refresh waits for old read and then obtains a fresh snapshot" time="0.009637" classname="test" file="tests\workspace.test.cjs"/>
+	<testcase name="different resource lists load independently" time="0.003090" classname="test" file="tests\workspace.test.cjs"/>
+	<testcase name="readiness 503 does not block usable data resources" time="0.006555" classname="test" file="tests\workspace.test.cjs"/>
+	<testcase name="stop bypasses the now-empty required question and aborts the live request" time="0.004212" classname="test" file="tests\workspace.test.cjs"/>
+	<!-- tests 4 -->
+	<!-- suites 0 -->
+	<!-- pass 4 -->
+	<!-- fail 0 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 182.5541 -->
+</testsuites>

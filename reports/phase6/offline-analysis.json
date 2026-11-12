@@ -1,0 +1,675 @@
+{
+  "created_at": "2026-11-01T13:48:14.573538+00:00",
+  "kind": "scripted offline integration, NOT real model answer evaluation",
+  "external_api_requests": 0,
+  "results": [
+    {
+      "id": "additive",
+      "question": "比较 11 月和 12 月净销售额，按区域拆解",
+      "passed": true,
+      "answer": "【离线合成演示，回答与审查由脚本生成，未调用模型 API】\n净销售额从 1047258.23 变为 734981.67，变化 -312276.56 元。分项见下表。\n这些数字说明变化分布，原因尚未验证；需要同期活动执行、流量与转化等证据。",
+      "analysis": {
+        "status": "reviewed",
+        "scope": {
+          "metric": "净销售额",
+          "metric_kind": "additive",
+          "source": "合成电商演示库（离线验收）",
+          "unit": "元",
+          "dimension": "区域",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "current_start": "2025-12-01",
+          "current_end": "2026-01-01",
+          "assumptions": [],
+          "filters": [
+            "排除测试账号",
+            "有效订单 paid/completed",
+            "按下单时间归属"
+          ]
+        },
+        "clarification_questions": [],
+        "comparisons": [
+          {
+            "status": "ready",
+            "scope": {
+              "metric": "净销售额",
+              "metric_kind": "additive",
+              "source": "合成电商演示库（离线验收）",
+              "unit": "元",
+              "dimension": "区域",
+              "base_start": "2025-11-01",
+              "base_end": "2025-12-01",
+              "current_start": "2025-12-01",
+              "current_end": "2026-01-01",
+              "assumptions": [],
+              "filters": [
+                "排除测试账号",
+                "有效订单 paid/completed",
+                "按下单时间归属"
+              ]
+            },
+            "summary": {
+              "base": "1047258.23",
+              "current": "734981.67",
+              "delta": "-312276.56",
+              "change_pct": "-29.81848708"
+            },
+            "groups": [
+              {
+                "segment": "华南",
+                "base_value": "274283.79",
+                "current_value": "134553.03",
+                "delta": "-139730.76",
+                "contribution_pct": "44.74583683"
+              },
+              {
+                "segment": "华北",
+                "base_value": "258660.85",
+                "current_value": "194328.58",
+                "delta": "-64332.27",
+                "contribution_pct": "20.60105632"
+              },
+              {
+                "segment": "华东",
+                "base_value": "287844.92",
+                "current_value": "230744.67",
+                "delta": "-57100.25",
+                "contribution_pct": "18.28515403"
+              },
+              {
+                "segment": "西部",
+                "base_value": "122930.46",
+                "current_value": "81845.46",
+                "delta": "-41085",
+                "contribution_pct": "13.15660708"
+              },
+              {
+                "segment": "华中",
+                "base_value": "103538.21",
+                "current_value": "93509.93",
+                "delta": "-10028.28",
+                "contribution_pct": "3.21134574"
+              }
+            ],
+            "group_count": 5,
+            "reconciliation": {
+              "matched": true,
+              "group_totals": {
+                "base_value": "1047258.23",
+                "current_value": "734981.67"
+              },
+              "differences": {
+                "base_value": "0",
+                "current_value": "0"
+              }
+            },
+            "warnings": [
+              "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+              "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+              "两个周期天数不同，当前比较未自动做日均调整。"
+            ],
+            "causal_claim_supported": false
+          }
+        ],
+        "warnings": [
+          "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+          "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+          "两个周期天数不同，当前比较未自动做日均调整。"
+        ],
+        "comparison_count": 1,
+        "quality_checks": [],
+        "metrics": []
+      },
+      "reflection": {
+        "status": "passed",
+        "passed": true,
+        "quality_score": 95,
+        "issues": [],
+        "summary": "离线脚本按工具结果返回审查结构；不代表真实模型的判断能力",
+        "error": null,
+        "checks": [
+          {
+            "claim": "变化数字或口径不一致来自本轮 compare_periods 输出",
+            "status": "supported",
+            "evidence_ids": [
+              "E2"
+            ],
+            "reason": "核对只读查询计算的 summary 和 reconciliation；因果原因尚未验证"
+          }
+        ],
+        "evidence_complete": true
+      },
+      "steps": [
+        {
+          "type": "tool",
+          "step": 1,
+          "tool": "prepare_analysis",
+          "arguments": {
+            "scope": {
+              "metric": "净销售额",
+              "metric_kind": "additive",
+              "source": "合成电商演示库（离线验收）",
+              "unit": "元",
+              "dimension": "区域",
+              "base_start": "2025-11-01",
+              "base_end": "2025-12-01",
+              "current_start": "2025-12-01",
+              "current_end": "2026-01-01",
+              "filters": [
+                "排除测试账号",
+                "有效订单 paid/completed",
+                "按下单时间归属"
+              ],
+              "assumptions": []
+            }
+          },
+          "ok": true,
+          "output": "{\"status\": \"ready\", \"scope\": {\"metric\": \"净销售额\", \"metric_kind\": \"additive\", \"source\": \"合成电商演示库（离线验收）\", \"unit\": \"元\", \"dimension\": \"区域\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [], \"filters\": [\"排除测试账号\", \"有效订单 paid/completed\", \"按下单时间归属\"]}, \"questions\": [], \"period_convention\": \"start_inclusive_end_exclusive\"}",
+          "duration_ms": 1,
+          "thought": ""
+        },
+        {
+          "type": "tool",
+          "step": 2,
+          "tool": "compare_periods",
+          "arguments": {
+            "scope": {
+              "metric": "净销售额",
+              "metric_kind": "additive",
+              "source": "合成电商演示库（离线验收）",
+              "unit": "元",
+              "dimension": "区域",
+              "base_start": "2025-11-01",
+              "base_end": "2025-12-01",
+              "current_start": "2025-12-01",
+              "current_end": "2026-01-01",
+              "filters": [
+                "排除测试账号",
+                "有效订单 paid/completed",
+                "按下单时间归属"
+              ],
+              "assumptions": []
+            },
+            "detail_sql": "SELECT r.region_name AS segment, SUM(CASE WHEN o.order_time < '2025-12-01' THEN o.pay_amount ELSE 0 END) / 100.0 AS base_value, SUM(CASE WHEN o.order_time >= '2025-12-01' THEN o.pay_amount ELSE 0 END) / 100.0 AS current_value FROM orders o JOIN users u ON u.user_id=o.user_id JOIN regions r ON r.region_code=u.region_code WHERE o.status IN ('paid','completed') AND u.is_test=0 AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01' GROUP BY r.region_name",
+            "total_sql": "SELECT SUM(CASE WHEN o.order_time < '2025-12-01' THEN o.pay_amount ELSE 0 END) / 100.0 AS base_value, SUM(CASE WHEN o.order_time >= '2025-12-01' THEN o.pay_amount ELSE 0 END) / 100.0 AS current_value FROM orders o JOIN users u ON u.user_id=o.user_id WHERE o.status IN ('paid','completed') AND u.is_test=0 AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'"
+          },
+          "ok": true,
+          "output": "{\"status\": \"ready\", \"scope\": {\"metric\": \"净销售额\", \"metric_kind\": \"additive\", \"source\": \"合成电商演示库（离线验收）\", \"unit\": \"元\", \"dimension\": \"区域\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [], \"filters\": [\"排除测试账号\", \"有效订单 paid/completed\", \"按下单时间归属\"]}, \"summary\": {\"base\": \"1047258.23\", \"current\": \"734981.67\", \"delta\": \"-312276.56\", \"change_pct\": \"-29.81848708\"}, \"groups\": [{\"segment\": \"华南\", \"base_value\": \"274283.79\", \"current_value\": \"134553.03\", \"delta\": \"-139730.76\", \"contribution_pct\": \"44.74583683\"}, {\"segment\": \"华北\", \"base_value\": \"258660.85\", \"current_value\": \"194328.58\", \"delta\": \"-64332.27\", \"contribution_pct\": \"20.60105632\"}, {\"segment\": \"华东\", \"base_value\": \"287844.92\", \"current_value\": \"230744.67\", \"delta\": \"-57100.25\", \"contribution_pct\": \"18.28515403\"}, {\"segment\": \"西部\", \"base_value\": \"122930.46\", \"current_value\": \"81845.46\", \"delta\": \"-41085\", \"contribution_pct\": \"13.15660708\"}, {\"segment\": \"华中\", \"base_value\": \"103538.21\", \"current_value\": \"93509.93\", \"delta\": \"-10028.28\", \"contribution_pct\": \"3.21134574\"}], \"group_count\": 5, \"reconciliation\": {\"matched\": true, \"group_totals\": {\"base_value\": \"1047258.23\", \"current_value\": \"734981.67\"}, \"differences\": {\"base_value\": \"0\", \"current_value\": \"0\"}}, \"warnings\": [\"贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。\", \"不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。\", \"两个周期天数不同，当前比较未自动做日均调整。\"], \"causal_claim_supported\": false}",
+          "duration_ms": 42,
+          "thought": ""
+        }
+      ]
+    },
+    {
+      "id": "rate",
+      "question": "比较退款率，按下单渠道拆解",
+      "passed": true,
+      "answer": "【离线合成演示，回答与审查由脚本生成，未调用模型 API】\n退款率从 9.88725065 变为 8.03011292，变化 -1.85713773 个百分点。分项见下表。\n这些数字说明变化分布，原因尚未验证；需要同期活动执行、流量与转化等证据。",
+      "analysis": {
+        "status": "reviewed",
+        "scope": {
+          "metric": "退款率",
+          "metric_kind": "rate",
+          "source": "合成电商演示库（离线验收）",
+          "unit": "%",
+          "dimension": "下单渠道",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "current_start": "2025-12-01",
+          "current_end": "2026-01-01",
+          "assumptions": [],
+          "filters": [
+            "排除测试账号",
+            "已支付订单 paid/completed/refunded",
+            "按下单时间归属"
+          ]
+        },
+        "clarification_questions": [],
+        "comparisons": [
+          {
+            "status": "ready",
+            "scope": {
+              "metric": "退款率",
+              "metric_kind": "rate",
+              "source": "合成电商演示库（离线验收）",
+              "unit": "%",
+              "dimension": "下单渠道",
+              "base_start": "2025-11-01",
+              "base_end": "2025-12-01",
+              "current_start": "2025-12-01",
+              "current_end": "2026-01-01",
+              "assumptions": [],
+              "filters": [
+                "排除测试账号",
+                "已支付订单 paid/completed/refunded",
+                "按下单时间归属"
+              ]
+            },
+            "summary": {
+              "base_numerator": "114",
+              "base_denominator": "1153",
+              "current_numerator": "64",
+              "current_denominator": "797",
+              "base": "9.88725065",
+              "current": "8.03011292",
+              "delta_pp": "-1.85713773"
+            },
+            "groups": [
+              {
+                "segment": "app",
+                "base_numerator": "64",
+                "base_denominator": "713",
+                "current_numerator": "35",
+                "current_denominator": "482",
+                "base_rate": "8.97615708",
+                "current_rate": "7.26141079",
+                "within_pp": "-1.04869999",
+                "mix_pp": "-0.11056921",
+                "contribution_pp": "-1.1592692"
+              },
+              {
+                "segment": "web",
+                "base_numerator": "19",
+                "base_denominator": "161",
+                "current_numerator": "9",
+                "current_denominator": "120",
+                "base_rate": "11.80124224",
+                "current_rate": "7.5",
+                "within_pp": "-0.624111",
+                "mix_pp": "0.10547052",
+                "contribution_pp": "-0.51864048"
+              },
+              {
+                "segment": "mini_program",
+                "base_numerator": "31",
+                "base_denominator": "279",
+                "current_numerator": "20",
+                "current_denominator": "195",
+                "base_rate": "11.11111111",
+                "current_rate": "10.25641026",
+                "within_pp": "-0.20796793",
+                "mix_pp": "0.02873988",
+                "contribution_pp": "-0.17922805"
+              }
+            ],
+            "group_count": 3,
+            "reconciliation": {
+              "matched": true,
+              "group_totals": {
+                "base_numerator": "114",
+                "base_denominator": "1153",
+                "current_numerator": "64",
+                "current_denominator": "797"
+              },
+              "differences": {
+                "base_numerator": "0",
+                "base_denominator": "0",
+                "current_numerator": "0",
+                "current_denominator": "0"
+              }
+            },
+            "warnings": [
+              "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+              "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+              "两个周期天数不同，当前比较未自动做日均调整。",
+              "比例按总分子/总分母计算；组内变化和结构变化采用对称分解，单位为百分点。零分母分组的变化归入结构项。"
+            ],
+            "causal_claim_supported": false
+          }
+        ],
+        "warnings": [
+          "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+          "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+          "两个周期天数不同，当前比较未自动做日均调整。",
+          "比例按总分子/总分母计算；组内变化和结构变化采用对称分解，单位为百分点。零分母分组的变化归入结构项。"
+        ],
+        "comparison_count": 1,
+        "quality_checks": [],
+        "metrics": []
+      },
+      "reflection": {
+        "status": "passed",
+        "passed": true,
+        "quality_score": 95,
+        "issues": [],
+        "summary": "离线脚本按工具结果返回审查结构；不代表真实模型的判断能力",
+        "error": null,
+        "checks": [
+          {
+            "claim": "变化数字或口径不一致来自本轮 compare_periods 输出",
+            "status": "supported",
+            "evidence_ids": [
+              "E2"
+            ],
+            "reason": "核对只读查询计算的 summary 和 reconciliation；因果原因尚未验证"
+          }
+        ],
+        "evidence_complete": true
+      },
+      "steps": [
+        {
+          "type": "tool",
+          "step": 1,
+          "tool": "prepare_analysis",
+          "arguments": {
+            "scope": {
+              "metric": "退款率",
+              "metric_kind": "rate",
+              "source": "合成电商演示库（离线验收）",
+              "unit": "%",
+              "dimension": "下单渠道",
+              "base_start": "2025-11-01",
+              "base_end": "2025-12-01",
+              "current_start": "2025-12-01",
+              "current_end": "2026-01-01",
+              "filters": [
+                "排除测试账号",
+                "已支付订单 paid/completed/refunded",
+                "按下单时间归属"
+              ],
+              "assumptions": []
+            }
+          },
+          "ok": true,
+          "output": "{\"status\": \"ready\", \"scope\": {\"metric\": \"退款率\", \"metric_kind\": \"rate\", \"source\": \"合成电商演示库（离线验收）\", \"unit\": \"%\", \"dimension\": \"下单渠道\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [], \"filters\": [\"排除测试账号\", \"已支付订单 paid/completed/refunded\", \"按下单时间归属\"]}, \"questions\": [], \"period_convention\": \"start_inclusive_end_exclusive\"}",
+          "duration_ms": 0,
+          "thought": ""
+        },
+        {
+          "type": "tool",
+          "step": 2,
+          "tool": "compare_periods",
+          "arguments": {
+            "scope": {
+              "metric": "退款率",
+              "metric_kind": "rate",
+              "source": "合成电商演示库（离线验收）",
+              "unit": "%",
+              "dimension": "下单渠道",
+              "base_start": "2025-11-01",
+              "base_end": "2025-12-01",
+              "current_start": "2025-12-01",
+              "current_end": "2026-01-01",
+              "filters": [
+                "排除测试账号",
+                "已支付订单 paid/completed/refunded",
+                "按下单时间归属"
+              ],
+              "assumptions": []
+            },
+            "detail_sql": "SELECT o.channel AS segment, SUM(CASE WHEN o.order_time < '2025-12-01' AND o.status='refunded' THEN 1 ELSE 0 END) AS base_numerator, SUM(CASE WHEN o.order_time < '2025-12-01'  THEN 1 ELSE 0 END) AS base_denominator, SUM(CASE WHEN o.order_time >= '2025-12-01' AND o.status='refunded' THEN 1 ELSE 0 END) AS current_numerator, SUM(CASE WHEN o.order_time >= '2025-12-01'  THEN 1 ELSE 0 END) AS current_denominator FROM orders o JOIN users u ON u.user_id=o.user_id WHERE o.status IN ('paid','completed','refunded') AND u.is_test=0 AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01' GROUP BY o.channel",
+            "total_sql": "SELECT SUM(CASE WHEN o.order_time < '2025-12-01' AND o.status='refunded' THEN 1 ELSE 0 END) AS base_numerator, SUM(CASE WHEN o.order_time < '2025-12-01'  THEN 1 ELSE 0 END) AS base_denominator, SUM(CASE WHEN o.order_time >= '2025-12-01' AND o.status='refunded' THEN 1 ELSE 0 END) AS current_numerator, SUM(CASE WHEN o.order_time >= '2025-12-01'  THEN 1 ELSE 0 END) AS current_denominator FROM orders o JOIN users u ON u.user_id=o.user_id WHERE o.status IN ('paid','completed','refunded') AND u.is_test=0 AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'"
+          },
+          "ok": true,
+          "output": "{\"status\": \"ready\", \"scope\": {\"metric\": \"退款率\", \"metric_kind\": \"rate\", \"source\": \"合成电商演示库（离线验收）\", \"unit\": \"%\", \"dimension\": \"下单渠道\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [], \"filters\": [\"排除测试账号\", \"已支付订单 paid/completed/refunded\", \"按下单时间归属\"]}, \"summary\": {\"base_numerator\": \"114\", \"base_denominator\": \"1153\", \"current_numerator\": \"64\", \"current_denominator\": \"797\", \"base\": \"9.88725065\", \"current\": \"8.03011292\", \"delta_pp\": \"-1.85713773\"}, \"groups\": [{\"segment\": \"app\", \"base_numerator\": \"64\", \"base_denominator\": \"713\", \"current_numerator\": \"35\", \"current_denominator\": \"482\", \"base_rate\": \"8.97615708\", \"current_rate\": \"7.26141079\", \"within_pp\": \"-1.04869999\", \"mix_pp\": \"-0.11056921\", \"contribution_pp\": \"-1.1592692\"}, {\"segment\": \"web\", \"base_numerator\": \"19\", \"base_denominator\": \"161\", \"current_numerator\": \"9\", \"current_denominator\": \"120\", \"base_rate\": \"11.80124224\", \"current_rate\": \"7.5\", \"within_pp\": \"-0.624111\", \"mix_pp\": \"0.10547052\", \"contribution_pp\": \"-0.51864048\"}, {\"segment\": \"mini_program\", \"base_numerator\": \"31\", \"base_denominator\": \"279\", \"current_numerator\": \"20\", \"current_denominator\": \"195\", \"base_rate\": \"11.11111111\", \"current_rate\": \"10.25641026\", \"within_pp\": \"-0.20796793\", \"mix_pp\": \"0.02873988\", \"contribution_pp\": \"-0.17922805\"}], \"group_count\": 3, \"reconciliation\": {\"matched\": true, \"group_totals\": {\"base_numerator\": \"114\", \"base_denominator\": \"1153\", \"current_numerator\": \"64\", \"current_denominator\": \"797\"}, \"differences\": {\"base_numerator\": \"0\", \"base_denominator\": \"0\", \"current_numerator\": \"0\", \"current_denominator\": \"0\"}}, \"warnings\": [\"贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。\", \"不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。\", \"两个周期天数不同，当前比较未自动做日均调整。\", \"比例按总分子/总分母计算；组内变化和结构变化采用对称分解，单位为百分点。零分母分组的变化归入结构项。\"], \"causal_claim_supported\": false}",
+          "duration_ms": 5,
+          "thought": ""
+        }
+      ]
+    },
+    {
+      "id": "scope_mismatch",
+      "question": "检查品类与净销售额的口径冲突",
+      "passed": true,
+      "answer": "【离线合成演示，回答与审查由脚本生成，未调用模型 API】\n分项与独立总量不一致，无法报告净销售额的品类贡献。请先核对明细金额与订单实付金额的优惠口径。",
+      "analysis": {
+        "status": "reviewed",
+        "scope": {
+          "metric": "净销售额",
+          "metric_kind": "additive",
+          "source": "合成电商演示库（离线验收）",
+          "unit": "元",
+          "dimension": "品类（与净销售额口径核对）",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "current_start": "2025-12-01",
+          "current_end": "2026-01-01",
+          "assumptions": [],
+          "filters": [
+            "排除测试账号",
+            "有效订单 paid/completed",
+            "按下单时间归属"
+          ]
+        },
+        "clarification_questions": [],
+        "comparisons": [
+          {
+            "status": "scope_mismatch",
+            "scope": {
+              "metric": "净销售额",
+              "metric_kind": "additive",
+              "source": "合成电商演示库（离线验收）",
+              "unit": "元",
+              "dimension": "品类（与净销售额口径核对）",
+              "base_start": "2025-11-01",
+              "base_end": "2025-12-01",
+              "current_start": "2025-12-01",
+              "current_end": "2026-01-01",
+              "assumptions": [],
+              "filters": [
+                "排除测试账号",
+                "有效订单 paid/completed",
+                "按下单时间归属"
+              ]
+            },
+            "summary": {
+              "base": "1047258.23",
+              "current": "734981.67",
+              "delta": "-312276.56",
+              "change_pct": "-29.81848708"
+            },
+            "groups": [
+              {
+                "segment": "手机数码",
+                "base_value": "688214.5",
+                "current_value": "449127.45",
+                "delta": "-239087.05",
+                "contribution_pct": null
+              },
+              {
+                "segment": "家用电器",
+                "base_value": "234927.75",
+                "current_value": "84642.95",
+                "delta": "-150284.8",
+                "contribution_pct": null
+              },
+              {
+                "segment": "服饰鞋包",
+                "base_value": "157145.25",
+                "current_value": "102535.3",
+                "delta": "-54609.95",
+                "contribution_pct": null
+              },
+              {
+                "segment": "图书文娱",
+                "base_value": "20121.2",
+                "current_value": "12567.45",
+                "delta": "-7553.75",
+                "contribution_pct": null
+              },
+              {
+                "segment": "美妆个护",
+                "base_value": "42358.4",
+                "current_value": "35483.8",
+                "delta": "-6874.6",
+                "contribution_pct": null
+              },
+              {
+                "segment": "家居日用",
+                "base_value": "32921.65",
+                "current_value": "26137.55",
+                "delta": "-6784.1",
+                "contribution_pct": null
+              },
+              {
+                "segment": "食品生鲜",
+                "base_value": "43097.8",
+                "current_value": "39235.4",
+                "delta": "-3862.4",
+                "contribution_pct": null
+              }
+            ],
+            "group_count": 7,
+            "reconciliation": {
+              "matched": false,
+              "group_totals": {
+                "base_value": "1218786.55",
+                "current_value": "749729.9"
+              },
+              "differences": {
+                "base_value": "171528.32",
+                "current_value": "14748.23"
+              }
+            },
+            "warnings": [
+              "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+              "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+              "两个周期天数不同，当前比较未自动做日均调整。",
+              "分项与独立总量口径不一致，已停止计算贡献；请核对优惠分摊、JOIN 重复、过滤条件或缺失分组。"
+            ],
+            "causal_claim_supported": false
+          }
+        ],
+        "warnings": [
+          "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+          "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+          "两个周期天数不同，当前比较未自动做日均调整。",
+          "分项与独立总量口径不一致，已停止计算贡献；请核对优惠分摊、JOIN 重复、过滤条件或缺失分组。"
+        ],
+        "comparison_count": 1,
+        "quality_checks": [],
+        "metrics": []
+      },
+      "reflection": {
+        "status": "passed",
+        "passed": true,
+        "quality_score": 95,
+        "issues": [],
+        "summary": "离线脚本按工具结果返回审查结构；不代表真实模型的判断能力",
+        "error": null,
+        "checks": [
+          {
+            "claim": "变化数字或口径不一致来自本轮 compare_periods 输出",
+            "status": "supported",
+            "evidence_ids": [
+              "E2"
+            ],
+            "reason": "核对只读查询计算的 summary 和 reconciliation；因果原因尚未验证"
+          }
+        ],
+        "evidence_complete": true
+      },
+      "steps": [
+        {
+          "type": "tool",
+          "step": 1,
+          "tool": "prepare_analysis",
+          "arguments": {
+            "scope": {
+              "metric": "净销售额",
+              "metric_kind": "additive",
+              "source": "合成电商演示库（离线验收）",
+              "unit": "元",
+              "dimension": "品类（与净销售额口径核对）",
+              "base_start": "2025-11-01",
+              "base_end": "2025-12-01",
+              "current_start": "2025-12-01",
+              "current_end": "2026-01-01",
+              "filters": [
+                "排除测试账号",
+                "有效订单 paid/completed",
+                "按下单时间归属"
+              ],
+              "assumptions": []
+            }
+          },
+          "ok": true,
+          "output": "{\"status\": \"ready\", \"scope\": {\"metric\": \"净销售额\", \"metric_kind\": \"additive\", \"source\": \"合成电商演示库（离线验收）\", \"unit\": \"元\", \"dimension\": \"品类（与净销售额口径核对）\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [], \"filters\": [\"排除测试账号\", \"有效订单 paid/completed\", \"按下单时间归属\"]}, \"questions\": [], \"period_convention\": \"start_inclusive_end_exclusive\"}",
+          "duration_ms": 0,
+          "thought": ""
+        },
+        {
+          "type": "tool",
+          "step": 2,
+          "tool": "compare_periods",
+          "arguments": {
+            "scope": {
+              "metric": "净销售额",
+              "metric_kind": "additive",
+              "source": "合成电商演示库（离线验收）",
+              "unit": "元",
+              "dimension": "品类（与净销售额口径核对）",
+              "base_start": "2025-11-01",
+              "base_end": "2025-12-01",
+              "current_start": "2025-12-01",
+              "current_end": "2026-01-01",
+              "filters": [
+                "排除测试账号",
+                "有效订单 paid/completed",
+                "按下单时间归属"
+              ],
+              "assumptions": []
+            },
+            "detail_sql": "SELECT c.category_name AS segment, SUM(CASE WHEN o.order_time < '2025-12-01' THEN i.item_amount ELSE 0 END) / 100.0 AS base_value, SUM(CASE WHEN o.order_time >= '2025-12-01' THEN i.item_amount ELSE 0 END) / 100.0 AS current_value\n            FROM orders o JOIN users u ON u.user_id=o.user_id JOIN order_items i ON i.order_id=o.order_id\n            JOIN products p ON p.product_id=i.product_id JOIN categories c ON c.category_id=p.category_id\n            WHERE o.status IN ('paid','completed') AND u.is_test=0 AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01' GROUP BY c.category_name",
+            "total_sql": "SELECT SUM(CASE WHEN o.order_time < '2025-12-01' THEN o.pay_amount ELSE 0 END) / 100.0 AS base_value, SUM(CASE WHEN o.order_time >= '2025-12-01' THEN o.pay_amount ELSE 0 END) / 100.0 AS current_value FROM orders o JOIN users u ON u.user_id=o.user_id WHERE o.status IN ('paid','completed') AND u.is_test=0 AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'"
+          },
+          "ok": true,
+          "output": "{\"status\": \"scope_mismatch\", \"scope\": {\"metric\": \"净销售额\", \"metric_kind\": \"additive\", \"source\": \"合成电商演示库（离线验收）\", \"unit\": \"元\", \"dimension\": \"品类（与净销售额口径核对）\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [], \"filters\": [\"排除测试账号\", \"有效订单 paid/completed\", \"按下单时间归属\"]}, \"summary\": {\"base\": \"1047258.23\", \"current\": \"734981.67\", \"delta\": \"-312276.56\", \"change_pct\": \"-29.81848708\"}, \"groups\": [{\"segment\": \"手机数码\", \"base_value\": \"688214.5\", \"current_value\": \"449127.45\", \"delta\": \"-239087.05\", \"contribution_pct\": null}, {\"segment\": \"家用电器\", \"base_value\": \"234927.75\", \"current_value\": \"84642.95\", \"delta\": \"-150284.8\", \"contribution_pct\": null}, {\"segment\": \"服饰鞋包\", \"base_value\": \"157145.25\", \"current_value\": \"102535.3\", \"delta\": \"-54609.95\", \"contribution_pct\": null}, {\"segment\": \"图书文娱\", \"base_value\": \"20121.2\", \"current_value\": \"12567.45\", \"delta\": \"-7553.75\", \"contribution_pct\": null}, {\"segment\": \"美妆个护\", \"base_value\": \"42358.4\", \"current_value\": \"35483.8\", \"delta\": \"-6874.6\", \"contribution_pct\": null}, {\"segment\": \"家居日用\", \"base_value\": \"32921.65\", \"current_value\": \"26137.55\", \"delta\": \"-6784.1\", \"contribution_pct\": null}, {\"segment\": \"食品生鲜\", \"base_value\": \"43097.8\", \"current_value\": \"39235.4\", \"delta\": \"-3862.4\", \"contribution_pct\": null}], \"group_count\": 7, \"reconciliation\": {\"matched\": false, \"group_totals\": {\"base_value\": \"1218786.55\", \"current_value\": \"749729.9\"}, \"differences\": {\"base_value\": \"171528.32\", \"current_value\": \"14748.23\"}}, \"warnings\": [\"贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。\", \"不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。\", \"两个周期天数不同，当前比较未自动做日均调整。\", \"分项与独立总量口径不一致，已停止计算贡献；请核对优惠分摊、JOIN 重复、过滤条件或缺失分组。\"], \"causal_claim_supported\": false}",
+          "duration_ms": 8,
+          "thought": ""
+        }
+      ]
+    },
+    {
+      "id": "clarification",
+      "question": "缺少条件：销售额为什么变化",
+      "passed": true,
+      "answer": "开始分析前，请补充以下信息：\n1. 使用哪个业务库或已导入的数据集？\n2. 指标的单位是什么？请核对源字段，金额不能自动假定为分。\n3. 先按哪个维度拆解，例如区域、下单渠道或品类？\n4. 作为比较基准的周期是什么？\n5. 需要分析的当前周期是什么？",
+      "analysis": {
+        "status": "needs_clarification",
+        "scope": {
+          "metric": "销售额",
+          "metric_kind": "additive",
+          "source": "",
+          "unit": "",
+          "dimension": "",
+          "base_start": "",
+          "base_end": "",
+          "current_start": "",
+          "current_end": "",
+          "assumptions": [],
+          "filters": []
+        },
+        "clarification_questions": [
+          "使用哪个业务库或已导入的数据集？",
+          "指标的单位是什么？请核对源字段，金额不能自动假定为分。",
+          "先按哪个维度拆解，例如区域、下单渠道或品类？",
+          "作为比较基准的周期是什么？",
+          "需要分析的当前周期是什么？"
+        ],
+        "comparisons": [],
+        "warnings": [],
+        "comparison_count": 0,
+        "quality_checks": [],
+        "metrics": []
+      },
+      "reflection": null,
+      "steps": [
+        {
+          "type": "tool",
+          "step": 1,
+          "tool": "prepare_analysis",
+          "arguments": {
+            "scope": {
+              "metric": "销售额"
+            }
+          },
+          "ok": true,
+          "output": "{\"status\": \"needs_clarification\", \"scope\": {\"metric\": \"销售额\", \"metric_kind\": \"additive\", \"source\": \"\", \"unit\": \"\", \"dimension\": \"\", \"base_start\": \"\", \"base_end\": \"\", \"current_start\": \"\", \"current_end\": \"\", \"assumptions\": [], \"filters\": []}, \"questions\": [\"使用哪个业务库或已导入的数据集？\", \"指标的单位是什么？请核对源字段，金额不能自动假定为分。\", \"先按哪个维度拆解，例如区域、下单渠道或品类？\", \"作为比较基准的周期是什么？\", \"需要分析的当前周期是什么？\"], \"period_convention\": \"start_inclusive_end_exclusive\"}",
+          "duration_ms": 0,
+          "thought": ""
+        }
+      ]
+    }
+  ]
+}

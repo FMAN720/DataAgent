@@ -1,0 +1,376 @@
+{
+  "id": "data_sum",
+  "category": "datasets",
+  "split": "development",
+  "variant": "baseline",
+  "question": "查询已导入的合成预算补充表：amount单位为元，合计多少元？",
+  "response": {
+    "answer": "**结论：amount 合计为 14.90 元，但这是 3 行非空值的合计；表中共有 4 行，其中 1 行 amount 为空，空值不代表零，因此该合计不是完整总额。**\n\n明细（按原始行序）：\n\n| 行号 | region_code | amount（元） | external_id |\n|---|---|---|---|\n| 2 | EAST | 12.30 | 001 |\n| 3 | NORTH | 0.10 | 002 |\n| 4 | SOUTH | 2.50 | 003 |\n| 5 | EAST | 空值 | 004 |\n\n- 非空合计：12.30 + 0.10 + 2.50 = **14.90 元**\n- 缺失情况：amount 缺失 1 行（25.0%），即 external_id=004（EAST）；该行金额未知，若按 0 处理会低估总额。\n- 其他质量检查：external_id 无重复（4 个唯一值，前导零保留），amount 无负值、无数值格式异常，region_code 无缺失。\n\n如需完整总额，请补充 external_id=004 的金额后我再重算。\n\n口径：上传表 uploaded_budget 的 amount 字段，单位按文件说明为「元」，直接对非空值求和，未做任何填补或换算。",
+    "success": true,
+    "trace_id": "fc16c9b0-b2e6-4a1e-887b-4ae5a7e26825",
+    "session_id": "ca000231-8177-4f90-96f0-9be679a04c1e",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_datasets",
+        "arguments": {
+          "query": "预算"
+        },
+        "ok": true,
+        "output": "{\"datasets\": [{\"id\": \"phase7-synthetic-budget\", \"filename\": \"合成预算补充表.csv\", \"display_name\": \"合成预算补充表\", \"table\": \"uploaded_budget\", \"row_count\": 4, \"columns\": [{\"name\": \"region_code\", \"label\": \"region_code\", \"type\": \"text\", \"nullable\": false}, {\"name\": \"amount\", \"label\": \"amount\", \"type\": \"decimal\", \"nullable\": true}, {\"name\": \"external_id\", \"label\": \"external_id\", \"type\": \"text\", \"nullable\": false}], \"column_count\": 3, \"columns_truncated\": false}], \"truncated\": false}",
+        "duration_ms": 0,
+        "thought": "我先查看已导入的数据集。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "uploaded_budget"
+          ]
+        },
+        "ok": true,
+        "output": "表 uploaded_budget\n  _row_number INTEGER NOT NULL\n  region_code TEXT  -- 区域编码，可关联 regions\n  amount NUMERIC  -- 单位：元；空值不代表零\n  external_id TEXT  -- 原始标识符，保留前导零\n  样例 (_row_number | region_code | amount | external_id):\n  2 | EAST | 12.3 | 001\n  3 | NORTH | 0.1 | 002\n  4 | SOUTH | 2.5 | 003",
+        "duration_ms": 1,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "profile_dataset",
+        "arguments": {
+          "table": "uploaded_budget",
+          "columns": [
+            "region_code",
+            "amount",
+            "external_id"
+          ],
+          "key_columns": [
+            "external_id"
+          ]
+        },
+        "ok": true,
+        "output": "{\"status\": \"warning\", \"table\": \"uploaded_budget\", \"row_count\": 4, \"columns\": [{\"column\": \"region_code\", \"type\": \"TEXT\", \"null_count\": 0, \"blank_count\": 0, \"missing_pct\": 0.0, \"distinct_count\": 3}, {\"column\": \"amount\", \"type\": \"NUMERIC\", \"null_count\": 1, \"blank_count\": 0, \"missing_pct\": 25.0, \"distinct_count\": 3, \"min\": 0.1, \"max\": 12.3, \"negative_count\": 0, \"invalid_numeric_count\": 0}, {\"column\": \"external_id\", \"type\": \"TEXT\", \"null_count\": 0, \"blank_count\": 0, \"missing_pct\": 0.0, \"distinct_count\": 4}], \"columns_truncated\": true, \"duplicate_excess_rows\": 0, \"key_columns\": [\"external_id\"], \"key_missing_rows\": 0, \"date_range\": null, \"warnings\": [\"字段 amount 存在 1 个缺失或空白值。\"], \"questions\": [], \"method\": \"full_table_aggregates_readonly_snapshot\"}",
+        "duration_ms": 10,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT _row_number, region_code, amount, external_id FROM uploaded_budget ORDER BY _row_number",
+          "purpose": "查看预算表全部明细及缺失值位置"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\"], \"rows\": [[2, \"EAST\", 12.3, \"001\"], [3, \"NORTH\", 0.1, \"002\"], [4, \"SOUTH\", 2.5, \"003\"], [5, \"EAST\", null, \"004\"]], \"row_count\": 4}",
+        "duration_ms": 1,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 4,
+        "tool": "run_sql",
+        "arguments": {
+          "purpose": "计算amount合计及非空行数",
+          "sql": "SELECT COUNT(*) AS rows_total, COUNT(amount) AS rows_nonnull, SUM(amount) AS total_amount FROM uploaded_budget"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"rows_total\", \"rows_nonnull\", \"total_amount\"], \"rows\": [[4, 3, 14.9]], \"row_count\": 1}",
+        "duration_ms": 1,
+        "thought": ""
+      }
+    ],
+    "plan": [],
+    "reflection": {
+      "passed": true,
+      "quality_score": 96,
+      "issues": [],
+      "summary": "回答准确：amount 非空合计 14.90 元，并如实说明 4 行中 1 行缺失、合计非完整总额，所有关键数字与质量检查均有查询结果支持。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "amount 非空合计为 14.90 元",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "SUM(amount)=14.9，COUNT(amount)=3，单位按表定义为元，未做二次换算。"
+        },
+        {
+          "claim": "表中共 4 行，amount 缺失 1 行（25.0%），缺失行为 external_id=004（EAST）",
+          "status": "supported",
+          "evidence_ids": [
+            "E3",
+            "E4"
+          ],
+          "reason": "profile 显示 row_count=4、amount null_count=1、missing_pct=25.0；明细第 5 行 external_id=004、region_code=EAST、amount 为 null。"
+        },
+        {
+          "claim": "明细行：EAST 12.30、NORTH 0.10、SOUTH 2.50、EAST 空值",
+          "status": "supported",
+          "evidence_ids": [
+            "E4"
+          ],
+          "reason": "run_sql 返回的 4 行明细与回答表格逐行一致。"
+        },
+        {
+          "claim": "external_id 无重复（4 个唯一值，前导零保留）",
+          "status": "supported",
+          "evidence_ids": [
+            "E3",
+            "E4"
+          ],
+          "reason": "profile 显示 external_id distinct_count=4、duplicate_excess_rows=0、key_missing_rows=0；明细中 001–004 前导零保留。"
+        },
+        {
+          "claim": "amount 无负值、无数值格式异常，region_code 无缺失",
+          "status": "supported",
+          "evidence_ids": [
+            "E3"
+          ],
+          "reason": "profile 显示 amount negative_count=0、invalid_numeric_count=0，region_code null_count=0、blank_count=0。"
+        },
+        {
+          "claim": "空值不代表零，14.90 元不是完整总额，需补充 external_id=004 金额",
+          "status": "supported",
+          "evidence_ids": [
+            "E2",
+            "E3",
+            "E5"
+          ],
+          "reason": "字段说明明确“空值不代表零”，profile 警告 amount 存在缺失值，SUM 仅覆盖 3 个非空值，因此不能视为完整总额。"
+        },
+        {
+          "claim": "口径为上传表 uploaded_budget 的 amount 字段，单位按文件说明为元，直接对非空值求和，未填补或换算",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E2",
+            "E5"
+          ],
+          "reason": "数据集与字段定义确认表名、字段及单位；SQL 为直接 SUM，未做填补或换算。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 7,
+    "usage": {
+      "prompt_tokens": 26680,
+      "completion_tokens": 1271,
+      "total_tokens": 27951,
+      "prompt_cache_hit_tokens": 23808,
+      "prompt_cache_miss_tokens": 2872
+    },
+    "duration_ms": 9911,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [
+        "字段 amount 存在 1 个缺失或空白值。"
+      ],
+      "comparison_count": 0,
+      "quality_checks": [
+        {
+          "status": "warning",
+          "table": "uploaded_budget",
+          "row_count": 4,
+          "columns": [
+            {
+              "column": "region_code",
+              "type": "TEXT",
+              "null_count": 0,
+              "blank_count": 0,
+              "missing_pct": 0.0,
+              "distinct_count": 3
+            },
+            {
+              "column": "amount",
+              "type": "NUMERIC",
+              "null_count": 1,
+              "blank_count": 0,
+              "missing_pct": 25.0,
+              "distinct_count": 3,
+              "min": 0.1,
+              "max": 12.3,
+              "negative_count": 0,
+              "invalid_numeric_count": 0
+            },
+            {
+              "column": "external_id",
+              "type": "TEXT",
+              "null_count": 0,
+              "blank_count": 0,
+              "missing_pct": 0.0,
+              "distinct_count": 4
+            }
+          ],
+          "columns_truncated": true,
+          "duplicate_excess_rows": 0,
+          "key_columns": [
+            "external_id"
+          ],
+          "key_missing_rows": 0,
+          "date_range": null,
+          "warnings": [
+            "字段 amount 存在 1 个缺失或空白值。"
+          ],
+          "questions": [],
+          "method": "full_table_aggregates_readonly_snapshot"
+        }
+      ],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 565,
+          "usage": {
+            "prompt_tokens": 200,
+            "completion_tokens": 5,
+            "total_tokens": 205,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 200
+          }
+        },
+        "analysis": {
+          "logical_calls": 5,
+          "http_requests": 5,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 6155,
+          "usage": {
+            "prompt_tokens": 24597,
+            "completion_tokens": 634,
+            "total_tokens": 25231,
+            "prompt_cache_hit_tokens": 23424,
+            "prompt_cache_miss_tokens": 1173
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 3167,
+          "usage": {
+            "prompt_tokens": 1883,
+            "completion_tokens": 632,
+            "total_tokens": 2515,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 1499
+          }
+        }
+      },
+      "llm_calls": 7,
+      "chat_usage": {
+        "prompt_tokens": 26680,
+        "completion_tokens": 1271,
+        "total_tokens": 27951,
+        "prompt_cache_hit_tokens": 23808,
+        "prompt_cache_miss_tokens": 2872
+      },
+      "http_requests": 7,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 5,
+    "question": "查询已导入的合成预算补充表：amount单位为元，合计多少元？",
+    "tables": [
+      {
+        "id": "result-4",
+        "title": "查询结果 · E4",
+        "columns": [
+          "_row_number",
+          "region_code",
+          "amount",
+          "external_id"
+        ],
+        "rows": [
+          [
+            2,
+            "EAST",
+            12.3,
+            "001"
+          ],
+          [
+            3,
+            "NORTH",
+            0.1,
+            "002"
+          ],
+          [
+            4,
+            "SOUTH",
+            2.5,
+            "003"
+          ],
+          [
+            5,
+            "EAST",
+            null,
+            "004"
+          ]
+        ],
+        "evidence_ids": [
+          "E4"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-5",
+        "title": "查询结果 · E5",
+        "columns": [
+          "rows_total",
+          "rows_nonnull",
+          "total_amount"
+        ],
+        "rows": [
+          [
+            4,
+            3,
+            14.9
+          ]
+        ],
+        "evidence_ids": [
+          "E5"
+        ],
+        "scope": {},
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

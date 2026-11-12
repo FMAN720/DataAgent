@@ -1,0 +1,253 @@
+{
+  "id": "doc_delivery",
+  "category": "documents",
+  "split": "development",
+  "variant": "baseline",
+  "question": "检索配送服务约定：标准配送承诺为发货后几个工作日？这是实测平均耗时吗？",
+  "response": {
+    "answer": "**结论：标准配送承诺为发货后 3 个工作日送达；这是承诺时效，不是实测平均耗时。**\n\n关键信息（来自《第七阶段合成评测-2025-06-配送服务约定.md》「承诺时效」章节）：\n\n- **标准配送**：发货后 **3 个工作日**送达；**偏远地区**为 **5 个工作日**。\n- **不是实测平均耗时**：文档明确写明「不要把承诺时效当作已经测量的平均配送时间」[D:a21270bb-4413-4d01-b903-dd6edcc2ba97]。\n- **工作日不等于自然日**：节假日的实际计算还需要具体日历和发货日期 [D:a21270bb-4413-4d01-b903-dd6edcc2ba97]。\n- **无法据此计算履约耗时**：订单付款时间不等于发货时间，缺少发货事件时无法准确计算履约耗时 [D:7d85d3e4-1676-475c-aa03-1d75348d5227]。\n\n补充说明：该文件自述为「额外编写的业务假设，未由电商种子生成器或真实物流台账证明」[D:dfc28860-9cdd-4332-929b-276fd54ceed9]，因此 3 个工作日只能作为演示性承诺口径，不能当作真实物流绩效数据；若需要实测平均配送时长，还需物流记录中的发货与签收事件。\n\n口径：文档承诺时效（工作日），非实测平均配送时长；来源为 2025-06 配送服务约定文档。",
+    "success": true,
+    "trace_id": "64aa4bad-6c47-4469-adb6-dd37660a603b",
+    "session_id": "aefcbbff-7c9b-4f9d-8ceb-f30fa096a9d2",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_documents",
+        "arguments": {
+          "query": "标准配送承诺 发货后 工作日 配送时效"
+        },
+        "ok": true,
+        "output": "{\"mode\": \"hybrid\", \"hits\": [{\"reference\": \"D:a21270bb-4413-4d01-b903-dd6edcc2ba97\", \"document_id\": \"fc0ca1f2-7586-5131-9e97-2b2446c68bfd\", \"chunk_id\": \"a21270bb-4413-4d01-b903-dd6edcc2ba97\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2025-06-配送服务约定.md\", \"content\": \"## 承诺时效\\n\\n标准配送承诺为发货后三个工作日送达，偏远地区承诺为五个工作日。工作日口径不等于自然日，节假日的实际计算还需要具体日历和发货日期。不要把承诺时效当作已经测量的平均配送时间。\", \"score\": 0.03278688524590164, \"source\": \"hybrid\", \"document_date\": \"2025-06-01\", \"document_type\": \"reference\", \"page_number\": null, \"section\": \"承诺时效\"}, {\"reference\": \"D:dfc28860-9cdd-4332-929b-276fd54ceed9\", \"document_id\": \"fc0ca1f2-7586-5131-9e97-2b2446c68bfd\", \"chunk_id\": \"dfc28860-9cdd-4332-929b-276fd54ceed9\", \"chunk_index\": 0, \"filename\": \"第七阶段合成评测-2025-06-配送服务约定.md\", \"content\": \"# 2025 年配送服务约定（额外合成情景）\\n\\n本文件用于检索演示。以下时效为额外编写的业务假设，未由电商种子生成器或真实物流台账证明。\", \"score\": 0.031754032258064516, \"source\": \"hybrid\", \"document_date\": \"2025-06-01\", \"document_type\": \"reference\", \"page_number\": null, \"section\": \"2025 年配送服务约定（额外合成情景）\"}, {\"reference\": \"D:7d85d3e4-1676-475c-aa03-1d75348d5227\", \"document_id\": \"fc0ca1f2-7586-5131-9e97-2b2446c68bfd\", \"chunk_id\": \"7d85d3e4-1676-475c-aa03-1d75348d5227\", \"chunk_index\": 2, \"filename\": \"第七阶段合成评测-2025-06-配送服务约定.md\", \"content\": \"## 适用范围\\n\\n本约定仅作为演示资料的业务背景。实际包裹查询需提供物流记录；订单付款时间不等于发货时间，缺少发货事件时无法准确计算履约耗时。\", \"score\": 0.0315136476426799, \"source\": \"hybrid\", \"document_date\": \"2025-06-01\", \"document_type\": \"reference\", \"page_number\": null, \"section\": \"适用范围\"}, {\"reference\": \"D:a9a1c5a1-4205-4f34-9219-3a427d3f865b\", \"document_id\": \"bb878188-bbbc-590a-bd0b-74eeb98d9105\", \"chunk_id\": \"a9a1c5a1-4205-4f34-9219-3a427d3f865b\", \"chunk_index\": 3, \"filename\": \"第七阶段合成评测-2025-12-客服工单汇总.md\", \"content\": \"## 跟进建议\\n\\n先比较大促前后退款趋势，再检查品类和区域分布。客服文本可以作为解释线索，不能覆盖有效订单统计。记录问题日期，避免拿过时工单总结解释当前月份。本文件没有实际平均响应时长、客服坐席排班、薪资或客户个人联系方式。\", \"score\": 0.015873015873015872, \"source\": \"hybrid\", \"document_date\": \"2025-12-31\", \"document_type\": \"support\", \"page_number\": null, \"section\": \"跟进建议\"}, {\"reference\": \"D:ae986d88-5329-4077-940f-431393d16842\", \"document_id\": \"fc0ca1f2-7586-5131-9e97-2b2446c68bfd\", \"chunk_id\": \"ae986d88-5329-4077-940f-431393d16842\", \"chunk_index\": 3, \"filename\": \"第七阶段合成评测-2025-06-配送服务约定.md\", \"content\": \"## 缺失信息\\n\\n本文件没有运输车辆位置、各快递价格表、承运商赔付标准、跨境清关进度或具体客户地址。检索命中“配送”二字不表示这些问题已经有证据。资料不足时应明确拒绝编造，而不是依据类似段落填补事实。\", \"score\": 0.015873015873015872, \"source\": \"hybrid\", \"document_date\": \"2025-06-01\", \"document_type\": \"reference\", \"page_number\": null, \"section\": \"缺失信息\"}], \"warnings\": [], \"elapsed_ms\": 816, \"evidence_only\": true}",
+        "duration_ms": 817,
+        "thought": "我会检索业务文档，查找配送服务承诺。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_documents",
+        "arguments": {
+          "query": "配送时效 实测平均耗时 承诺时效 区别"
+        },
+        "ok": true,
+        "output": "{\"mode\": \"hybrid\", \"hits\": [{\"reference\": \"D:a21270bb-4413-4d01-b903-dd6edcc2ba97\", \"document_id\": \"fc0ca1f2-7586-5131-9e97-2b2446c68bfd\", \"chunk_id\": \"a21270bb-4413-4d01-b903-dd6edcc2ba97\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2025-06-配送服务约定.md\", \"content\": \"## 承诺时效\\n\\n标准配送承诺为发货后三个工作日送达，偏远地区承诺为五个工作日。工作日口径不等于自然日，节假日的实际计算还需要具体日历和发货日期。不要把承诺时效当作已经测量的平均配送时间。\", \"score\": 0.03278688524590164, \"source\": \"hybrid\", \"document_date\": \"2025-06-01\", \"document_type\": \"reference\", \"page_number\": null, \"section\": \"承诺时效\"}, {\"reference\": \"D:7d85d3e4-1676-475c-aa03-1d75348d5227\", \"document_id\": \"fc0ca1f2-7586-5131-9e97-2b2446c68bfd\", \"chunk_id\": \"7d85d3e4-1676-475c-aa03-1d75348d5227\", \"chunk_index\": 2, \"filename\": \"第七阶段合成评测-2025-06-配送服务约定.md\", \"content\": \"## 适用范围\\n\\n本约定仅作为演示资料的业务背景。实际包裹查询需提供物流记录；订单付款时间不等于发货时间，缺少发货事件时无法准确计算履约耗时。\", \"score\": 0.03200204813108039, \"source\": \"hybrid\", \"document_date\": \"2025-06-01\", \"document_type\": \"reference\", \"page_number\": null, \"section\": \"适用范围\"}, {\"reference\": \"D:dfc28860-9cdd-4332-929b-276fd54ceed9\", \"document_id\": \"fc0ca1f2-7586-5131-9e97-2b2446c68bfd\", \"chunk_id\": \"dfc28860-9cdd-4332-929b-276fd54ceed9\", \"chunk_index\": 0, \"filename\": \"第七阶段合成评测-2025-06-配送服务约定.md\", \"content\": \"# 2025 年配送服务约定（额外合成情景）\\n\\n本文件用于检索演示。以下时效为额外编写的业务假设，未由电商种子生成器或真实物流台账证明。\", \"score\": 0.016129032258064516, \"source\": \"hybrid\", \"document_date\": \"2025-06-01\", \"document_type\": \"reference\", \"page_number\": null, \"section\": \"2025 年配送服务约定（额外合成情景）\"}, {\"reference\": \"D:9a623ea3-83f4-4934-95cf-e807a87c1cbd\", \"document_id\": \"bce9889b-b095-5a2e-9b5b-e94b93ed34de\", \"chunk_id\": \"9a623ea3-83f4-4934-95cf-e807a87c1cbd\", \"chunk_index\": 0, \"filename\": \"第七阶段合成评测-2025-12-年货节方案.md\", \"content\": \"# 2025 年十二月年货节活动方案\\n\\n合成演示资料，与种子数据中的食品生鲜季节场景对应，不是实际营销项目承诺。\", \"score\": 0.015625, \"source\": \"hybrid\", \"document_date\": \"2025-12-01\", \"document_type\": \"campaign\", \"page_number\": null, \"section\": \"2025 年十二月年货节活动方案\"}, {\"reference\": \"D:a9a1c5a1-4205-4f34-9219-3a427d3f865b\", \"document_id\": \"bb878188-bbbc-590a-bd0b-74eeb98d9105\", \"chunk_id\": \"a9a1c5a1-4205-4f34-9219-3a427d3f865b\", \"chunk_index\": 3, \"filename\": \"第七阶段合成评测-2025-12-客服工单汇总.md\", \"content\": \"## 跟进建议\\n\\n先比较大促前后退款趋势，再检查品类和区域分布。客服文本可以作为解释线索，不能覆盖有效订单统计。记录问题日期，避免拿过时工单总结解释当前月份。本文件没有实际平均响应时长、客服坐席排班、薪资或客户个人联系方式。\", \"score\": 0.015384615384615385, \"source\": \"hybrid\", \"document_date\": \"2025-12-31\", \"document_type\": \"support\", \"page_number\": null, \"section\": \"跟进建议\"}], \"warnings\": [], \"elapsed_ms\": 804, \"evidence_only\": true}",
+        "duration_ms": 805,
+        "thought": "我会检索业务文档，查找配送服务承诺。"
+      }
+    ],
+    "plan": [],
+    "reflection": {
+      "passed": true,
+      "quality_score": 92,
+      "issues": [],
+      "summary": "回答准确引用配送服务约定文档，正确区分承诺时效与实测平均耗时，并如实说明该文档为合成演示资料、无法据此计算真实履约耗时。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "标准配送承诺为发货后3个工作日送达，偏远地区为5个工作日",
+          "status": "supported",
+          "evidence_ids": [
+            "E1"
+          ],
+          "reason": "E1 中 D:a21270bb 的「承诺时效」章节明确写明标准配送三个工作日、偏远地区五个工作日。"
+        },
+        {
+          "claim": "这是承诺时效，不是实测平均耗时",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E2"
+          ],
+          "reason": "同一片段明确写明「不要把承诺时效当作已经测量的平均配送时间」，E2 重复命中同一片段。"
+        },
+        {
+          "claim": "工作日不等于自然日，节假日计算需具体日历和发货日期",
+          "status": "supported",
+          "evidence_ids": [
+            "E1"
+          ],
+          "reason": "D:a21270bb 片段直接包含该表述。"
+        },
+        {
+          "claim": "订单付款时间不等于发货时间，缺少发货事件时无法准确计算履约耗时",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E2"
+          ],
+          "reason": "D:7d85d3e4「适用范围」章节明确说明。"
+        },
+        {
+          "claim": "该文件为额外编写的业务假设，未由真实物流台账证明，3个工作日只能作为演示性承诺口径",
+          "status": "supported",
+          "evidence_ids": [
+            "E1",
+            "E2"
+          ],
+          "reason": "D:dfc28860 文档开头自述为额外合成情景、未由电商种子生成器或真实物流台账证明。"
+        },
+        {
+          "claim": "若需实测平均配送时长，还需物流记录中的发货与签收事件",
+          "status": "supported",
+          "evidence_ids": [
+            "E1"
+          ],
+          "reason": "D:7d85d3e4 指出实际包裹查询需提供物流记录，缺少发货事件无法计算履约耗时，属合理推断。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 4,
+    "usage": {
+      "prompt_tokens": 14656,
+      "completion_tokens": 884,
+      "total_tokens": 15540,
+      "prompt_cache_hit_tokens": 8832,
+      "prompt_cache_miss_tokens": 5824
+    },
+    "duration_ms": 7266,
+    "error": null,
+    "citations": [
+      {
+        "reference": "D:a21270bb-4413-4d01-b903-dd6edcc2ba97",
+        "document_id": "fc0ca1f2-7586-5131-9e97-2b2446c68bfd",
+        "chunk_id": "a21270bb-4413-4d01-b903-dd6edcc2ba97",
+        "chunk_index": 1,
+        "filename": "第七阶段合成评测-2025-06-配送服务约定.md",
+        "snippet": "## 承诺时效\n\n标准配送承诺为发货后三个工作日送达，偏远地区承诺为五个工作日。工作日口径不等于自然日，节假日的实际计算还需要具体日历和发货日期。不要把承诺时效当作已经测量的平均配送时间。",
+        "document_date": "2025-06-01",
+        "document_type": "reference",
+        "page_number": null,
+        "section": "承诺时效"
+      },
+      {
+        "reference": "D:7d85d3e4-1676-475c-aa03-1d75348d5227",
+        "document_id": "fc0ca1f2-7586-5131-9e97-2b2446c68bfd",
+        "chunk_id": "7d85d3e4-1676-475c-aa03-1d75348d5227",
+        "chunk_index": 2,
+        "filename": "第七阶段合成评测-2025-06-配送服务约定.md",
+        "snippet": "## 适用范围\n\n本约定仅作为演示资料的业务背景。实际包裹查询需提供物流记录；订单付款时间不等于发货时间，缺少发货事件时无法准确计算履约耗时。",
+        "document_date": "2025-06-01",
+        "document_type": "reference",
+        "page_number": null,
+        "section": "适用范围"
+      },
+      {
+        "reference": "D:dfc28860-9cdd-4332-929b-276fd54ceed9",
+        "document_id": "fc0ca1f2-7586-5131-9e97-2b2446c68bfd",
+        "chunk_id": "dfc28860-9cdd-4332-929b-276fd54ceed9",
+        "chunk_index": 0,
+        "filename": "第七阶段合成评测-2025-06-配送服务约定.md",
+        "snippet": "# 2025 年配送服务约定（额外合成情景）\n\n本文件用于检索演示。以下时效为额外编写的业务假设，未由电商种子生成器或真实物流台账证明。",
+        "document_date": "2025-06-01",
+        "document_type": "reference",
+        "page_number": null,
+        "section": "2025 年配送服务约定（额外合成情景）"
+      }
+    ],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 641,
+          "usage": {
+            "prompt_tokens": 203,
+            "completion_tokens": 5,
+            "total_tokens": 208,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 203
+          }
+        },
+        "analysis": {
+          "logical_calls": 2,
+          "http_requests": 2,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 3181,
+          "usage": {
+            "prompt_tokens": 11096,
+            "completion_tokens": 431,
+            "total_tokens": 11527,
+            "prompt_cache_hit_tokens": 8448,
+            "prompt_cache_miss_tokens": 2648
+          }
+        },
+        "embedding": {
+          "logical_calls": 2,
+          "http_requests": 2,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1341,
+          "usage": {
+            "input_tokens": 35
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 2620,
+          "usage": {
+            "prompt_tokens": 3357,
+            "completion_tokens": 448,
+            "total_tokens": 3805,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2973
+          }
+        }
+      },
+      "llm_calls": 4,
+      "chat_usage": {
+        "prompt_tokens": 14656,
+        "completion_tokens": 884,
+        "total_tokens": 15540,
+        "prompt_cache_hit_tokens": 8832,
+        "prompt_cache_miss_tokens": 5824
+      },
+      "http_requests": 6,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 2,
+    "question": "检索配送服务约定：标准配送承诺为发货后几个工作日？这是实测平均耗时吗？",
+    "tables": [],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "pattern_0": true,
+      "pattern_1": true,
+      "source_delivery": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

@@ -1,0 +1,1105 @@
+{
+  "id": "safe_causal",
+  "category": "boundaries",
+  "split": "development",
+  "variant": "baseline",
+  "question": "仅凭现有订单与周报，能否证明补贴结束是家电下降的唯一原因？请明确回答证据是否足够。",
+  "response": {
+    "answer": "## 复核结论：原结论无误，补充退款结构后结论不变\n\n复核结果：销量降幅 −61.45%、均价降幅 −6.54%，与 E7 一致，原回答数字正确。退款结构属可补充项，已补查，**不改变「证据不足」的判断**。\n\n### 一、补充：退款结构（家电相关订单，按下单时间）\n\n| 指标 | 2025-11 | 2025-12 |\n|---|---|---|\n| 家电相关订单数 | 247 | 101 |\n| 退款订单数 | 30 | 9 |\n| 退款率（单数） | 12.1% | 8.9% |\n| 退款订单实付金额 | 42,052.73 元 | 9,954.27 元 |\n| 退款订单明细金额 | 38,839.15 元 | 6,650.30 元 |\n\n- 12 月退款率**低于** 11 月（8.9% vs 12.1%），退款金额也同步缩小，说明 12 月家电销售额下降**不是退款恶化造成的**，而是成交端本身收缩——这进一步支持「量驱动下降」的判断。\n- 但退款结构同样**无法区分**「补贴退出」与「需求前置透支」：11 月退款率偏高本身也可能与集中大促、冲动购买相关，属于同一机制的伴生现象，不能作为因果证据。\n\n### 二、订单数据能证明的事实（不变）\n\n| 指标 | 2025-11 | 2025-12 | 变化 |\n|---|---|---|---|\n| 家电品类销售额 | 234,927.75 元 | 84,642.95 元 | −150,284.80 元（−64.0%） |\n| 有效订单数 | 198 | 83 | −115 |\n| 销量（件） | 262 | 101 | −161（−61.5%） |\n| 平均成交单价 | 896.67 元 | 838.05 元 | −58.62 元（−6.5%） |\n\n- 下降由销量驱动，均价仅小幅下滑；4 个在售家电商品全部同步下降（扫地机器人 115,942.00→32,583.70；空气净化器 82,226.70→34,553.40；电动牙刷 15,412.55→4,079.50；电饭煲 21,346.50→13,426.35），`is_active` 均为 1，无下架迹象。\n- 月度趋势：9 月 131,626.00 → 10 月 214,045.95 → 11 月 234,927.75 → 12 月 84,642.95 元，呈「攀升后断崖」，与「大促前置 + 补贴退出」形态一致。\n\n### 三、为什么仍不足以证明唯一因果（不变）\n\n1. **全品类同步下降**：11→12 月总品类销售额 −469,056.65 元（−38.5%），手机数码 −239,087.05 元（贡献 51.0%）、服饰鞋包 −54,609.95 元，其余品类全部下降。补贴只针对家电，却出现全站普跌，说明存在与补贴无关的共同因素（季节、大促后整体回落、流量/投放变化），未被排除。\n2. **「需求前置」与「补贴结束」在数据上不可分离**：11 月高基数本身就是 12 月低值的原因之一，无法拆分价格效应与透支效应各占多少。\n3. **缺少对照与外部数据**：无非补贴品类/地区对照组、无补贴配置记录、无价格与优惠明细（`item_amount` 未分摊订单级优惠，无法量化补贴金额）、无库存台账、竞品价格、流量转化数据。周报亦指出「演示资料没有提供真实库存台账或供应商合同，相关问题应说明资料不足」[D:8c1aa477-d675-4386-b818-af849a43f67f]。\n4. **周报定性表述不能当证据**：周报称「补贴结束与需求前置是本周提出的业务解释，需要结合订单数据验证，不能只凭本周报断言唯一原因」[D:640c69a4-cd9f-4c7a-a394-e838a90d5172]；开篇说明「种子规则规定十二月家用电器的商品选择系数为 0.55……这不是实际销量降幅，也不能直接解释为因果效应」[D:ee2c4dd1-a1de-46ae-a597-9bd4ec0ebf24]。\n5. **资料互相矛盾且部分不可用**：市场简报草稿称「十二月家电销售增长、补贴效果持续」，无口径与计算过程，与订单数据（−64.0%）直接冲突 [D:1a3e2f63-76a5-4b20-ab44-663745b7baf7]；2024 年旧周报「补贴延续至跨年」属过期干扰资料 [D:5fbdfa0a-8169-4398-9c4a-fa54a9a8aa66]；促销笔记仅为讨论、无执行日期，不能视为已发布政策 [D:6b0dda5c-2fbc-4580-b986-4ea2fce21798]。\n\n### 四、要形成可信结论还缺什么（不变）\n\n补贴配置/发放记录；未享受补贴的品类或地区、或去年同期（2024-12 补贴延续）作对照；价格与优惠明细以量化到手价变化；流量、曝光、转化率、库存与缺货记录、竞品价格；以及 11 月与 12 月天数差异的日均化处理（本次未做日均调整）。\n\n**一句话口径**：家电品类销售额 = 有效订单（paid/completed）明细成交金额 `SUM(item_amount)`，未分摊订单级优惠，排除测试账号，按下单时间统计；退款率按家电相关订单的单数计算；11 月与 12 月天数不同，未做日均调整。",
+    "success": true,
+    "trace_id": "c13c6cfa-ab05-458c-8f26-c30286e9f11b",
+    "session_id": "66748b1c-ccd7-4a9d-8102-fc9c2bb924ad",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_tables",
+        "arguments": {
+          "question": "家电销售额 订单 补贴 品类"
+        },
+        "ok": true,
+        "output": "{\"dialect\": \"sqlite\", \"tables\": [{\"table\": \"categories\", \"columns\": [\"category_id\", \"category_name\", \"parent_id\"]}, {\"table\": \"order_items\", \"columns\": [\"item_id\", \"order_id\", \"product_id\", \"quantity\", \"unit_price\", \"item_amount\"]}, {\"table\": \"orders\", \"columns\": [\"order_id\", \"user_id\", \"order_time\", \"status\", \"channel\", \"total_amount\", \"discount_amount\", \"pay_amount\", \"pay_time\"]}, {\"table\": \"payments\", \"columns\": [\"payment_id\", \"order_id\", \"pay_method\", \"amount\", \"paid_at\"]}, {\"table\": \"products\", \"columns\": [\"product_id\", \"product_name\", \"category_id\", \"list_price\", \"cost_price\", \"is_active\"]}, {\"table\": \"refund_requests\", \"columns\": [\"request_id\", \"order_id\", \"request_time\", \"status\", \"reason\"]}, {\"table\": \"refunds\", \"columns\": [\"refund_id\", \"order_id\", \"refund_amount\", \"refund_time\", \"reason\"]}, {\"table\": \"regions\", \"columns\": [\"region_code\", \"region_name\"]}, {\"table\": \"uploaded_budget\", \"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\"]}, {\"table\": \"user_events\", \"columns\": [\"event_id\", \"user_id\", \"event_date\", \"event_type\"]}, {\"table\": \"users\", \"columns\": [\"user_id\", \"register_date\", \"region_code\", \"gender\", \"birth_year\", \"member_level\", \"acquire_channel\", \"is_test\"]}]}",
+        "duration_ms": 8,
+        "thought": "我先了解数据结构、指标口径和相关文档，再判断证据是否充分。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_glossary",
+        "arguments": {
+          "query": "家电销售额 品类 口径"
+        },
+        "ok": true,
+        "output": "## 品类销售额\n品类销售额按订单明细的成交金额统计：`SUM(order_items.item_amount)`，关联 products、categories，只统计有效订单（status IN ('paid', 'completed')）并排除测试账号。\n注意：item_amount 未分摊订单级优惠，因此各品类销售额之和会略大于净销售额，这是预期内的差异。\n\n## 净销售额（营收 / 销售额）\n净销售额 = 有效订单的实付金额之和，即 GMV 扣除已退款订单。\nSQL 口径：`SUM(pay_amount)`，条件 `status IN ('paid', 'completed')`，并排除测试账号。\n用户说「销售额」「营收」「收入」时，默认指净销售额。\n\n## 客单价（AOV）\n客单价 = 净销售额 / 有效订单数，单位换算成元。\nSQL 口径：`SUM(pay_amount) / COUNT(*) / 100.0`，条件 `status IN ('paid', 'completed')`，排除测试账号。",
+        "duration_ms": 1,
+        "thought": "我先了解数据结构、指标口径和相关文档，再判断证据是否充分。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "categories",
+            "products",
+            "order_items",
+            "orders"
+          ]
+        },
+        "ok": true,
+        "output": "表 categories\n  category_id INTEGER\n  category_name TEXT NOT NULL  -- 一级品类名称\n  parent_id INTEGER  -- 预留，当前均为 NULL（无二级品类）\n  样例 (category_id | category_name | parent_id):\n  1 | 手机数码 | None\n  2 | 家用电器 | None\n  3 | 服饰鞋包 | None\n\n表 products\n  product_id INTEGER\n  product_name TEXT NOT NULL\n  category_id INTEGER NOT NULL\n  list_price INTEGER NOT NULL  -- 标价，单位：分\n  cost_price INTEGER NOT NULL  -- 成本价，单位：分\n  is_active INTEGER NOT NULL  -- 1 在售，0 下架\n  外键: category_id -> categories(category_id)\n  样例 (product_id | product_name | category_id | list_price | cost_price | is_active):\n  1 | 旗舰手机 | 1 | 499900 | 368492 | 1\n  2 | 降噪耳机 | 1 | 89900 | 45969 | 1\n  3 | 智能手表 | 1 | 129900 | 78627 | 1\n\n表 order_items\n  item_id INTEGER\n  order_id INTEGER NOT NULL\n  product_id INTEGER NOT NULL\n  quantity INTEGER NOT NULL\n  unit_price INTEGER NOT NULL  -- 成交单价（未分摊优惠），单位：分\n  item_amount INTEGER NOT NULL  -- quantity * unit_price，单位：分\n  外键: product_id -> products(product_id)\n  外键: order_id -> orders(order_id)\n  样例 (item_id | order_id | product_id | quantity | unit_price | item_amount):\n  1 | 1 | 1 | 1 | 499900 | 499900\n  2 | 1 | 18 | 1 | 11900 | 11900\n  3 | 1 | 27 | 1 | 26910 | 26910\n\n表 orders\n  order_id INTEGER\n  user_id INTEGER NOT NULL\n  order_time TEXT NOT NULL  -- 下单时间 YYYY-MM-DD HH:MM:SS\n  status TEXT NOT NULL  -- paid 已支付 / completed 已完成 / cancelled 已取消（未支付） / refunded 已全额退款\n  channel TEXT NOT NULL  -- 下单端：app / web / mini_program\n  total_amount INTEGER NOT NULL  -- 商品原价合计，单位：分\n  discount_amount INTEGER NOT NULL  -- 优惠金额，单位：分\n  pay_amount INTEGER NOT NULL  -- 实付金额 = total_amount - discount_amount，单位：分；cancelled 订单为 0\n  pay_time TEXT  -- 支付时间；cancelled 为 NULL\n  外键: user_id -> users(user_id)\n  样例 (order_id | user_id | order_time | status | channel | total_amount | discount_amount | pay_amount | pay_time):\n  1 | 350 | 2025-01-26 14:43:02 | completed | web | 538710 | 0 | 538710 | 2025-01-26 15:10:02\n  2 | 930 | 2025-01-26 20:03:44 | completed | app | 15930 | 343 | 15587 | 2025-01-26 20:28:44\n  3 | 390 | 2025-01-01 17:46:50 | refunded | web | 12900 | 0 | 12900 | 2025-01-01 18:12:50",
+        "duration_ms": 13,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "search_documents",
+        "arguments": {
+          "query": "家电 补贴 结束 下降 原因"
+        },
+        "ok": true,
+        "output": "{\"mode\": \"hybrid\", \"hits\": [{\"reference\": \"D:640c69a4-cd9f-4c7a-a394-e838a90d5172\", \"document_id\": \"93e86629-9d67-5fee-b10d-e0df558e643c\", \"chunk_id\": \"640c69a4-cd9f-4c7a-a394-e838a90d5172\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2025-12-家电运营周报.md\", \"content\": \"## 家电活动变化\\n\\n演示情景设定：家电阶段性补贴在 2025 年 11 月 30 日结束，十二月没有延续同等补贴。十一月集中活动可能让部分消费者提前购买，十二月自然需求随后回落。补贴结束与需求前置是本周提出的业务解释，需要结合订单数据验证，不能只凭本周报断言唯一原因。\", \"score\": 0.03278688524590164, \"source\": \"hybrid\", \"document_date\": \"2025-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"家电活动变化\"}, {\"reference\": \"D:8c1aa477-d675-4386-b818-af849a43f67f\", \"document_id\": \"93e86629-9d67-5fee-b10d-e0df558e643c\", \"chunk_id\": \"8c1aa477-d675-4386-b818-af849a43f67f\", \"chunk_index\": 3, \"filename\": \"第七阶段合成评测-2025-12-家电运营周报.md\", \"content\": \"## 跟进行动\\n\\n运营组核对补贴结束的配置记录，客服组观察售后咨询，数据组保留查询口径和执行结果。建议区分规模变化与结构变化，避免看到总额下降就猜测库存断货。演示资料没有提供真实库存台账或供应商合同，相关问题应说明资料不足。\", \"score\": 0.03200204813108039, \"source\": \"hybrid\", \"document_date\": \"2025-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"跟进行动\"}, {\"reference\": \"D:6b0dda5c-2fbc-4580-b986-4ea2fce21798\", \"document_id\": \"78cca1ac-d2a6-5f45-b01d-4829190acc2b\", \"chunk_id\": \"6b0dda5c-2fbc-4580-b986-4ea2fce21798\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-日期未知-促销笔记.md\", \"content\": \"## 讨论内容\\n\\n有人建议在冬季家电活动中延长补贴，但没有最终决定，也没有执行开始或结束日期。讨论记录不等于已发布的活动政策。\", \"score\": 0.0315136476426799, \"source\": \"hybrid\", \"document_date\": null, \"document_type\": \"reference\", \"page_number\": null, \"section\": \"讨论内容\"}, {\"reference\": \"D:5fbdfa0a-8169-4398-9c4a-fa54a9a8aa66\", \"document_id\": \"4b081068-3a74-5814-9f2b-89c1e9eb223e\", \"chunk_id\": \"5fbdfa0a-8169-4398-9c4a-fa54a9a8aa66\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2024-12-家电旧周报.md\", \"content\": \"## 当时的活动\\n\\n旧年度家电补贴在十二月仍有延续，运营记录称活动持续至跨年。旧报告对家电需求持乐观判断，记录的安排不适用于 2025 年十二月。\", \"score\": 0.03149801587301587, \"source\": \"hybrid\", \"document_date\": \"2024-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"当时的活动\"}, {\"reference\": \"D:ee2c4dd1-a1de-46ae-a597-9bd4ec0ebf24\", \"document_id\": \"93e86629-9d67-5fee-b10d-e0df558e643c\", \"chunk_id\": \"ee2c4dd1-a1de-46ae-a597-9bd4ec0ebf24\", \"chunk_index\": 0, \"filename\": \"第七阶段合成评测-2025-12-家电运营周报.md\", \"content\": \"# 2025 年十二月家电运营周报\\n\\n合成演示资料。种子规则规定十二月家用电器的商品选择系数为 0.55，制造大促后回落场景；这不是实际销量降幅，也不能直接解释为因果效应。\", \"score\": 0.029513888888888888, \"source\": \"hybrid\", \"document_date\": \"2025-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"2025 年十二月家电运营周报\"}], \"warnings\": [], \"elapsed_ms\": 369, \"evidence_only\": true}",
+        "duration_ms": 369,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "prepare_analysis",
+        "arguments": {
+          "scope": {
+            "metric": "家用电器品类销售额",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1",
+            "unit": "元",
+            "dimension": "品类",
+            "base_start": "2025-11-01",
+            "base_end": "2025-12-01",
+            "current_start": "2025-12-01",
+            "current_end": "2026-01-01",
+            "assumptions": [
+              "补贴于2025-11-30结束，故对比11月与12月",
+              "品类销售额=SUM(item_amount)，未分摊订单级优惠"
+            ],
+            "filters": [
+              "status IN ('paid','completed')",
+              "排除测试账号"
+            ]
+          },
+          "detail_sql": "SELECT c.category_name AS segment, SUM(CASE WHEN o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01' THEN oi.item_amount ELSE 0 END)/100.0 AS base_value, SUM(CASE WHEN o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01' THEN oi.item_amount ELSE 0 END)/100.0 AS current_value FROM order_items oi JOIN orders o ON o.order_id=oi.order_id JOIN users u ON u.user_id=o.user_id JOIN products p ON p.product_id=oi.product_id JOIN categories c ON c.category_id=p.category_id WHERE o.status IN ('paid','completed') AND u.is_test=0 AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01' GROUP BY c.category_name",
+          "total_sql": "SELECT SUM(CASE WHEN o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01' THEN oi.item_amount ELSE 0 END)/100.0 AS base_value, SUM(CASE WHEN o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01' THEN oi.item_amount ELSE 0 END)/100.0 AS current_value FROM order_items oi JOIN orders o ON o.order_id=oi.order_id JOIN users u ON u.user_id=o.user_id JOIN products p ON p.product_id=oi.product_id JOIN categories c ON c.category_id=p.category_id WHERE o.status IN ('paid','completed') AND u.is_test=0 AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'"
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"scope\": {\"metric\": \"家用电器品类销售额\", \"metric_kind\": \"additive\", \"source\": \"ecommerce_v1\", \"unit\": \"元\", \"dimension\": \"品类\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [\"补贴于2025-11-30结束，故对比11月与12月\", \"品类销售额=SUM(item_amount)，未分摊订单级优惠\"], \"filters\": [\"status IN ('paid','completed')\", \"排除测试账号\"]}, \"questions\": [], \"period_convention\": \"start_inclusive_end_exclusive\"}",
+        "duration_ms": 0,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 4,
+        "tool": "compare_periods",
+        "arguments": {
+          "scope": {
+            "assumptions": [
+              "补贴于2025-11-30结束，故对比11月与12月",
+              "品类销售额=SUM(item_amount)，未分摊订单级优惠"
+            ],
+            "base_end": "2025-12-01",
+            "base_start": "2025-11-01",
+            "current_end": "2026-01-01",
+            "current_start": "2025-12-01",
+            "dimension": "品类",
+            "filters": [
+              "status IN ('paid','completed')",
+              "排除测试账号"
+            ],
+            "metric": "家用电器品类销售额",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1",
+            "unit": "元"
+          },
+          "detail_sql": "SELECT c.category_name AS segment, SUM(CASE WHEN o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01' THEN oi.item_amount ELSE 0 END)/100.0 AS base_value, SUM(CASE WHEN o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01' THEN oi.item_amount ELSE 0 END)/100.0 AS current_value FROM order_items oi JOIN orders o ON o.order_id=oi.order_id JOIN users u ON u.user_id=o.user_id JOIN products p ON p.product_id=oi.product_id JOIN categories c ON c.category_id=p.category_id WHERE o.status IN ('paid','completed') AND u.is_test=0 AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01' GROUP BY c.category_name",
+          "total_sql": "SELECT SUM(CASE WHEN o.order_time >= '2025-11-01' AND o.order_time < '2025-12-01' THEN oi.item_amount ELSE 0 END)/100.0 AS base_value, SUM(CASE WHEN o.order_time >= '2025-12-01' AND o.order_time < '2026-01-01' THEN oi.item_amount ELSE 0 END)/100.0 AS current_value FROM order_items oi JOIN orders o ON o.order_id=oi.order_id JOIN users u ON u.user_id=o.user_id JOIN products p ON p.product_id=oi.product_id JOIN categories c ON c.category_id=p.category_id WHERE o.status IN ('paid','completed') AND u.is_test=0 AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01'"
+        },
+        "ok": true,
+        "output": "{\"status\": \"ready\", \"scope\": {\"metric\": \"家用电器品类销售额\", \"metric_kind\": \"additive\", \"source\": \"ecommerce_v1\", \"unit\": \"元\", \"dimension\": \"品类\", \"base_start\": \"2025-11-01\", \"base_end\": \"2025-12-01\", \"current_start\": \"2025-12-01\", \"current_end\": \"2026-01-01\", \"assumptions\": [\"补贴于2025-11-30结束，故对比11月与12月\", \"品类销售额=SUM(item_amount)，未分摊订单级优惠\"], \"filters\": [\"status IN ('paid','completed')\", \"排除测试账号\"]}, \"summary\": {\"base\": \"1218786.55\", \"current\": \"749729.9\", \"delta\": \"-469056.65\", \"change_pct\": \"-38.48554532\"}, \"groups\": [{\"segment\": \"手机数码\", \"base_value\": \"688214.5\", \"current_value\": \"449127.45\", \"delta\": \"-239087.05\", \"contribution_pct\": \"50.9718922\"}, {\"segment\": \"家用电器\", \"base_value\": \"234927.75\", \"current_value\": \"84642.95\", \"delta\": \"-150284.8\", \"contribution_pct\": \"32.03979733\"}, {\"segment\": \"服饰鞋包\", \"base_value\": \"157145.25\", \"current_value\": \"102535.3\", \"delta\": \"-54609.95\", \"contribution_pct\": \"11.64250629\"}, {\"segment\": \"图书文娱\", \"base_value\": \"20121.2\", \"current_value\": \"12567.45\", \"delta\": \"-7553.75\", \"contribution_pct\": \"1.61041316\"}, {\"segment\": \"美妆个护\", \"base_value\": \"42358.4\", \"current_value\": \"35483.8\", \"delta\": \"-6874.6\", \"contribution_pct\": \"1.46562254\"}, {\"segment\": \"家居日用\", \"base_value\": \"32921.65\", \"current_value\": \"26137.55\", \"delta\": \"-6784.1\", \"contribution_pct\": \"1.4463285\"}, {\"segment\": \"食品生鲜\", \"base_value\": \"43097.8\", \"current_value\": \"39235.4\", \"delta\": \"-3862.4\", \"contribution_pct\": \"0.82343998\"}], \"group_count\": 7, \"reconciliation\": {\"matched\": true, \"group_totals\": {\"base_value\": \"1218786.55\", \"current_value\": \"749729.9\"}, \"differences\": {\"base_value\": \"0\", \"current_value\": \"0\"}}, \"warnings\": [\"贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。\", \"不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。\", \"两个周期天数不同，当前比较未自动做日均调整。\"], \"causal_claim_supported\": false}",
+        "duration_ms": 8,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 5,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT strftime('%Y-%m', o.order_time) AS ym, COUNT(DISTINCT o.order_id) AS orders, SUM(oi.quantity) AS qty, SUM(oi.item_amount)/100.0 AS amt, SUM(oi.item_amount)*1.0/SUM(oi.quantity)/100.0 AS avg_unit_price FROM order_items oi JOIN orders o ON o.order_id=oi.order_id JOIN users u ON u.user_id=o.user_id JOIN products p ON p.product_id=oi.product_id JOIN categories c ON c.category_id=p.category_id WHERE o.status IN ('paid','completed') AND u.is_test=0 AND c.category_name='家用电器' AND o.order_time >= '2025-09-01' AND o.order_time < '2026-01-01' GROUP BY ym ORDER BY ym",
+          "purpose": "家电月度订单量、销量、金额、均价趋势"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"ym\", \"orders\", \"qty\", \"amt\", \"avg_unit_price\"], \"rows\": [[\"2025-09\", 108, 139, 131626.0, 946.9496402877697], [\"2025-10\", 152, 201, 214045.95, 1064.905223880597], [\"2025-11\", 198, 262, 234927.75, 896.6708015267176], [\"2025-12\", 83, 101, 84642.95, 838.0490099009901]], \"row_count\": 4}",
+        "duration_ms": 10,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 5,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT p.product_name, SUM(CASE WHEN o.order_time < '2025-12-01' THEN oi.item_amount ELSE 0 END)/100.0 AS nov_amt, SUM(CASE WHEN o.order_time >= '2025-12-01' THEN oi.item_amount ELSE 0 END)/100.0 AS dec_amt, SUM(CASE WHEN o.order_time < '2025-12-01' THEN oi.quantity ELSE 0 END) AS nov_qty, SUM(CASE WHEN o.order_time >= '2025-12-01' THEN oi.quantity ELSE 0 END) AS dec_qty, p.is_active FROM order_items oi JOIN orders o ON o.order_id=oi.order_id JOIN users u ON u.user_id=o.user_id JOIN products p ON p.product_id=oi.product_id JOIN categories c ON c.category_id=p.category_id WHERE o.status IN ('paid','completed') AND u.is_test=0 AND c.category_name='家用电器' AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01' GROUP BY p.product_id ORDER BY (nov_amt-dec_amt) DESC",
+          "purpose": "家电各商品11月vs12月金额与销量"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"product_name\", \"nov_amt\", \"dec_amt\", \"nov_qty\", \"dec_qty\", \"is_active\"], \"rows\": [[\"扫地机器人\", 115942.0, 32583.7, 60, 17, 1], [\"空气净化器\", 82226.7, 34553.4, 66, 28, 1], [\"电动牙刷\", 15412.55, 4079.5, 81, 21, 1], [\"电饭煲\", 21346.5, 13426.35, 55, 35, 1]], \"row_count\": 4}",
+        "duration_ms": 5,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 6,
+        "tool": "run_sql",
+        "arguments": {
+          "purpose": "家电12月退款情况与11月对比",
+          "sql": "SELECT strftime('%Y-%m', o.order_time) AS ym, COUNT(DISTINCT o.order_id) AS orders, SUM(CASE WHEN o.status='refunded' THEN 1 ELSE 0 END) AS refunded_orders FROM orders o JOIN users u ON u.user_id=o.user_id WHERE u.is_test=0 AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01' AND EXISTS (SELECT 1 FROM order_items oi JOIN products p ON p.product_id=oi.product_id JOIN categories c ON c.category_id=p.category_id WHERE oi.order_id=o.order_id AND c.category_name='家用电器') GROUP BY ym"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"ym\", \"orders\", \"refunded_orders\"], \"rows\": [[\"2025-11\", 247, 30], [\"2025-12\", 101, 9]], \"row_count\": 2}",
+        "duration_ms": 4,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 6,
+        "tool": "search_documents",
+        "arguments": {
+          "query": "库存 断货 供给 价格 竞品 季节 家电 十二月"
+        },
+        "ok": true,
+        "output": "{\"mode\": \"hybrid\", \"hits\": [{\"reference\": \"D:5fbdfa0a-8169-4398-9c4a-fa54a9a8aa66\", \"document_id\": \"4b081068-3a74-5814-9f2b-89c1e9eb223e\", \"chunk_id\": \"5fbdfa0a-8169-4398-9c4a-fa54a9a8aa66\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2024-12-家电旧周报.md\", \"content\": \"## 当时的活动\\n\\n旧年度家电补贴在十二月仍有延续，运营记录称活动持续至跨年。旧报告对家电需求持乐观判断，记录的安排不适用于 2025 年十二月。\", \"score\": 0.03177805800756621, \"source\": \"hybrid\", \"document_date\": \"2024-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"当时的活动\"}, {\"reference\": \"D:ee2c4dd1-a1de-46ae-a597-9bd4ec0ebf24\", \"document_id\": \"93e86629-9d67-5fee-b10d-e0df558e643c\", \"chunk_id\": \"ee2c4dd1-a1de-46ae-a597-9bd4ec0ebf24\", \"chunk_index\": 0, \"filename\": \"第七阶段合成评测-2025-12-家电运营周报.md\", \"content\": \"# 2025 年十二月家电运营周报\\n\\n合成演示资料。种子规则规定十二月家用电器的商品选择系数为 0.55，制造大促后回落场景；这不是实际销量降幅，也不能直接解释为因果效应。\", \"score\": 0.03177805800756621, \"source\": \"hybrid\", \"document_date\": \"2025-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"2025 年十二月家电运营周报\"}, {\"reference\": \"D:640c69a4-cd9f-4c7a-a394-e838a90d5172\", \"document_id\": \"93e86629-9d67-5fee-b10d-e0df558e643c\", \"chunk_id\": \"640c69a4-cd9f-4c7a-a394-e838a90d5172\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2025-12-家电运营周报.md\", \"content\": \"## 家电活动变化\\n\\n演示情景设定：家电阶段性补贴在 2025 年 11 月 30 日结束，十二月没有延续同等补贴。十一月集中活动可能让部分消费者提前购买，十二月自然需求随后回落。补贴结束与需求前置是本周提出的业务解释，需要结合订单数据验证，不能只凭本周报断言唯一原因。\", \"score\": 0.03055037313432836, \"source\": \"hybrid\", \"document_date\": \"2025-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"家电活动变化\"}, {\"reference\": \"D:1a3e2f63-76a5-4b20-ab44-663745b7baf7\", \"document_id\": \"7b5af6ee-9167-5ae3-abc6-1addee1bcea1\", \"chunk_id\": \"1a3e2f63-76a5-4b20-ab44-663745b7baf7\", \"chunk_index\": 1, \"filename\": \"第七阶段合成评测-2025-12-待核实市场简报.md\", \"content\": \"## 未核实描述\\n\\n简报草稿声称“十二月家电销售增长、补贴效果持续”。草稿没有提供查询语句、订单口径或实际计算过程，也没有说明同比还是环比。\", \"score\": 0.0304147465437788, \"source\": \"hybrid\", \"document_date\": \"2025-12-25\", \"document_type\": \"reference\", \"page_number\": null, \"section\": \"未核实描述\"}, {\"reference\": \"D:e0e299bc-6857-4c8c-ae87-c2034f05acdf\", \"document_id\": \"4b081068-3a74-5814-9f2b-89c1e9eb223e\", \"chunk_id\": \"e0e299bc-6857-4c8c-ae87-c2034f05acdf\", \"chunk_index\": 0, \"filename\": \"第七阶段合成评测-2024-12-家电旧周报.md\", \"content\": \"# 2024 年十二月家电周报（过期资料）\\n\\n这是特意设计的过时干扰文档，仅适用于 2024 年合成情景。\", \"score\": 0.030330882352941176, \"source\": \"hybrid\", \"document_date\": \"2024-12-31\", \"document_type\": \"weekly_report\", \"page_number\": null, \"section\": \"2024 年十二月家电周报（过期资料）\"}], \"warnings\": [], \"elapsed_ms\": 965, \"evidence_only\": true}",
+        "duration_ms": 965,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "run_sql",
+        "arguments": {
+          "purpose": "家电相关订单的退款结构：退款单数、退款金额、退款率",
+          "sql": "SELECT strftime('%Y-%m', o.order_time) AS ym, COUNT(DISTINCT o.order_id) AS orders, SUM(CASE WHEN o.status='refunded' THEN 1 ELSE 0 END) AS refunded_orders, ROUND(SUM(CASE WHEN o.status='refunded' THEN 1 ELSE 0 END)*100.0/COUNT(DISTINCT o.order_id),1) AS refund_rate_pct, SUM(CASE WHEN o.status='refunded' THEN o.pay_amount ELSE 0 END)/100.0 AS refunded_pay_amt FROM orders o JOIN users u ON u.user_id=o.user_id WHERE u.is_test=0 AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01' AND EXISTS (SELECT 1 FROM order_items oi JOIN products p ON p.product_id=oi.product_id JOIN categories c ON c.category_id=p.category_id WHERE oi.order_id=o.order_id AND c.category_name='家用电器') GROUP BY ym"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"ym\", \"orders\", \"refunded_orders\", \"refund_rate_pct\", \"refunded_pay_amt\"], \"rows\": [[\"2025-11\", 247, 30, 12.1, 42052.73], [\"2025-12\", 101, 9, 8.9, 9954.27]], \"row_count\": 2}",
+        "duration_ms": 3,
+        "thought": "我先核实退款结构这一补充项，再确认销量与均价的计算。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "run_sql",
+        "arguments": {
+          "purpose": "家电品类退款金额（按明细口径）与净额影响",
+          "sql": "SELECT strftime('%Y-%m', o.order_time) AS ym, SUM(CASE WHEN o.status IN ('paid','completed') THEN oi.item_amount ELSE 0 END)/100.0 AS valid_amt, SUM(CASE WHEN o.status='refunded' THEN oi.item_amount ELSE 0 END)/100.0 AS refunded_item_amt, SUM(oi.item_amount)/100.0 AS all_amt FROM order_items oi JOIN orders o ON o.order_id=oi.order_id JOIN users u ON u.user_id=o.user_id JOIN products p ON p.product_id=oi.product_id JOIN categories c ON c.category_id=p.category_id WHERE u.is_test=0 AND c.category_name='家用电器' AND o.order_time >= '2025-11-01' AND o.order_time < '2026-01-01' GROUP BY ym"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"ym\", \"valid_amt\", \"refunded_item_amt\", \"all_amt\"], \"rows\": [[\"2025-11\", 234927.75, 38839.15, 302422.1], [\"2025-12\", 84642.95, 6650.3, 104371.0]], \"row_count\": 2}",
+        "duration_ms": 3,
+        "thought": "我先核实退款结构这一补充项，再确认销量与均价的计算。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "calculator",
+        "arguments": {
+          "expression": "(101/262-1)*100"
+        },
+        "ok": true,
+        "output": "-61.450381679389324",
+        "duration_ms": 0,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "calculator",
+        "arguments": {
+          "expression": "(838.0490099009901/896.6708015267176-1)*100"
+        },
+        "ok": true,
+        "output": "-6.537716130146654",
+        "duration_ms": 0,
+        "thought": ""
+      }
+    ],
+    "plan": [
+      "确认问题中的指标口径：家电销售额或订单量的定义、单位、统计周期，以及补贴结束的时间点与影响范围",
+      "查询补贴结束前后两个周期的家电整体指标，并核对订单数据与周报数据是否一致、是否存在口径差异",
+      "沿品类或渠道维度拆分家电变化，定位下降主要来自哪些分项，判断是否所有分项同步下降",
+      "在同一父级下继续下钻，检查是否有其他同期因素（如价格、促销、竞品、季节、供给）与下降同时出现",
+      "查找同期业务资料与周报中的解释性说明，区分事实数据、资料解释和待验证假设",
+      "评估证据充分性：现有订单与周报能否排除其他原因、能否建立唯一因果，明确回答证据是否足够并列出缺口"
+    ],
+    "reflection": {
+      "passed": null,
+      "quality_score": null,
+      "issues": [],
+      "summary": "审查未完成，答案尚未核验",
+      "error": "JSONDecodeError",
+      "checks": [],
+      "evidence_complete": true
+    },
+    "reflection_status": "unavailable",
+    "revised": true,
+    "llm_calls": 13,
+    "usage": {
+      "prompt_tokens": 116065,
+      "completion_tokens": 9131,
+      "total_tokens": 125196,
+      "prompt_cache_hit_tokens": 88704,
+      "prompt_cache_miss_tokens": 27361
+    },
+    "duration_ms": 48204,
+    "error": null,
+    "citations": [
+      {
+        "reference": "D:8c1aa477-d675-4386-b818-af849a43f67f",
+        "document_id": "93e86629-9d67-5fee-b10d-e0df558e643c",
+        "chunk_id": "8c1aa477-d675-4386-b818-af849a43f67f",
+        "chunk_index": 3,
+        "filename": "第七阶段合成评测-2025-12-家电运营周报.md",
+        "snippet": "## 跟进行动\n\n运营组核对补贴结束的配置记录，客服组观察售后咨询，数据组保留查询口径和执行结果。建议区分规模变化与结构变化，避免看到总额下降就猜测库存断货。演示资料没有提供真实库存台账或供应商合同，相关问题应说明资料不足。",
+        "document_date": "2025-12-31",
+        "document_type": "weekly_report",
+        "page_number": null,
+        "section": "跟进行动"
+      },
+      {
+        "reference": "D:640c69a4-cd9f-4c7a-a394-e838a90d5172",
+        "document_id": "93e86629-9d67-5fee-b10d-e0df558e643c",
+        "chunk_id": "640c69a4-cd9f-4c7a-a394-e838a90d5172",
+        "chunk_index": 1,
+        "filename": "第七阶段合成评测-2025-12-家电运营周报.md",
+        "snippet": "## 家电活动变化\n\n演示情景设定：家电阶段性补贴在 2025 年 11 月 30 日结束，十二月没有延续同等补贴。十一月集中活动可能让部分消费者提前购买，十二月自然需求随后回落。补贴结束与需求前置是本周提出的业务解释，需要结合订单数据验证，不能只凭本周报断言唯一原因。",
+        "document_date": "2025-12-31",
+        "document_type": "weekly_report",
+        "page_number": null,
+        "section": "家电活动变化"
+      },
+      {
+        "reference": "D:ee2c4dd1-a1de-46ae-a597-9bd4ec0ebf24",
+        "document_id": "93e86629-9d67-5fee-b10d-e0df558e643c",
+        "chunk_id": "ee2c4dd1-a1de-46ae-a597-9bd4ec0ebf24",
+        "chunk_index": 0,
+        "filename": "第七阶段合成评测-2025-12-家电运营周报.md",
+        "snippet": "# 2025 年十二月家电运营周报\n\n合成演示资料。种子规则规定十二月家用电器的商品选择系数为 0.55，制造大促后回落场景；这不是实际销量降幅，也不能直接解释为因果效应。",
+        "document_date": "2025-12-31",
+        "document_type": "weekly_report",
+        "page_number": null,
+        "section": "2025 年十二月家电运营周报"
+      },
+      {
+        "reference": "D:1a3e2f63-76a5-4b20-ab44-663745b7baf7",
+        "document_id": "7b5af6ee-9167-5ae3-abc6-1addee1bcea1",
+        "chunk_id": "1a3e2f63-76a5-4b20-ab44-663745b7baf7",
+        "chunk_index": 1,
+        "filename": "第七阶段合成评测-2025-12-待核实市场简报.md",
+        "snippet": "## 未核实描述\n\n简报草稿声称“十二月家电销售增长、补贴效果持续”。草稿没有提供查询语句、订单口径或实际计算过程，也没有说明同比还是环比。",
+        "document_date": "2025-12-25",
+        "document_type": "reference",
+        "page_number": null,
+        "section": "未核实描述"
+      },
+      {
+        "reference": "D:5fbdfa0a-8169-4398-9c4a-fa54a9a8aa66",
+        "document_id": "4b081068-3a74-5814-9f2b-89c1e9eb223e",
+        "chunk_id": "5fbdfa0a-8169-4398-9c4a-fa54a9a8aa66",
+        "chunk_index": 1,
+        "filename": "第七阶段合成评测-2024-12-家电旧周报.md",
+        "snippet": "## 当时的活动\n\n旧年度家电补贴在十二月仍有延续，运营记录称活动持续至跨年。旧报告对家电需求持乐观判断，记录的安排不适用于 2025 年十二月。",
+        "document_date": "2024-12-31",
+        "document_type": "weekly_report",
+        "page_number": null,
+        "section": "当时的活动"
+      },
+      {
+        "reference": "D:6b0dda5c-2fbc-4580-b986-4ea2fce21798",
+        "document_id": "78cca1ac-d2a6-5f45-b01d-4829190acc2b",
+        "chunk_id": "6b0dda5c-2fbc-4580-b986-4ea2fce21798",
+        "chunk_index": 1,
+        "filename": "第七阶段合成评测-日期未知-促销笔记.md",
+        "snippet": "## 讨论内容\n\n有人建议在冬季家电活动中延长补贴，但没有最终决定，也没有执行开始或结束日期。讨论记录不等于已发布的活动政策。",
+        "document_date": null,
+        "document_type": "reference",
+        "page_number": null,
+        "section": "讨论内容"
+      }
+    ],
+    "citation_errors": [],
+    "analysis": {
+      "status": "review_unavailable",
+      "scope": {
+        "metric": "家用电器品类销售额",
+        "metric_kind": "additive",
+        "source": "ecommerce_v1",
+        "unit": "元",
+        "dimension": "品类",
+        "base_start": "2025-11-01",
+        "base_end": "2025-12-01",
+        "current_start": "2025-12-01",
+        "current_end": "2026-01-01",
+        "assumptions": [
+          "补贴于2025-11-30结束，故对比11月与12月",
+          "品类销售额=SUM(item_amount)，未分摊订单级优惠"
+        ],
+        "filters": [
+          "status IN ('paid','completed')",
+          "排除测试账号"
+        ]
+      },
+      "clarification_questions": [],
+      "comparisons": [
+        {
+          "status": "ready",
+          "scope": {
+            "metric": "家用电器品类销售额",
+            "metric_kind": "additive",
+            "source": "ecommerce_v1",
+            "unit": "元",
+            "dimension": "品类",
+            "base_start": "2025-11-01",
+            "base_end": "2025-12-01",
+            "current_start": "2025-12-01",
+            "current_end": "2026-01-01",
+            "assumptions": [
+              "补贴于2025-11-30结束，故对比11月与12月",
+              "品类销售额=SUM(item_amount)，未分摊订单级优惠"
+            ],
+            "filters": [
+              "status IN ('paid','completed')",
+              "排除测试账号"
+            ]
+          },
+          "summary": {
+            "base": "1218786.55",
+            "current": "749729.9",
+            "delta": "-469056.65",
+            "change_pct": "-38.48554532"
+          },
+          "groups": [
+            {
+              "segment": "手机数码",
+              "base_value": "688214.5",
+              "current_value": "449127.45",
+              "delta": "-239087.05",
+              "contribution_pct": "50.9718922"
+            },
+            {
+              "segment": "家用电器",
+              "base_value": "234927.75",
+              "current_value": "84642.95",
+              "delta": "-150284.8",
+              "contribution_pct": "32.03979733"
+            },
+            {
+              "segment": "服饰鞋包",
+              "base_value": "157145.25",
+              "current_value": "102535.3",
+              "delta": "-54609.95",
+              "contribution_pct": "11.64250629"
+            },
+            {
+              "segment": "图书文娱",
+              "base_value": "20121.2",
+              "current_value": "12567.45",
+              "delta": "-7553.75",
+              "contribution_pct": "1.61041316"
+            },
+            {
+              "segment": "美妆个护",
+              "base_value": "42358.4",
+              "current_value": "35483.8",
+              "delta": "-6874.6",
+              "contribution_pct": "1.46562254"
+            },
+            {
+              "segment": "家居日用",
+              "base_value": "32921.65",
+              "current_value": "26137.55",
+              "delta": "-6784.1",
+              "contribution_pct": "1.4463285"
+            },
+            {
+              "segment": "食品生鲜",
+              "base_value": "43097.8",
+              "current_value": "39235.4",
+              "delta": "-3862.4",
+              "contribution_pct": "0.82343998"
+            }
+          ],
+          "group_count": 7,
+          "reconciliation": {
+            "matched": true,
+            "group_totals": {
+              "base_value": "1218786.55",
+              "current_value": "749729.9"
+            },
+            "differences": {
+              "base_value": "0",
+              "current_value": "0"
+            }
+          },
+          "warnings": [
+            "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+            "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+            "两个周期天数不同，当前比较未自动做日均调整。"
+          ],
+          "causal_claim_supported": false
+        }
+      ],
+      "warnings": [
+        "贡献是统计拆解，不能据此证明活动、价格或其他因素造成了变化。",
+        "不同维度是同一变化的不同切面，不能把区域和渠道等拆解结果相加。",
+        "两个周期天数不同，当前比较未自动做日均调整。",
+        "证据审查未完成，当前答案尚未核验。"
+      ],
+      "comparison_count": 1,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 2189,
+          "usage": {
+            "prompt_tokens": 208,
+            "completion_tokens": 170,
+            "total_tokens": 378,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 208
+          }
+        },
+        "analysis": {
+          "logical_calls": 7,
+          "http_requests": 7,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 18423,
+          "usage": {
+            "prompt_tokens": 56227,
+            "completion_tokens": 3423,
+            "total_tokens": 59650,
+            "prompt_cache_hit_tokens": 47744,
+            "prompt_cache_miss_tokens": 8483
+          }
+        },
+        "embedding": {
+          "logical_calls": 2,
+          "http_requests": 2,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1049,
+          "usage": {
+            "input_tokens": 35
+          }
+        },
+        "reflection": {
+          "logical_calls": 2,
+          "http_requests": 2,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 15750,
+          "usage": {
+            "prompt_tokens": 18776,
+            "completion_tokens": 3563,
+            "total_tokens": 22339,
+            "prompt_cache_hit_tokens": 768,
+            "prompt_cache_miss_tokens": 18008
+          }
+        },
+        "revision": {
+          "logical_calls": 3,
+          "http_requests": 3,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 10453,
+          "usage": {
+            "prompt_tokens": 40854,
+            "completion_tokens": 1975,
+            "total_tokens": 42829,
+            "prompt_cache_hit_tokens": 40192,
+            "prompt_cache_miss_tokens": 662
+          }
+        }
+      },
+      "llm_calls": 13,
+      "chat_usage": {
+        "prompt_tokens": 116065,
+        "completion_tokens": 9131,
+        "total_tokens": 125196,
+        "prompt_cache_hit_tokens": 88704,
+        "prompt_cache_miss_tokens": 27361
+      },
+      "http_requests": 15,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 10,
+    "question": "仅凭现有订单与周报，能否证明补贴结束是家电下降的唯一原因？请明确回答证据是否足够。",
+    "tables": [
+      {
+        "id": "result-6",
+        "title": "家用电器品类销售额 · 品类",
+        "columns": [
+          "品类",
+          "基期（元）",
+          "当期（元）",
+          "变化（元）"
+        ],
+        "rows": [
+          [
+            "手机数码",
+            "688214.5",
+            "449127.45",
+            "-239087.05"
+          ],
+          [
+            "家用电器",
+            "234927.75",
+            "84642.95",
+            "-150284.8"
+          ],
+          [
+            "服饰鞋包",
+            "157145.25",
+            "102535.3",
+            "-54609.95"
+          ],
+          [
+            "图书文娱",
+            "20121.2",
+            "12567.45",
+            "-7553.75"
+          ],
+          [
+            "美妆个护",
+            "42358.4",
+            "35483.8",
+            "-6874.6"
+          ],
+          [
+            "家居日用",
+            "32921.65",
+            "26137.55",
+            "-6784.1"
+          ],
+          [
+            "食品生鲜",
+            "43097.8",
+            "39235.4",
+            "-3862.4"
+          ]
+        ],
+        "evidence_ids": [
+          "E6"
+        ],
+        "scope": {
+          "metric": "家用电器品类销售额",
+          "metric_kind": "additive",
+          "source": "ecommerce_v1",
+          "unit": "元",
+          "dimension": "品类",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "current_start": "2025-12-01",
+          "current_end": "2026-01-01",
+          "assumptions": [
+            "补贴于2025-11-30结束，故对比11月与12月",
+            "品类销售额=SUM(item_amount)，未分摊订单级优惠"
+          ],
+          "filters": [
+            "status IN ('paid','completed')",
+            "排除测试账号"
+          ]
+        },
+        "truncated": false
+      },
+      {
+        "id": "result-7",
+        "title": "查询结果 · E7",
+        "columns": [
+          "ym",
+          "orders",
+          "qty",
+          "amt",
+          "avg_unit_price"
+        ],
+        "rows": [
+          [
+            "2025-09",
+            108,
+            139,
+            131626.0,
+            946.9496402877697
+          ],
+          [
+            "2025-10",
+            152,
+            201,
+            214045.95,
+            1064.905223880597
+          ],
+          [
+            "2025-11",
+            198,
+            262,
+            234927.75,
+            896.6708015267176
+          ],
+          [
+            "2025-12",
+            83,
+            101,
+            84642.95,
+            838.0490099009901
+          ]
+        ],
+        "evidence_ids": [
+          "E7"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-8",
+        "title": "查询结果 · E8",
+        "columns": [
+          "product_name",
+          "nov_amt",
+          "dec_amt",
+          "nov_qty",
+          "dec_qty",
+          "is_active"
+        ],
+        "rows": [
+          [
+            "扫地机器人",
+            115942.0,
+            32583.7,
+            60,
+            17,
+            1
+          ],
+          [
+            "空气净化器",
+            82226.7,
+            34553.4,
+            66,
+            28,
+            1
+          ],
+          [
+            "电动牙刷",
+            15412.55,
+            4079.5,
+            81,
+            21,
+            1
+          ],
+          [
+            "电饭煲",
+            21346.5,
+            13426.35,
+            55,
+            35,
+            1
+          ]
+        ],
+        "evidence_ids": [
+          "E8"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-9",
+        "title": "查询结果 · E9",
+        "columns": [
+          "ym",
+          "orders",
+          "refunded_orders"
+        ],
+        "rows": [
+          [
+            "2025-11",
+            247,
+            30
+          ],
+          [
+            "2025-12",
+            101,
+            9
+          ]
+        ],
+        "evidence_ids": [
+          "E9"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-11",
+        "title": "查询结果 · E11",
+        "columns": [
+          "ym",
+          "orders",
+          "refunded_orders",
+          "refund_rate_pct",
+          "refunded_pay_amt"
+        ],
+        "rows": [
+          [
+            "2025-11",
+            247,
+            30,
+            12.1,
+            42052.73
+          ],
+          [
+            "2025-12",
+            101,
+            9,
+            8.9,
+            9954.27
+          ]
+        ],
+        "evidence_ids": [
+          "E11"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-12",
+        "title": "查询结果 · E12",
+        "columns": [
+          "ym",
+          "valid_amt",
+          "refunded_item_amt",
+          "all_amt"
+        ],
+        "rows": [
+          [
+            "2025-11",
+            234927.75,
+            38839.15,
+            302422.1
+          ],
+          [
+            "2025-12",
+            84642.95,
+            6650.3,
+            104371.0
+          ]
+        ],
+        "evidence_ids": [
+          "E12"
+        ],
+        "scope": {},
+        "truncated": false
+      }
+    ],
+    "charts": [
+      {
+        "id": "result-6-bar",
+        "table_id": "result-6",
+        "kind": "bar",
+        "title": "家用电器品类销售额 · 品类",
+        "unit": "元",
+        "labels": [
+          "手机数码",
+          "家用电器",
+          "服饰鞋包",
+          "图书文娱",
+          "美妆个护",
+          "家居日用",
+          "食品生鲜"
+        ],
+        "series": [
+          {
+            "name": "基期",
+            "values": [
+              "688214.5",
+              "234927.75",
+              "157145.25",
+              "20121.2",
+              "42358.4",
+              "32921.65",
+              "43097.8"
+            ]
+          },
+          {
+            "name": "当期",
+            "values": [
+              "449127.45",
+              "84642.95",
+              "102535.3",
+              "12567.45",
+              "35483.8",
+              "26137.55",
+              "39235.4"
+            ]
+          }
+        ],
+        "evidence_ids": [
+          "E6"
+        ],
+        "scope": {
+          "metric": "家用电器品类销售额",
+          "metric_kind": "additive",
+          "source": "ecommerce_v1",
+          "unit": "元",
+          "dimension": "品类",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "current_start": "2025-12-01",
+          "current_end": "2026-01-01",
+          "assumptions": [
+            "补贴于2025-11-30结束，故对比11月与12月",
+            "品类销售额=SUM(item_amount)，未分摊订单级优惠"
+          ],
+          "filters": [
+            "status IN ('paid','completed')",
+            "排除测试账号"
+          ]
+        }
+      },
+      {
+        "id": "result-6-contribution",
+        "table_id": "result-6",
+        "kind": "contribution",
+        "title": "家用电器品类销售额 · 品类",
+        "unit": "元",
+        "labels": [
+          "手机数码",
+          "家用电器",
+          "服饰鞋包",
+          "图书文娱",
+          "美妆个护",
+          "家居日用",
+          "食品生鲜"
+        ],
+        "series": [
+          {
+            "name": "变化贡献",
+            "values": [
+              "-239087.05",
+              "-150284.8",
+              "-54609.95",
+              "-7553.75",
+              "-6874.6",
+              "-6784.1",
+              "-3862.4"
+            ]
+          }
+        ],
+        "evidence_ids": [
+          "E6"
+        ],
+        "scope": {
+          "metric": "家用电器品类销售额",
+          "metric_kind": "additive",
+          "source": "ecommerce_v1",
+          "unit": "元",
+          "dimension": "品类",
+          "base_start": "2025-11-01",
+          "base_end": "2025-12-01",
+          "current_start": "2025-12-01",
+          "current_end": "2026-01-01",
+          "assumptions": [
+            "补贴于2025-11-30结束，故对比11月与12月",
+            "品类销售额=SUM(item_amount)，未分摊订单级优惠"
+          ],
+          "filters": [
+            "status IN ('paid','completed')",
+            "排除测试账号"
+          ]
+        }
+      },
+      {
+        "id": "result-7-line",
+        "table_id": "result-7",
+        "kind": "line",
+        "title": "查询结果 · E7",
+        "unit": "原始数值（单位未声明）",
+        "labels": [
+          "2025-09",
+          "2025-10",
+          "2025-11",
+          "2025-12"
+        ],
+        "series": [
+          {
+            "name": "orders",
+            "values": [
+              "108",
+              "152",
+              "198",
+              "83"
+            ]
+          },
+          {
+            "name": "qty",
+            "values": [
+              "139",
+              "201",
+              "262",
+              "101"
+            ]
+          },
+          {
+            "name": "amt",
+            "values": [
+              "131626.0",
+              "214045.95",
+              "234927.75",
+              "84642.95"
+            ]
+          }
+        ],
+        "evidence_ids": [
+          "E7"
+        ],
+        "scope": {}
+      },
+      {
+        "id": "result-9-line",
+        "table_id": "result-9",
+        "kind": "line",
+        "title": "查询结果 · E9",
+        "unit": "原始数值（单位未声明）",
+        "labels": [
+          "2025-11",
+          "2025-12"
+        ],
+        "series": [
+          {
+            "name": "orders",
+            "values": [
+              "247",
+              "101"
+            ]
+          },
+          {
+            "name": "refunded_orders",
+            "values": [
+              "30",
+              "9"
+            ]
+          }
+        ],
+        "evidence_ids": [
+          "E9"
+        ],
+        "scope": {}
+      },
+      {
+        "id": "result-11-line",
+        "table_id": "result-11",
+        "kind": "line",
+        "title": "查询结果 · E11",
+        "unit": "原始数值（单位未声明）",
+        "labels": [
+          "2025-11",
+          "2025-12"
+        ],
+        "series": [
+          {
+            "name": "orders",
+            "values": [
+              "247",
+              "101"
+            ]
+          },
+          {
+            "name": "refunded_orders",
+            "values": [
+              "30",
+              "9"
+            ]
+          },
+          {
+            "name": "refund_rate_pct",
+            "values": [
+              "12.1",
+              "8.9"
+            ]
+          }
+        ],
+        "evidence_ids": [
+          "E11"
+        ],
+        "scope": {}
+      },
+      {
+        "id": "result-12-line",
+        "table_id": "result-12",
+        "kind": "line",
+        "title": "查询结果 · E12",
+        "unit": "原始数值（单位未声明）",
+        "labels": [
+          "2025-11",
+          "2025-12"
+        ],
+        "series": [
+          {
+            "name": "valid_amt",
+            "values": [
+              "234927.75",
+              "84642.95"
+            ]
+          },
+          {
+            "name": "refunded_item_amt",
+            "values": [
+              "38839.15",
+              "6650.3"
+            ]
+          },
+          {
+            "name": "all_amt",
+            "values": [
+              "302422.1",
+              "104371.0"
+            ]
+          }
+        ],
+        "evidence_ids": [
+          "E12"
+        ],
+        "scope": {}
+      }
+    ],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "pattern_0": true,
+      "pattern_1": true,
+      "no_successful_write": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

@@ -1,0 +1,226 @@
+{
+  "model_api_calls": 0,
+  "health": {
+    "status": "ready",
+    "agent": "up",
+    "analysis_database": "up",
+    "session_store": "up",
+    "session_backend": "redis",
+    "analysis_history": "up",
+    "document_database": "up",
+    "database": "up",
+    "app_env": "development",
+    "document_retrieval": "up",
+    "dataset_imports": "up",
+    "embedding": "configured"
+  },
+  "config": {
+    "api_prefix": "/api/v1",
+    "embedding_enabled": true,
+    "pdf_available": true,
+    "xlsx_available": true,
+    "upload_max_bytes": 10485760,
+    "import_max_bytes": 20971520,
+    "datasets_available": true,
+    "analysis_history_available": true,
+    "documents_available": true,
+    "vision_available": true,
+    "vision_recognition_available": false,
+    "vision_model": "",
+    "vision_max_bytes": 10485760,
+    "vision_max_pdf_pages": 20,
+    "vision_max_pages_per_request": 5
+  },
+  "draft": {
+    "id": "61423d6a-ef1b-48d5-9cef-f4d4adbc0519",
+    "filename": "合成演示-预置人工转录.png",
+    "mime_type": "image/png",
+    "content_hash": "b698f0e7a00f44488da0e32c0676616e478af8d0b11094ba8af4f7dc8191ebee",
+    "page_count": 1,
+    "status": "needs_review",
+    "revision": 3,
+    "error": null,
+    "model": null,
+    "selected_pages": [],
+    "attempts": [],
+    "pages": {
+      "1": {
+        "raw": {
+          "text": "合成演示：预置人工转录，非模型识别结果。金额单位元；第三行空白不能当作零。",
+          "tables": [
+            {
+              "title": "合成区域金额（元）",
+              "columns": [
+                "external_id",
+                "region_code",
+                "amount_yuan"
+              ],
+              "rows": [
+                [
+                  "001",
+                  "EAST",
+                  "12.30"
+                ],
+                [
+                  "002",
+                  "NORTH",
+                  "0.10"
+                ],
+                [
+                  "003",
+                  "WEST",
+                  null
+                ]
+              ],
+              "notes": "金额单位元；外部编号保留前导零，空白为缺失值。"
+            }
+          ],
+          "warnings": [
+            "这是演示程序预置转录，不代表视觉模型准确率；发布前请核对原图。"
+          ]
+        },
+        "origin": "manual",
+        "model": null,
+        "usage": {
+          "requests": 0
+        },
+        "edited": {
+          "text": "合成演示：预置人工转录，非模型识别结果。金额单位元；第三行空白不能当作零。",
+          "tables": [
+            {
+              "title": "合成区域金额（元）",
+              "columns": [
+                "external_id",
+                "region_code",
+                "amount_yuan"
+              ],
+              "rows": [
+                [
+                  "001",
+                  "EAST",
+                  "12.30"
+                ],
+                [
+                  "002",
+                  "NORTH",
+                  "0.10"
+                ],
+                [
+                  "003",
+                  "WEST",
+                  null
+                ]
+              ],
+              "notes": "金额单位元；外部编号保留前导零，空白为缺失值。已核对合成样例。"
+            }
+          ],
+          "warnings": [
+            "这是演示程序预置转录，不代表视觉模型准确率；发布前请核对原图。"
+          ]
+        },
+        "reviewed": true
+      }
+    },
+    "publications": [
+      {
+        "key": "dataset:1a66af769e4194385ad24fc520535ed48d759e62f13c3ee893b7e28fd98f42b3",
+        "kind": "dataset",
+        "id": "7cf25062-8a83-48d0-8695-30af6ac95b07"
+      }
+    ],
+    "created_at": "2026-10-25T03:52:14.070417+00:00"
+  },
+  "dataset": {
+    "id": "7cf25062-8a83-48d0-8695-30af6ac95b07",
+    "filename": "识别表-第1页-1.csv",
+    "display_name": "合成演示-图片核对金额（元）",
+    "status": "ready",
+    "duplicate": false,
+    "content_hash": "b61a7d95a033c7c3d96829cfebdf5b2a2c73fb61bb7b090f8be8248798b112ef",
+    "table": "uploads.dataset_7cf250628a8348d0869530af6ac95b07",
+    "columns": [
+      {
+        "name": "external_id",
+        "label": "external_id",
+        "type": "text",
+        "nullable": false
+      },
+      {
+        "name": "region_code",
+        "label": "region_code",
+        "type": "text",
+        "nullable": false
+      },
+      {
+        "name": "amount_yuan",
+        "label": "amount_yuan",
+        "type": "decimal",
+        "nullable": true
+      }
+    ],
+    "warnings": [
+      "此表来自图片/扫描件识别，用户已确认转录；仍需核对单位、口径和完整性，原始来源见图片草稿。"
+    ],
+    "row_count": 3,
+    "imported_rows": 3,
+    "attempts": 1,
+    "error": null,
+    "options": {
+      "encoding": "utf-8-sig",
+      "delimiter": ",",
+      "sheet_name": null,
+      "sheet_names": [],
+      "parser_version": 1,
+      "vision_source": {
+        "kind": "vision_reviewed",
+        "draft_id": "61423d6a-ef1b-48d5-9cef-f4d4adbc0519",
+        "filename": "合成演示-预置人工转录.png",
+        "sha256": "b698f0e7a00f44488da0e32c0676616e478af8d0b11094ba8af4f7dc8191ebee",
+        "page_numbers": [
+          1
+        ],
+        "total_pages": 1,
+        "partial_source": false,
+        "model": null,
+        "profile": null,
+        "human_confirmed": true,
+        "page_models": {
+          "1": null
+        },
+        "raw_result_hashes": {
+          "1": "104d34faf2b94a745946980eda44bc7a15d0696e5dfed95cd024d33c6a9cf6cf"
+        },
+        "warning": "识别转录已由用户确认；不等于业务事实、完整性或因果关系已核验。",
+        "table_index": 0,
+        "table_title": "合成区域金额（元）",
+        "notes": "金额单位元；外部编号保留前导零，空白为缺失值。已核对合成样例。"
+      }
+    },
+    "created_at": "2026-10-25T03:54:24.458581+00:00"
+  },
+  "actual_sql_rows": [
+    {
+      "external_id": "001",
+      "region_code": "EAST",
+      "amount_yuan": "12.30"
+    },
+    {
+      "external_id": "002",
+      "region_code": "NORTH",
+      "amount_yuan": "0.10"
+    },
+    {
+      "external_id": "003",
+      "region_code": "WEST",
+      "amount_yuan": null
+    }
+  ],
+  "browser": {
+    "manual_edit_saved": true,
+    "unsaved_edits_block_publish": true,
+    "reviewed_table_imported": true,
+    "mobile_page_width": 390,
+    "mobile_viewport_width": 390
+  },
+  "retained_demo": "draft only; imported test dataset cleaned after verification"
+}

@@ -1,0 +1,285 @@
+{
+  "id": "sql_year_users",
+  "category": "sql",
+  "split": "holdout",
+  "variant": "baseline",
+  "question": "2025全年新注册的非测试用户数是多少？",
+  "response": {
+    "answer": "**2025 全年新注册的非测试用户数为 578 人。**\n\n关键数字：\n- 2025-01-01 至 2025-12-31 注册用户共 590 人，其中测试账号 12 个，排除后为 **578 人**（user_id 无重复，去重后仍为 578）。\n- 注册日期实际覆盖 2025-01-01 至 2025-12-30，年末最后一天无注册记录。\n\n口径：新用户 = users.register_date 落在统计周期内，排除 is_test = 1 的测试账号，按注册日期统计。",
+    "success": true,
+    "trace_id": "4e869874-1bd7-4161-8b92-08163092f490",
+    "session_id": "a6530be2-2711-44d0-8a8f-69914d992716",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_tables",
+        "arguments": {
+          "question": "用户注册 新注册用户数 测试账号"
+        },
+        "ok": true,
+        "output": "{\"dialect\": \"sqlite\", \"tables\": [{\"table\": \"categories\", \"columns\": [\"category_id\", \"category_name\", \"parent_id\"]}, {\"table\": \"order_items\", \"columns\": [\"item_id\", \"order_id\", \"product_id\", \"quantity\", \"unit_price\", \"item_amount\"]}, {\"table\": \"orders\", \"columns\": [\"order_id\", \"user_id\", \"order_time\", \"status\", \"channel\", \"total_amount\", \"discount_amount\", \"pay_amount\", \"pay_time\"]}, {\"table\": \"payments\", \"columns\": [\"payment_id\", \"order_id\", \"pay_method\", \"amount\", \"paid_at\"]}, {\"table\": \"products\", \"columns\": [\"product_id\", \"product_name\", \"category_id\", \"list_price\", \"cost_price\", \"is_active\"]}, {\"table\": \"refund_requests\", \"columns\": [\"request_id\", \"order_id\", \"request_time\", \"status\", \"reason\"]}, {\"table\": \"refunds\", \"columns\": [\"refund_id\", \"order_id\", \"refund_amount\", \"refund_time\", \"reason\"]}, {\"table\": \"regions\", \"columns\": [\"region_code\", \"region_name\"]}, {\"table\": \"uploaded_budget\", \"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\"]}, {\"table\": \"user_events\", \"columns\": [\"event_id\", \"user_id\", \"event_date\", \"event_type\"]}, {\"table\": \"users\", \"columns\": [\"user_id\", \"register_date\", \"region_code\", \"gender\", \"birth_year\", \"member_level\", \"acquire_channel\", \"is_test\"]}]}",
+        "duration_ms": 9,
+        "thought": "我先查看用户表结构和相关口径。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_glossary",
+        "arguments": {
+          "query": "新注册用户数 测试账号排除"
+        },
+        "ok": true,
+        "output": "## 下单用户数与复购率\n- 下单用户数：统计周期内有至少一笔有效订单的去重用户数。\n- 复购率：统计周期内有效订单数 ≥ 2 的用户数 / 下单用户数。\n均排除测试账号。\n\n## 新用户\n新用户指注册日期（users.register_date）落在统计周期内的用户，排除测试账号。\n「新用户首单」指新用户在注册当月产生的第一笔有效订单。\n\n## 活跃用户（MAU / DAU）\n活跃用户以行为日志为准，不以下单为准：\n- 月活跃用户（MAU）：当月在 user_events 中有任意事件（login / view / add_cart）的去重用户数。\n- 日活跃用户（DAU）：当天在 user_events 中有任意事件的去重用户数。\nuser_events 中不含测试账号，但关联 users 表时仍建议加 `is_test = 0`。",
+        "duration_ms": 0,
+        "thought": "我先查看用户表结构和相关口径。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "users"
+          ]
+        },
+        "ok": true,
+        "output": "表 users\n  user_id INTEGER\n  register_date TEXT NOT NULL  -- 注册日期 YYYY-MM-DD\n  region_code TEXT NOT NULL\n  gender TEXT  -- M / F / NULL（未填写）\n  birth_year INTEGER\n  member_level TEXT NOT NULL  -- normal / silver / gold\n  acquire_channel TEXT NOT NULL  -- 拉新渠道：organic / ads / referral\n  is_test INTEGER NOT NULL  -- 1 表示内部测试账号，统计时必须排除\n  外键: region_code -> regions(region_code)\n  样例 (user_id | register_date | region_code | gender | birth_year | member_level | acquire_channel | is_test):\n  1 | 2024-04-17 | NORTH | F | 1975 | normal | ads | 0\n  2 | 2024-11-26 | NORTH | None | 1983 | silver | ads | 0\n  3 | 2025-12-03 | EAST | F | 1989 | silver | organic | 0",
+        "duration_ms": 1,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT COUNT(*) AS new_users, MIN(register_date) AS min_d, MAX(register_date) AS max_d, SUM(CASE WHEN is_test=1 THEN 1 ELSE 0 END) AS test_cnt FROM users WHERE register_date >= '2025-01-01' AND register_date < '2026-01-01'",
+          "purpose": "2025年新注册用户数（含测试账号计数）"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"new_users\", \"min_d\", \"max_d\", \"test_cnt\"], \"rows\": [[590, \"2025-01-01\", \"2025-12-30\", 12]], \"row_count\": 1}",
+        "duration_ms": 1,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 4,
+        "tool": "run_sql",
+        "arguments": {
+          "purpose": "2025年新注册非测试用户数",
+          "sql": "SELECT COUNT(*) AS new_users, COUNT(DISTINCT user_id) AS distinct_users FROM users WHERE register_date >= '2025-01-01' AND register_date < '2026-01-01' AND is_test = 0"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"new_users\", \"distinct_users\"], \"rows\": [[578, 578]], \"row_count\": 1}",
+        "duration_ms": 1,
+        "thought": ""
+      }
+    ],
+    "plan": [],
+    "reflection": {
+      "passed": true,
+      "quality_score": 95,
+      "issues": [],
+      "summary": "回答正确：2025年新注册非测试用户578人，与查询结果一致，口径符合新用户定义。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "2025-01-01至2025-12-31注册用户共590人",
+          "status": "supported",
+          "evidence_ids": [
+            "E4"
+          ],
+          "reason": "E4查询返回new_users=590，时间范围为2025-01-01至2026-01-01（不含），即覆盖2025全年。"
+        },
+        {
+          "claim": "其中测试账号12个",
+          "status": "supported",
+          "evidence_ids": [
+            "E4"
+          ],
+          "reason": "E4返回test_cnt=12，为is_test=1的计数。"
+        },
+        {
+          "claim": "排除测试账号后为578人",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "E5查询is_test=0且注册日期在2025年，返回new_users=578，与590-12一致。"
+        },
+        {
+          "claim": "user_id无重复，去重后仍为578",
+          "status": "supported",
+          "evidence_ids": [
+            "E5"
+          ],
+          "reason": "E5返回distinct_users=578，与new_users=578相等，说明无重复。"
+        },
+        {
+          "claim": "注册日期实际覆盖2025-01-01至2025-12-30，年末最后一天无注册记录",
+          "status": "supported",
+          "evidence_ids": [
+            "E4"
+          ],
+          "reason": "E4返回min_d=2025-01-01、max_d=2025-12-30，支持该描述。"
+        },
+        {
+          "claim": "口径：新用户=register_date落在统计周期内，排除is_test=1的测试账号",
+          "status": "supported",
+          "evidence_ids": [
+            "E2",
+            "E3"
+          ],
+          "reason": "E2术语表定义新用户为注册日期落在统计周期内并排除测试账号；E3说明is_test=1表示内部测试账号，统计时必须排除。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 7,
+    "usage": {
+      "prompt_tokens": 27941,
+      "completion_tokens": 962,
+      "total_tokens": 28903,
+      "prompt_cache_hit_tokens": 24448,
+      "prompt_cache_miss_tokens": 3493
+    },
+    "duration_ms": 7855,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 802,
+          "usage": {
+            "prompt_tokens": 194,
+            "completion_tokens": 5,
+            "total_tokens": 199,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 194
+          }
+        },
+        "analysis": {
+          "logical_calls": 5,
+          "http_requests": 5,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 5064,
+          "usage": {
+            "prompt_tokens": 25713,
+            "completion_tokens": 515,
+            "total_tokens": 26228,
+            "prompt_cache_hit_tokens": 24064,
+            "prompt_cache_miss_tokens": 1649
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1967,
+          "usage": {
+            "prompt_tokens": 2034,
+            "completion_tokens": 442,
+            "total_tokens": 2476,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 1650
+          }
+        }
+      },
+      "llm_calls": 7,
+      "chat_usage": {
+        "prompt_tokens": 27941,
+        "completion_tokens": 962,
+        "total_tokens": 28903,
+        "prompt_cache_hit_tokens": 24448,
+        "prompt_cache_miss_tokens": 3493
+      },
+      "http_requests": 7,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 5,
+    "question": "2025全年新注册的非测试用户数是多少？",
+    "tables": [
+      {
+        "id": "result-4",
+        "title": "查询结果 · E4",
+        "columns": [
+          "new_users",
+          "min_d",
+          "max_d",
+          "test_cnt"
+        ],
+        "rows": [
+          [
+            590,
+            "2025-01-01",
+            "2025-12-30",
+            12
+          ]
+        ],
+        "evidence_ids": [
+          "E4"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-5",
+        "title": "查询结果 · E5",
+        "columns": [
+          "new_users",
+          "distinct_users"
+        ],
+        "rows": [
+          [
+            578,
+            578
+          ]
+        ],
+        "evidence_ids": [
+          "E5"
+        ],
+        "scope": {},
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

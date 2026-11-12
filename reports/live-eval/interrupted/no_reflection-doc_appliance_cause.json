@@ -1,0 +1,176 @@
+{
+  "id": "doc_appliance_cause",
+  "category": "documents",
+  "split": "holdout",
+  "variant": "no_reflection",
+  "question": "查询2025年11月和12月家电明细销售额，结合同期周报说明可能原因，明确哪些因果解释还需要验证。",
+  "response": {
+    "answer": "",
+    "success": false,
+    "trace_id": "f1307f82-2842-4199-bc4f-4c8627e91636",
+    "session_id": "262207cb-ede3-4d91-82ef-befbc431fdcd",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_tables",
+        "arguments": {
+          "question": "家电明细销售额 品类 子类 订单明细"
+        },
+        "ok": true,
+        "output": "{\"dialect\": \"sqlite\", \"tables\": [{\"table\": \"categories\", \"columns\": [\"category_id\", \"category_name\", \"parent_id\"]}, {\"table\": \"order_items\", \"columns\": [\"item_id\", \"order_id\", \"product_id\", \"quantity\", \"unit_price\", \"item_amount\"]}, {\"table\": \"orders\", \"columns\": [\"order_id\", \"user_id\", \"order_time\", \"status\", \"channel\", \"total_amount\", \"discount_amount\", \"pay_amount\", \"pay_time\"]}, {\"table\": \"payments\", \"columns\": [\"payment_id\", \"order_id\", \"pay_method\", \"amount\", \"paid_at\"]}, {\"table\": \"products\", \"columns\": [\"product_id\", \"product_name\", \"category_id\", \"list_price\", \"cost_price\", \"is_active\"]}, {\"table\": \"refund_requests\", \"columns\": [\"request_id\", \"order_id\", \"request_time\", \"status\", \"reason\"]}, {\"table\": \"refunds\", \"columns\": [\"refund_id\", \"order_id\", \"refund_amount\", \"refund_time\", \"reason\"]}, {\"table\": \"regions\", \"columns\": [\"region_code\", \"region_name\"]}, {\"table\": \"uploaded_budget\", \"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\"]}, {\"table\": \"user_events\", \"columns\": [\"event_id\", \"user_id\", \"event_date\", \"event_type\"]}, {\"table\": \"users\", \"columns\": [\"user_id\", \"register_date\", \"region_code\", \"gender\", \"birth_year\", \"member_level\", \"acquire_channel\", \"is_test\"]}]}",
+        "duration_ms": 12,
+        "thought": "我先了解数据结构与指标口径。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_glossary",
+        "arguments": {
+          "query": "家电明细销售额 品类销售额 口径"
+        },
+        "ok": true,
+        "output": "## 品类销售额\n品类销售额按订单明细的成交金额统计：`SUM(order_items.item_amount)`，关联 products、categories，只统计有效订单（status IN ('paid', 'completed')）并排除测试账号。\n注意：item_amount 未分摊订单级优惠，因此各品类销售额之和会略大于净销售额，这是预期内的差异。\n\n## 净销售额（营收 / 销售额）\n净销售额 = 有效订单的实付金额之和，即 GMV 扣除已退款订单。\nSQL 口径：`SUM(pay_amount)`，条件 `status IN ('paid', 'completed')`，并排除测试账号。\n用户说「销售额」「营收」「收入」时，默认指净销售额。\n\n## 客单价（AOV）\n客单价 = 净销售额 / 有效订单数，单位换算成元。\nSQL 口径：`SUM(pay_amount) / COUNT(*) / 100.0`，条件 `status IN ('paid', 'completed')`，排除测试账号。",
+        "duration_ms": 1,
+        "thought": "我先了解数据结构与指标口径。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "categories",
+            "order_items",
+            "products",
+            "orders",
+            "users"
+          ]
+        },
+        "ok": true,
+        "output": "表 categories\n  category_id INTEGER\n  category_name TEXT NOT NULL  -- 一级品类名称\n  parent_id INTEGER  -- 预留，当前均为 NULL（无二级品类）\n  样例 (category_id | category_name | parent_id):\n  1 | 手机数码 | None\n  2 | 家用电器 | None\n  3 | 服饰鞋包 | None\n\n表 order_items\n  item_id INTEGER\n  order_id INTEGER NOT NULL\n  product_id INTEGER NOT NULL\n  quantity INTEGER NOT NULL\n  unit_price INTEGER NOT NULL  -- 成交单价（未分摊优惠），单位：分\n  item_amount INTEGER NOT NULL  -- quantity * unit_price，单位：分\n  外键: product_id -> products(product_id)\n  外键: order_id -> orders(order_id)\n  样例 (item_id | order_id | product_id | quantity | unit_price | item_amount):\n  1 | 1 | 1 | 1 | 499900 | 499900\n  2 | 1 | 18 | 1 | 11900 | 11900\n  3 | 1 | 27 | 1 | 26910 | 26910\n\n表 products\n  product_id INTEGER\n  product_name TEXT NOT NULL\n  category_id INTEGER NOT NULL\n  list_price INTEGER NOT NULL  -- 标价，单位：分\n  cost_price INTEGER NOT NULL  -- 成本价，单位：分\n  is_active INTEGER NOT NULL  -- 1 在售，0 下架\n  外键: category_id -> categories(category_id)\n  样例 (product_id | product_name | category_id | list_price | cost_price | is_active):\n  1 | 旗舰手机 | 1 | 499900 | 368492 | 1\n  2 | 降噪耳机 | 1 | 89900 | 45969 | 1\n  3 | 智能手表 | 1 | 129900 | 78627 | 1\n\n表 orders\n  order_id INTEGER\n  user_id INTEGER NOT NULL\n  order_time TEXT NOT NULL  -- 下单时间 YYYY-MM-DD HH:MM:SS\n  status TEXT NOT NULL  -- paid 已支付 / completed 已完成 / cancelled 已取消（未支付） / refunded 已全额退款\n  channel TEXT NOT NULL  -- 下单端：app / web / mini_program\n  total_amount INTEGER NOT NULL  -- 商品原价合计，单位：分\n  discount_amount INTEGER NOT NULL  -- 优惠金额，单位：分\n  pay_amount INTEGER NOT NULL  -- 实付金额 = total_amount - discount_amount，单位：分；cancelled 订单为 0\n  pay_time TEXT  -- 支付时间；cancelled 为 NULL\n  外键: user_id -> users(user_id)\n  样例 (order_id | user_id | order_time | status | channel | total_amount | discount_amount | pay_amount | pay_time):\n  1 | 350 | 2025-01-26 14:43:02 | completed | web | 538710 | 0 | 538710 | 2025-01-26 15:10:02\n  2 | 930 | 2025-01-26 20:03:44 | completed | app | 15930 | 343 | 15587 | 2025-01-26 20:28:44\n  3 | 390 | 2025-01-01 17:46:50 | refunded | web | 12900 | 0 | 12900 | 2025-01-01 18:12:50\n\n表 users\n  user_id INTEGER\n  register_date TEXT NOT NULL  -- 注册日期 YYYY-MM-DD\n  region_code TEXT NOT NULL\n  gender TEXT  -- M / F / NULL（未填写）\n  birth_year INTEGER\n  member_level TEXT NOT NULL  -- normal / silver / gold\n  acquire_channel TEXT NOT NULL  -- 拉新渠道：organic / ads / referral\n  is_test INTEGER NOT NULL  -- 1 表示内部测试账号，统计时必须排除\n  外键: region_code -> regions(region_code)\n  样例 (user_id | register_date | region_code | gender | birth_year | member_level | acquire_channel | is_test):\n  1 | 2024-04-17 | NORTH | F | 1975 | normal | ads | 0\n  2 | 2024-11-26 | NORTH | None | 1983 | silver | ads | 0\n  3 | 2025-12-03 | EAST | F | 1989 | silver | organic | 0",
+        "duration_ms": 6,
+        "thought": ""
+      }
+    ],
+    "plan": [
+      "确认“家电明细销售额”的指标定义、数据来源、统计口径与单位，并明确2025年11月、12月两个完整自然月的起止日期",
+      "查询并核对2025年11月与12月家电整体销售额及按明细（如品类/子类）分项金额，检查合计与分项是否一致、有无缺失或异常值",
+      "沿家电明细维度比较11月与12月的金额变化，定位主要变动项；必要时在同一父级下继续下钻到更细层级",
+      "查找同期周报等业务资料，提取对11月、12月家电销售变化的解释与背景信息",
+      "区分事实（查询到的金额与变化）、资料解释（周报中的说法）和待验证假设，列出哪些因果解释尚需进一步数据或实验验证"
+    ],
+    "reflection": null,
+    "reflection_status": "skipped",
+    "revised": false,
+    "llm_calls": 4,
+    "usage": {
+      "prompt_tokens": 9965,
+      "completion_tokens": 320,
+      "total_tokens": 10285,
+      "prompt_cache_hit_tokens": 5888,
+      "prompt_cache_miss_tokens": 4077
+    },
+    "duration_ms": 3788,
+    "error": "模型调用失败: 所有候选模型均不可用",
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "unverified",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1783,
+          "usage": {
+            "prompt_tokens": 210,
+            "completion_tokens": 175,
+            "total_tokens": 385,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 210
+          }
+        },
+        "analysis": {
+          "logical_calls": 3,
+          "http_requests": 3,
+          "failures": 1,
+          "missing_usage_calls": 0,
+          "duration_ms": 1950,
+          "usage": {
+            "prompt_tokens": 9755,
+            "completion_tokens": 145,
+            "total_tokens": 9900,
+            "prompt_cache_hit_tokens": 5888,
+            "prompt_cache_miss_tokens": 3867
+          }
+        }
+      },
+      "llm_calls": 4,
+      "chat_usage": {
+        "prompt_tokens": 9965,
+        "completion_tokens": 320,
+        "total_tokens": 10285,
+        "prompt_cache_hit_tokens": 5888,
+        "prompt_cache_miss_tokens": 4077
+      },
+      "http_requests": 4,
+      "usage_complete": false
+    },
+    "execution_llm_calls": 3,
+    "question": "查询2025年11月和12月家电明细销售额，结合同期周报说明可能原因，明确哪些因果解释还需要验证。",
+    "tables": [],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": false,
+    "checks": {
+      "execution_success": false,
+      "citations_valid": true,
+      "fact_0_0": false,
+      "fact_0_1": false,
+      "pattern_0": false,
+      "source_appliances": false
+    },
+    "failed_checks": [
+      "execution_success",
+      "fact_0_0",
+      "fact_0_1",
+      "pattern_0",
+      "source_appliances"
+    ],
+    "fact_details": [
+      {
+        "check": "fact_0_0",
+        "expected": 234927.75,
+        "stated": false,
+        "grounded": false
+      },
+      {
+        "check": "fact_0_1",
+        "expected": 84642.95,
+        "stated": false,
+        "grounded": false
+      }
+    ],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

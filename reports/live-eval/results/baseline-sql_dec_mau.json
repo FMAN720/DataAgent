@@ -1,0 +1,383 @@
+{
+  "id": "sql_dec_mau",
+  "category": "sql",
+  "split": "development",
+  "variant": "baseline",
+  "question": "2025年12月月活用户数是多少？按行为日志而不是订单统计。",
+  "response": {
+    "answer": "**2025年12月月活用户数（MAU）为 798 人。**\n\n关键数字：\n- 去重活跃用户：798 人（12月1日–12月31日，user_events 中有任意 login / view / add_cart 事件）\n- 事件总数：5,893 条；其中 login 1,970 条（708 人）、view 1,964 条（719 人）、add_cart 1,959 条（704 人）\n- 日志覆盖：12月内共 31 个不同日期，日期范围 2025-12-01 至 2025-12-31，无缺日迹象\n- 测试账号：12月日志中关联 users 后 is_test 全部为 0，即日志本身不含测试账号，加不加 `is_test = 0` 结果一致（均为 798）\n\n说明：本口径完全基于行为日志，未使用订单数据；因此该数字与「下单用户数」不是同一指标，不能互相替代。\n\n口径：月活跃用户 = 当月 user_events 中任意事件（login/view/add_cart）的去重用户数，排除测试账号，按事件日期统计。",
+    "success": true,
+    "trace_id": "38bc811d-bd03-455e-8825-dd4ef40272c0",
+    "session_id": "885e6fc0-8779-4d82-868e-e6d21837e835",
+    "mode": "plan_execute",
+    "steps": [
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "search_glossary",
+        "arguments": {
+          "query": "月活用户数 活跃用户"
+        },
+        "ok": true,
+        "output": "## 活跃用户（MAU / DAU）\n活跃用户以行为日志为准，不以下单为准：\n- 月活跃用户（MAU）：当月在 user_events 中有任意事件（login / view / add_cart）的去重用户数。\n- 日活跃用户（DAU）：当天在 user_events 中有任意事件的去重用户数。\nuser_events 中不含测试账号，但关联 users 表时仍建议加 `is_test = 0`。\n\n## 下单用户数与复购率\n- 下单用户数：统计周期内有至少一笔有效订单的去重用户数。\n- 复购率：统计周期内有效订单数 ≥ 2 的用户数 / 下单用户数。\n均排除测试账号。\n\n## 新用户\n新用户指注册日期（users.register_date）落在统计周期内的用户，排除测试账号。\n「新用户首单」指新用户在注册当月产生的第一笔有效订单。",
+        "duration_ms": 0,
+        "thought": "我先确认月活用户的统计口径和日志表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 1,
+        "tool": "list_tables",
+        "arguments": {
+          "question": "用户行为日志 活跃用户"
+        },
+        "ok": true,
+        "output": "{\"dialect\": \"sqlite\", \"tables\": [{\"table\": \"categories\", \"columns\": [\"category_id\", \"category_name\", \"parent_id\"]}, {\"table\": \"order_items\", \"columns\": [\"item_id\", \"order_id\", \"product_id\", \"quantity\", \"unit_price\", \"item_amount\"]}, {\"table\": \"orders\", \"columns\": [\"order_id\", \"user_id\", \"order_time\", \"status\", \"channel\", \"total_amount\", \"discount_amount\", \"pay_amount\", \"pay_time\"]}, {\"table\": \"payments\", \"columns\": [\"payment_id\", \"order_id\", \"pay_method\", \"amount\", \"paid_at\"]}, {\"table\": \"products\", \"columns\": [\"product_id\", \"product_name\", \"category_id\", \"list_price\", \"cost_price\", \"is_active\"]}, {\"table\": \"refund_requests\", \"columns\": [\"request_id\", \"order_id\", \"request_time\", \"status\", \"reason\"]}, {\"table\": \"refunds\", \"columns\": [\"refund_id\", \"order_id\", \"refund_amount\", \"refund_time\", \"reason\"]}, {\"table\": \"regions\", \"columns\": [\"region_code\", \"region_name\"]}, {\"table\": \"uploaded_budget\", \"columns\": [\"_row_number\", \"region_code\", \"amount\", \"external_id\"]}, {\"table\": \"user_events\", \"columns\": [\"event_id\", \"user_id\", \"event_date\", \"event_type\"]}, {\"table\": \"users\", \"columns\": [\"user_id\", \"register_date\", \"region_code\", \"gender\", \"birth_year\", \"member_level\", \"acquire_channel\", \"is_test\"]}]}",
+        "duration_ms": 7,
+        "thought": "我先确认月活用户的统计口径和日志表结构。"
+      },
+      {
+        "type": "tool",
+        "step": 2,
+        "tool": "describe_tables",
+        "arguments": {
+          "tables": [
+            "user_events",
+            "users"
+          ]
+        },
+        "ok": true,
+        "output": "表 user_events\n  event_id INTEGER\n  user_id INTEGER NOT NULL\n  event_date TEXT NOT NULL  -- YYYY-MM-DD\n  event_type TEXT NOT NULL  -- login 登录 / view 浏览商品 / add_cart 加购\n  外键: user_id -> users(user_id)\n  样例 (event_id | user_id | event_date | event_type):\n  1 | 1 | 2025-01-01 | login\n  2 | 1 | 2025-01-01 | add_cart\n  3 | 1 | 2025-01-01 | view\n\n表 users\n  user_id INTEGER\n  register_date TEXT NOT NULL  -- 注册日期 YYYY-MM-DD\n  region_code TEXT NOT NULL\n  gender TEXT  -- M / F / NULL（未填写）\n  birth_year INTEGER\n  member_level TEXT NOT NULL  -- normal / silver / gold\n  acquire_channel TEXT NOT NULL  -- 拉新渠道：organic / ads / referral\n  is_test INTEGER NOT NULL  -- 1 表示内部测试账号，统计时必须排除\n  外键: region_code -> regions(region_code)\n  样例 (user_id | register_date | region_code | gender | birth_year | member_level | acquire_channel | is_test):\n  1 | 2024-04-17 | NORTH | F | 1975 | normal | ads | 0\n  2 | 2024-11-26 | NORTH | None | 1983 | silver | ads | 0\n  3 | 2025-12-03 | EAST | F | 1989 | silver | organic | 0",
+        "duration_ms": 5,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT COUNT(DISTINCT e.user_id) AS mau, COUNT(*) AS event_cnt, MIN(e.event_date) AS min_d, MAX(e.event_date) AS max_d FROM user_events e JOIN users u ON u.user_id = e.user_id WHERE e.event_date >= '2025-12-01' AND e.event_date < '2026-01-01' AND u.is_test = 0",
+          "purpose": "2025年12月去重活跃用户数（排除测试账号）"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"mau\", \"event_cnt\", \"min_d\", \"max_d\"], \"rows\": [[798, 5893, \"2025-12-01\", \"2025-12-31\"]], \"row_count\": 1}",
+        "duration_ms": 7,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 3,
+        "tool": "run_sql",
+        "arguments": {
+          "sql": "SELECT COUNT(DISTINCT user_id) AS mau_all, COUNT(*) AS cnt FROM user_events WHERE event_date >= '2025-12-01' AND event_date < '2026-01-01'",
+          "purpose": "未排除测试账号的对照值"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"mau_all\", \"cnt\"], \"rows\": [[798, 5893]], \"row_count\": 1}",
+        "duration_ms": 6,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 4,
+        "tool": "run_sql",
+        "arguments": {
+          "purpose": "核对12月日志覆盖天数与事件类型分布",
+          "sql": "SELECT COUNT(DISTINCT event_date) AS days, event_type, COUNT(*) AS cnt, COUNT(DISTINCT user_id) AS users FROM user_events WHERE event_date >= '2025-12-01' AND event_date < '2026-01-01' GROUP BY event_type"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"days\", \"event_type\", \"cnt\", \"users\"], \"rows\": [[31, \"add_cart\", 1959, 704], [31, \"login\", 1970, 708], [31, \"view\", 1964, 719]], \"row_count\": 3}",
+        "duration_ms": 6,
+        "thought": ""
+      },
+      {
+        "type": "tool",
+        "step": 4,
+        "tool": "run_sql",
+        "arguments": {
+          "purpose": "检查日志中是否存在测试账号用户",
+          "sql": "SELECT u.is_test, COUNT(DISTINCT e.user_id) AS users FROM user_events e JOIN users u ON u.user_id=e.user_id WHERE e.event_date >= '2025-12-01' AND e.event_date < '2026-01-01' GROUP BY u.is_test"
+        },
+        "ok": true,
+        "output": "{\"columns\": [\"is_test\", \"users\"], \"rows\": [[0, 798]], \"row_count\": 1}",
+        "duration_ms": 5,
+        "thought": ""
+      }
+    ],
+    "plan": [
+      "确认月活用户的统计口径（去重用户标识、行为日志来源、统计周期为2025年12月整月）及单位",
+      "从行为日志中筛选2025年12月有活跃行为的用户并去重计数，得到月活用户数",
+      "核对结果：检查日志覆盖范围与数据完整性，确认未混入订单数据口径"
+    ],
+    "reflection": {
+      "passed": true,
+      "quality_score": 95,
+      "issues": [],
+      "summary": "回答中的关键数字均可由本轮查询结果直接支持，口径符合行为日志定义并已排除测试账号，未使用订单数据。",
+      "error": null,
+      "checks": [
+        {
+          "claim": "2025年12月MAU为798人",
+          "status": "supported",
+          "evidence_ids": [
+            "E4",
+            "E1"
+          ],
+          "reason": "E4 查询 user_events 在 2025-12-01 至 2025-12-31 区间、关联 users 且 is_test=0 的去重用户数为 798；E1 口径定义 MAU 为当月 user_events 任意事件去重用户数。"
+        },
+        {
+          "claim": "事件总数5,893条",
+          "status": "supported",
+          "evidence_ids": [
+            "E4",
+            "E5"
+          ],
+          "reason": "E4 与 E5 的 event_cnt/cnt 均为 5893。"
+        },
+        {
+          "claim": "login 1,970条（708人）、view 1,964条（719人）、add_cart 1,959条（704人）",
+          "status": "supported",
+          "evidence_ids": [
+            "E6"
+          ],
+          "reason": "E6 按 event_type 分组返回的 cnt 与 users 与回答完全一致。"
+        },
+        {
+          "claim": "12月覆盖31个不同日期，范围2025-12-01至2025-12-31",
+          "status": "supported",
+          "evidence_ids": [
+            "E4",
+            "E6"
+          ],
+          "reason": "E4 的 min_d/max_d 为 2025-12-01/2025-12-31，E6 的 days 为 31。"
+        },
+        {
+          "claim": "日志中 is_test 全部为0，加不加 is_test=0 结果一致（均为798）",
+          "status": "supported",
+          "evidence_ids": [
+            "E5",
+            "E7"
+          ],
+          "reason": "E5 未排除测试账号的 mau_all 为 798，E7 显示仅 is_test=0 分组且用户数 798，两者一致。"
+        },
+        {
+          "claim": "本口径完全基于行为日志，未使用订单数据",
+          "status": "supported",
+          "evidence_ids": [
+            "E4",
+            "E6",
+            "E7"
+          ],
+          "reason": "所有查询均只涉及 user_events 与 users，未查询 orders 等订单表。"
+        },
+        {
+          "claim": "该数字与下单用户数不是同一指标，不能互相替代",
+          "status": "supported",
+          "evidence_ids": [
+            "E1"
+          ],
+          "reason": "E1 明确区分活跃用户（以行为日志为准）与下单用户数（以有效订单为准）。"
+        }
+      ],
+      "evidence_complete": true
+    },
+    "reflection_status": "passed",
+    "revised": false,
+    "llm_calls": 7,
+    "usage": {
+      "prompt_tokens": 29940,
+      "completion_tokens": 1541,
+      "total_tokens": 31481,
+      "prompt_cache_hit_tokens": 22912,
+      "prompt_cache_miss_tokens": 7028
+    },
+    "duration_ms": 10556,
+    "error": null,
+    "citations": [],
+    "citation_errors": [],
+    "analysis": {
+      "status": "reviewed",
+      "scope": null,
+      "clarification_questions": [],
+      "comparisons": [],
+      "warnings": [],
+      "comparison_count": 0,
+      "quality_checks": [],
+      "metrics": []
+    },
+    "needs_clarification": false,
+    "usage_breakdown": {
+      "scope": "all_chat_stages; embedding reported separately",
+      "stages": {
+        "planner": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 1335,
+          "usage": {
+            "prompt_tokens": 201,
+            "completion_tokens": 81,
+            "total_tokens": 282,
+            "prompt_cache_hit_tokens": 0,
+            "prompt_cache_miss_tokens": 201
+          }
+        },
+        "analysis": {
+          "logical_calls": 5,
+          "http_requests": 5,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 6578,
+          "usage": {
+            "prompt_tokens": 27112,
+            "completion_tokens": 880,
+            "total_tokens": 27992,
+            "prompt_cache_hit_tokens": 22528,
+            "prompt_cache_miss_tokens": 4584
+          }
+        },
+        "reflection": {
+          "logical_calls": 1,
+          "http_requests": 1,
+          "failures": 0,
+          "missing_usage_calls": 0,
+          "duration_ms": 2607,
+          "usage": {
+            "prompt_tokens": 2627,
+            "completion_tokens": 580,
+            "total_tokens": 3207,
+            "prompt_cache_hit_tokens": 384,
+            "prompt_cache_miss_tokens": 2243
+          }
+        }
+      },
+      "llm_calls": 7,
+      "chat_usage": {
+        "prompt_tokens": 29940,
+        "completion_tokens": 1541,
+        "total_tokens": 31481,
+        "prompt_cache_hit_tokens": 22912,
+        "prompt_cache_miss_tokens": 7028
+      },
+      "http_requests": 7,
+      "usage_complete": true
+    },
+    "execution_llm_calls": 5,
+    "question": "2025年12月月活用户数是多少？按行为日志而不是订单统计。",
+    "tables": [
+      {
+        "id": "result-4",
+        "title": "查询结果 · E4",
+        "columns": [
+          "mau",
+          "event_cnt",
+          "min_d",
+          "max_d"
+        ],
+        "rows": [
+          [
+            798,
+            5893,
+            "2025-12-01",
+            "2025-12-31"
+          ]
+        ],
+        "evidence_ids": [
+          "E4"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-5",
+        "title": "查询结果 · E5",
+        "columns": [
+          "mau_all",
+          "cnt"
+        ],
+        "rows": [
+          [
+            798,
+            5893
+          ]
+        ],
+        "evidence_ids": [
+          "E5"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-6",
+        "title": "查询结果 · E6",
+        "columns": [
+          "days",
+          "event_type",
+          "cnt",
+          "users"
+        ],
+        "rows": [
+          [
+            31,
+            "add_cart",
+            1959,
+            704
+          ],
+          [
+            31,
+            "login",
+            1970,
+            708
+          ],
+          [
+            31,
+            "view",
+            1964,
+            719
+          ]
+        ],
+        "evidence_ids": [
+          "E6"
+        ],
+        "scope": {},
+        "truncated": false
+      },
+      {
+        "id": "result-7",
+        "title": "查询结果 · E7",
+        "columns": [
+          "is_test",
+          "users"
+        ],
+        "rows": [
+          [
+            0,
+            798
+          ]
+        ],
+        "evidence_ids": [
+          "E7"
+        ],
+        "scope": {},
+        "truncated": false
+      }
+    ],
+    "charts": [],
+    "analysis_state": {},
+    "archive_status": "disabled",
+    "archive_error": null,
+    "context_applied": false,
+    "created_at": null
+  },
+  "grade": {
+    "passed": true,
+    "checks": {
+      "execution_success": true,
+      "citations_valid": true,
+      "fact_0_0": true
+    },
+    "failed_checks": [],
+    "fact_details": [],
+    "limitations": "Pattern/number/source checks do not prove semantic completeness or causality."
+  }
+}

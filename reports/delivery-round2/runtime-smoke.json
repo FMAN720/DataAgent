@@ -1,0 +1,239 @@
+{
+  "base_url": "http://127.0.0.1:18080",
+  "requests": [
+    {
+      "path": "/api/v1/health/ready",
+      "status": 200,
+      "body": {
+        "status": "ready",
+        "agent": "up",
+        "analysis_database": "up",
+        "session_store": "up",
+        "session_backend": "redis",
+        "analysis_history": "up",
+        "document_database": "up",
+        "database": "up",
+        "app_env": "development",
+        "document_retrieval": "up",
+        "dataset_imports": "up",
+        "embedding": "configured"
+      }
+    },
+    {
+      "path": "/workspace-config",
+      "status": 200,
+      "body": {
+        "api_prefix": "/api/v1",
+        "embedding_enabled": true,
+        "pdf_available": true,
+        "xlsx_available": true,
+        "upload_max_bytes": 10485760,
+        "import_max_bytes": 20971520,
+        "datasets_available": true,
+        "analysis_history_available": true,
+        "documents_available": true
+      }
+    },
+    {
+      "path": "/api/v1/conversations",
+      "status": 200,
+      "body": [
+        {
+          "session_id": "delivery-demo-7dcef8a4a90b466d90b6e1c499f00a24",
+          "title": "合成演示：月度有效订单数趋势",
+          "updated_at": "2026-10-25T03:10:28.889621+00:00",
+          "turn_count": 1
+        },
+        {
+          "session_id": "delivery-demo-d6839f9c587345c3823fc8487c9daa99",
+          "title": "合成演示：11月至12月各区域净销售额对比",
+          "updated_at": "2026-10-25T03:10:28.870088+00:00",
+          "turn_count": 1
+        }
+      ]
+    },
+    {
+      "path": "/api/v1/analyses/113e70ec-e4c6-4311-878b-b7aa2895f3b2",
+      "status": 200,
+      "body": {
+        "answer": "合成演示，未调用聊天模型。折线来自演示库实际查询；本例统计每月有效订单数。图表不补造缺失观测，完整 SQL 和数据见查询证据。",
+        "success": true,
+        "trace_id": "113e70ec-e4c6-4311-878b-b7aa2895f3b2",
+        "session_id": "delivery-demo-7dcef8a4a90b466d90b6e1c499f00a24",
+        "mode": "react",
+        "steps": [
+          {
+            "step": 1,
+            "tool": "run_sql",
+            "arguments": {
+              "sql": "SELECT substr(o.order_time,1,7) AS month, COUNT(*) AS order_count FROM business.orders o JOIN business.users u ON u.user_id=o.user_id WHERE u.is_test=0 AND o.status IN ('paid','completed') GROUP BY 1 ORDER BY 1"
+            },
+            "ok": true,
+            "output": "{\"columns\": [\"month\", \"order_count\"], \"rows\": [[\"2025-01\", 565], [\"2025-02\", 405], [\"2025-03\", 602], [\"2025-04\", 603], [\"2025-05\", 631], [\"2025-06\", 754], [\"2025-07\", 590], [\"2025-08\", 596], [\"2025-09\", 614], [\"2025-10\", 703], [\"2025-11\", 1039], [\"2025-12\", 733]], \"row_count\": 12}",
+            "duration_ms": 0,
+            "thought": ""
+          }
+        ],
+        "plan": [],
+        "reflection": null,
+        "reflection_status": "skipped",
+        "revised": false,
+        "llm_calls": 0,
+        "usage": {},
+        "duration_ms": 0,
+        "error": null,
+        "citations": [],
+        "citation_errors": [],
+        "analysis": {
+          "status": "unverified",
+          "scope": null,
+          "clarification_questions": [],
+          "comparisons": [],
+          "warnings": [],
+          "comparison_count": 0,
+          "quality_checks": [],
+          "metrics": []
+        },
+        "needs_clarification": false,
+        "usage_breakdown": {},
+        "execution_llm_calls": 0,
+        "question": "合成演示：月度有效订单数趋势",
+        "tables": [
+          {
+            "id": "result-1",
+            "title": "查询结果 · E1",
+            "columns": [
+              "month",
+              "order_count"
+            ],
+            "rows": [
+              [
+                "2025-01",
+                565
+              ],
+              [
+                "2025-02",
+                405
+              ],
+              [
+                "2025-03",
+                602
+              ],
+              [
+                "2025-04",
+                603
+              ],
+              [
+                "2025-05",
+                631
+              ],
+              [
+                "2025-06",
+                754
+              ],
+              [
+                "2025-07",
+                590
+              ],
+              [
+                "2025-08",
+                596
+              ],
+              [
+                "2025-09",
+                614
+              ],
+              [
+                "2025-10",
+                703
+              ],
+              [
+                "2025-11",
+                1039
+              ],
+              [
+                "2025-12",
+                733
+              ]
+            ],
+            "evidence_ids": [
+              "E1"
+            ],
+            "scope": {},
+            "truncated": false
+          }
+        ],
+        "charts": [
+          {
+            "id": "result-1-line",
+            "table_id": "result-1",
+            "kind": "line",
+            "title": "查询结果 · E1",
+            "unit": "原始数值（单位未声明）",
+            "labels": [
+              "2025-01",
+              "2025-02",
+              "2025-03",
+              "2025-04",
+              "2025-05",
+              "2025-06",
+              "2025-07",
+              "2025-08",
+              "2025-09",
+              "2025-10",
+              "2025-11",
+              "2025-12"
+            ],
+            "series": [
+              {
+                "name": "order_count",
+                "values": [
+                  "565",
+                  "405",
+                  "602",
+                  "603",
+                  "631",
+                  "754",
+                  "590",
+                  "596",
+                  "614",
+                  "703",
+                  "1039",
+                  "733"
+                ]
+              }
+            ],
+            "evidence_ids": [
+              "E1"
+            ],
+            "scope": {}
+          }
+        ],
+        "analysis_state": {},
+        "archive_status": "saved",
+        "archive_error": null,
+        "context_applied": true,
+        "created_at": "2026-10-25T03:10:28.881620+00:00"
+      }
+    },
+    {
+      "path": "export?format=csv",
+      "status": 200,
+      "content_type": "text/csv; charset=utf-8",
+      "bytes": 930
+    },
+    {
+      "path": "export?format=xlsx",
+      "status": 200,
+      "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "bytes": 7454
+    },
+    {
+      "path": "export?format=md",
+      "status": 200,
+      "content_type": "text/markdown; charset=utf-8",
+      "bytes": 1469
+    }
+  ],
+  "model_api_calls": 0
+}
